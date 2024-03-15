@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
   <POU Name="RejectMsgHandling" Id="{f9eb4f63-f2c6-4b6e-bf8e-ae2cf46d26c9}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK RejectMsgHandling
 VAR_INPUT
@@ -26,109 +26,90 @@ VAR
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[
-	CASE SeqIndex OF
-		0:
-			IF bReject THEN
-				SeqIndex	:= 5;	
-			END_IF
-			
-		5:
-			FOR i := 1 TO 20 BY 1 DO
-			IF dtRejectHistory[i].Status = 0 THEN
-				LastIndex	:= i;
-				SeqIndex	:= 10;
-				EXIT;
-			END_IF
-			END_FOR
-				
-			IF i > 20 THEN
-				SeqIndex	:= 10;
-			END_IF
-			
-			
-		10:
-			IF LastIndex > 1 THEN
-				FOR j := LastIndex TO 2 BY -1 DO
-					dtRejectHistory[j].Status		:=	dtRejectHistory[j-1].Status;
-					dtRejectHistory[j].RejectID		:=	dtRejectHistory[j-1].RejectID;
-					dtRejectHistory[j].RejectType	:=	dtRejectHistory[j-1].RejectType;
-					dtRejectHistory[j].Counter		:=	dtRejectHistory[j-1].Counter;
-					dtRejectHistory[j].RejectMsg	:=	dtRejectHistory[j-1].RejectMsg;
-					dtRejectHistory[j].Timestamp	:=	dtRejectHistory[j-1].Timestamp;
-				END_FOR
-			END_IF
-			
-			//IF j >= LastIndex THEN
-				SeqIndex	:= 20;
-			//END_IF
-			
-		20:
-				dtRejectHistory[1].Status			:=	1;
-				dtRejectHistory[1].RejectID			:=	bRejectID;
-				dtRejectHistory[1].RejectType		:=	RejectType;
-				dtRejectHistory[1].Counter			:=	Counter+1;
-				dtRejectHistory[1].RejectMsg		:=	RejectMsg;
-				dtRejectHistory[1].Timestamp		:=	Timestamp;
-				IF NOT bReject THEN
-					i			:= 0;
-					j			:= 0;
-					SeqIndex	:= 0;
-				END_IF
-			
-	END_CASE
-	
+      <ST><![CDATA[// Inisialisasi program
+FUNCTION_BLOCK RejectMsgHandling
+VAR_INPUT
+	bReject			: BOOL; // Sinyal untuk menunjukkan jika ada penolakan
+	bRejectID		: INT; // ID penolakan
+	RejectType		: STRING; // Jenis penolakan
+	Counter			: UINT; // Jumlah penolakan
+	RejectMsg		: STRING; // Pesan penolakan
+	Timestamp		: STRING; // Timestamp penolakan
+	bResetBuffer	: BOOL; // Sinyal untuk mereset buffer
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR_IN_OUT
+	dtRejectHistory	: ARRAY [1..20] OF stRejectData; // Array untuk menyimpan riwayat penolakan
+END_VAR
+VAR
+	i				: UINT; // Variabel loop
+	j				: UINT; // Variabel loop
+	LastIndex		: UINT; // Indeks terakhir dalam array riwayat penolakan
+	EmptyArray		: ARRAY [1..20] OF stRejectData; // Array kosong untuk reset
+	SeqIndex		: UINT; // Indeks urutan langkah dalam program
+END_VAR
 
-IF bResetBuffer	THEN //OR LastIndex >= 20
-	LastIndex		:= 0;
-	i				:= 0;
-	j				:= 0;
-	SeqIndex		:= 0;
-	dtRejectHistory	:= EmptyArray;
-END_IF]]></ST>
+// Logika program
+CASE SeqIndex OF
+	0:
+		IF bReject THEN // Jika ada penolakan
+			SeqIndex := 5; // Pergi ke langkah 5
+		END_IF
+		
+	5:
+		FOR i := 1 TO 20 BY 1 DO // Looping melalui array riwayat penolakan
+			IF dtRejectHistory[i].Status = 0 THEN // Jika status riwayat adalah 0 (kosong)
+				LastIndex := i; // Set indeks terakhir
+				SeqIndex := 10; // Pergi ke langkah 10
+				EXIT; // Keluar dari loop
+			END_IF
+		END_FOR
+				
+		IF i > 20 THEN // Jika semua array telah diperiksa
+			SeqIndex := 10; // Pergi ke langkah 10
+		END_IF
+		
+	10:
+		IF LastIndex > 1 THEN // Jika ada data riwayat
+			FOR j := LastIndex TO 2 BY -1 DO // Looping mundur dari indeks terakhir ke-2
+				// Geser data riwayat ke atas
+				dtRejectHistory[j].Status := dtRejectHistory[j-1].Status;
+				dtRejectHistory[j].RejectID := dtRejectHistory[j-1].RejectID;
+				dtRejectHistory[j].RejectType := dtRejectHistory[j-1].RejectType;
+				dtRejectHistory[j].Counter := dtRejectHistory[j-1].Counter;
+				dtRejectHistory[j].RejectMsg := dtRejectHistory[j-1].RejectMsg;
+				dtRejectHistory[j].Timestamp := dtRejectHistory[j-1].Timestamp;
+			END_FOR
+		END_IF
+			
+		SeqIndex := 20; // Pergi ke langkah 20
+			
+	20:
+		// Simpan data penolakan baru di indeks pertama array
+		dtRejectHistory[1].Status := 1;
+		dtRejectHistory[1].RejectID := bRejectID;
+		dtRejectHistory[1].RejectType := RejectType;
+		dtRejectHistory[1].Counter := Counter+1;
+		dtRejectHistory[1].RejectMsg := RejectMsg;
+		dtRejectHistory[1].Timestamp := Timestamp;
+		IF NOT bReject THEN // Jika tidak ada penolakan lagi
+			i := 0;
+			j := 0;
+			SeqIndex := 0; // Kembali ke langkah awal
+		END_IF
+	
+END_CASE
+
+// Reset buffer jika diperlukan
+IF bResetBuffer THEN // Jika perlu mereset buffer
+	LastIndex := 0; // Set indeks terakhir ke 0
+	i := 0;
+	j := 0;
+	SeqIndex := 0;
+	dtRejectHistory := EmptyArray; // Reset array riwayat penolakan
+END_IF
+]]></ST>
     </Implementation>
-    <LineIds Name="RejectMsgHandling">
-      <LineId Id="9" Count="0" />
-      <LineId Id="93" Count="1" />
-      <LineId Id="247" Count="0" />
-      <LineId Id="261" Count="0" />
-      <LineId Id="250" Count="0" />
-      <LineId Id="262" Count="0" />
-      <LineId Id="248" Count="0" />
-      <LineId Id="129" Count="0" />
-      <LineId Id="162" Count="4" />
-      <LineId Id="96" Count="0" />
-      <LineId Id="177" Count="3" />
-      <LineId Id="130" Count="0" />
-      <LineId Id="120" Count="0" />
-      <LineId Id="115" Count="0" />
-      <LineId Id="201" Count="0" />
-      <LineId Id="146" Count="0" />
-      <LineId Id="117" Count="1" />
-      <LineId Id="263" Count="0" />
-      <LineId Id="268" Count="0" />
-      <LineId Id="119" Count="0" />
-      <LineId Id="116" Count="0" />
-      <LineId Id="124" Count="0" />
-      <LineId Id="202" Count="0" />
-      <LineId Id="171" Count="0" />
-      <LineId Id="168" Count="2" />
-      <LineId Id="150" Count="0" />
-      <LineId Id="152" Count="0" />
-      <LineId Id="154" Count="1" />
-      <LineId Id="266" Count="0" />
-      <LineId Id="269" Count="0" />
-      <LineId Id="156" Count="2" />
-      <LineId Id="172" Count="1" />
-      <LineId Id="159" Count="1" />
-      <LineId Id="122" Count="0" />
-      <LineId Id="95" Count="0" />
-      <LineId Id="17" Count="0" />
-      <LineId Id="57" Count="0" />
-      <LineId Id="56" Count="0" />
-      <LineId Id="293" Count="0" />
-      <LineId Id="174" Count="2" />
-      <LineId Id="58" Count="1" />
-    </LineIds>
   </POU>
 </TcPlcObject>

@@ -1,32 +1,36 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
   <POU Name="RTCManagement" Id="{dd2c8799-33d5-44cd-b1b4-029a21e73318}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK RTCManagement
+    <Declaration><![CDATA[(*======================FB RTC MANAGEMENT V0.1================*)
+// Changelog[ 22/09/2022] M.Dimas Andiwjaya 
+
+// Inisialisasi variabel
+FUNCTION_BLOCK RTCManagement
 VAR_IN_OUT
-	RTC_Data 			: stRTC_Data;
+	RTC_Data 			: stRTC_Data; // Data jam waktu aktual
 END_VAR
 VAR_INPUT
-	bFL_DoneRTC			: BOOL;
-	DateAndTime_GetTime	: TIMESTRUCT;
-	DateAndTime_RTC		: DT;
+	bFL_DoneRTC			: BOOL; // Sinyal selesai sinkronisasi jam RTC
+	DateAndTime_GetTime	: TIMESTRUCT; // Struktur waktu dari sistem
+	DateAndTime_RTC		: DT; // Waktu RTC
 END_VAR
 VAR_OUTPUT
-	EnableToCaptureData	: BOOL;	
-	EnableGetTime		: BOOL;
-	EnableRTC			: BOOL;
-	RTC_dataSecond 		: INT ;
-	RTC_Data_Time8 		: STRING;
+	EnableToCaptureData	: BOOL; // Sinyal untuk menangkap data waktu
+	EnableGetTime		: BOOL; // Sinyal untuk mendapatkan waktu
+	EnableRTC			: BOOL; // Sinyal untuk mengaktifkan RTC
+	RTC_dataSecond 		: INT ; // Detik dari jam RTC
+	RTC_Data_Time8 		: STRING; // Waktu lengkap dalam format string
 END_VAR
 VAR
 
-	RealTimeClock		: RTC;
-	DateAndTime			: TIMESTRUCT;
-	SeqIndex			: INT;
+	RealTimeClock		: RTC; // Variabel objek RTC
+	DateAndTime			: TIMESTRUCT; // Struktur waktu
+	SeqIndex			: INT; // Indeks urutan langkah dalam program
 	
-	wYear				: INT;
-	Input_RTC			: DATE_AND_TIME;
+	wYear				: INT; // Tahun dari struktur waktu
+	Input_RTC			: DATE_AND_TIME; // Data waktu masukan RTC
 	
-	RTC_Data_Time1 		: STRING;
+	RTC_Data_Time1 		: STRING; // Bagian waktu dalam format string
 	RTC_Data_Time2 		: STRING;
 	RTC_Data_Time3 		: STRING;
 	RTC_Data_Time4 		: STRING;
@@ -37,111 +41,74 @@ VAR
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[(*======================FB RTC MANAGEMENT V0.1================*)
-// Changelog[ 22/09/2022] M.Dimas Andiwjaya 
-
-
-
-CASE SeqIndex OF
+      <ST><![CDATA[CASE SeqIndex OF
 	0:
-		EnableGetTime:=TRUE;
-		IF NOT (DateAndTime_GetTime.wYear=0) THEN
-			SeqIndex:=10;
+		EnableGetTime := TRUE; // Aktifkan pengambilan waktu
+		IF NOT (DateAndTime_GetTime.wYear=0) THEN // Jika tahun bukan 0 (data waktu valid)
+			SeqIndex := 10; // Pergi ke langkah 10
 		END_IF
 	10:
-		EnableGetTime:=FALSE;
-		Input_RTC:=SYSTEMTIME_TO_DT(DateAndTime_GetTime);
-		EnableRTC:=TRUE;
-		IF bFL_DoneRTC THEN
-			SeqIndex:=20;
+		EnableGetTime := FALSE; // Matikan pengambilan waktu
+		Input_RTC := SYSTEMTIME_TO_DT(DateAndTime_GetTime); // Konversi struktur waktu ke format DT
+		EnableRTC := TRUE; // Aktifkan RTC
+		IF bFL_DoneRTC THEN // Jika proses sinkronisasi RTC selesai
+			SeqIndex := 20; // Pergi ke langkah 20
 		END_IF
 	20:
-		DateAndTime:=DT_TO_SYSTEMTIME(DateAndTime_RTC);
-		RTC_Data.iDT_Year	:=WORD_TO_INT(DateAndTime.wYear);
-		RTC_Data.iDT_Month	:=WORD_TO_INT(DateAndTime.wMonth);
-		RTC_Data.iDT_Date	:=WORD_TO_INT(DateAndTime.wDay);
-		RTC_Data.iDT_Hour	:=WORD_TO_INT(DateAndTime.wHour);
-		RTC_Data.iDT_Minute	:=WORD_TO_INT(DateAndTime.wMinute);
-		RTC_Data.iDT_Second	:=WORD_TO_INT(DateAndTime.wSecond);	
-		RTC_dataSecond := RTC_Data.iDT_Second ;
-		RTC_Data.iDT_MilliSecond	:=WORD_TO_INT(DateAndTime.wMilliseconds);
+		DateAndTime := DT_TO_SYSTEMTIME(DateAndTime_RTC); // Konversi waktu RTC ke struktur waktu
+		// Simpan komponen waktu dalam variabel RTC_Data
+		RTC_Data.iDT_Year := WORD_TO_INT(DateAndTime.wYear);
+		RTC_Data.iDT_Month := WORD_TO_INT(DateAndTime.wMonth);
+		RTC_Data.iDT_Date := WORD_TO_INT(DateAndTime.wDay);
+		RTC_Data.iDT_Hour := WORD_TO_INT(DateAndTime.wHour);
+		RTC_Data.iDT_Minute := WORD_TO_INT(DateAndTime.wMinute);
+		RTC_Data.iDT_Second := WORD_TO_INT(DateAndTime.wSecond);	
+		RTC_dataSecond := RTC_Data.iDT_Second ; // Simpan detik ke variabel terpisah
+		RTC_Data.iDT_MilliSecond := WORD_TO_INT(DateAndTime.wMilliseconds);
 	
+		// Konversi data waktu ke format string dengan menambahkan nol di depan jika diperlukan
 		RTC_Data.strDT_MilliSecond := INT_TO_STRING(RTC_Data.iDT_MilliSecond);
 		IF RTC_Data.iDT_Second <= 9 THEN
-			RTC_Data.strDT_Second:=CONCAT('0',INT_TO_STRING(RTC_Data.iDT_Second));
+			RTC_Data.strDT_Second := CONCAT('0',INT_TO_STRING(RTC_Data.iDT_Second));
 		ELSE
-			RTC_Data.strDT_Second:=INT_TO_STRING(RTC_Data.iDT_Second);
+			RTC_Data.strDT_Second := INT_TO_STRING(RTC_Data.iDT_Second);
 		END_IF
 		
 		IF RTC_Data.iDT_Minute <= 9 THEN
-			RTC_Data.strDT_Minute:=CONCAT('0',INT_TO_STRING(RTC_Data.iDT_Minute));
+			RTC_Data.strDT_Minute := CONCAT('0',INT_TO_STRING(RTC_Data.iDT_Minute));
 		ELSE
-			RTC_Data.strDT_Minute:=INT_TO_STRING(RTC_Data.iDT_Minute);
+			RTC_Data.strDT_Minute := INT_TO_STRING(RTC_Data.iDT_Minute);
 		END_IF
 		
 		IF RTC_Data.iDT_Hour <= 9 THEN
-			RTC_Data.strDT_Hour:=CONCAT('0',INT_TO_STRING(RTC_Data.iDT_Hour));
+			RTC_Data.strDT_Hour := CONCAT('0',INT_TO_STRING(RTC_Data.iDT_Hour));
 		ELSE
-			RTC_Data.strDT_Hour:=INT_TO_STRING(RTC_Data.iDT_Hour);
+			RTC_Data.strDT_Hour := INT_TO_STRING(RTC_Data.iDT_Hour);
 		END_IF
 		
 		RTC_Data.strDT_Year := INT_TO_STRING (RTC_Data.iDT_Year);
 		
 		IF RTC_Data.iDT_Month <= 9 THEN
-			RTC_Data.strDT_Month:=CONCAT('0',INT_TO_STRING(RTC_Data.iDT_Month));
+			RTC_Data.strDT_Month := CONCAT('0',INT_TO_STRING(RTC_Data.iDT_Month));
 		ELSE
-			RTC_Data.strDT_Month:=INT_TO_STRING(RTC_Data.iDT_Month);
+			RTC_Data.strDT_Month := INT_TO_STRING(RTC_Data.iDT_Month);
 		END_IF
 		IF RTC_DATA.iDT_Date <=9 THEN 
-			RTC_Data.strDT_Date:=CONCAT('0',INT_TO_STRING(RTC_Data.iDT_Date));
+			RTC_Data.strDT_Date := CONCAT('0',INT_TO_STRING(RTC_Data.iDT_Date));
 		ELSE
-			RTC_Data.strDT_Date:=INT_TO_STRING(RTC_Data.iDT_Date);
+			RTC_Data.strDT_Date := INT_TO_STRING(RTC_Data.iDT_Date);
 		END_IF
+		// Gabungkan komponen waktu dalam format string untuk mendapatkan waktu lengkap
 		RTC_Data_Time1 := Concat(':',RTC_Data.strDT_Minute);
 		RTC_Data_Time2 := Concat(RTC_Data.strDT_Hour,RTC_Data_Time1);
-		RTC_Data_Time3 := concat(' ',RTC_Data_Time2);
+		RTC_Data_Time3 := Concat(' ',RTC_Data_Time2);
 		RTC_Data_Time4 := Concat(RTC_Data.strDT_Year,RTC_Data_Time3);
 		RTC_Data_Time5 := Concat ('/',RTC_Data_Time4);
 		RTC_Data_Time6 := Concat(RTC_Data.strDT_Month,RTC_Data_Time5);
 		RTC_Data_Time7 := Concat('/',RTC_Data_Time6);
-		RTC_Data_Time8 := concat (RTC_Data.strDT_Date,RTC_Data_Time7);
-END_CASE]]></ST>
+		RTC_Data_Time8 := Concat (RTC_Data.strDT_Date,RTC_Data_Time7);
+END_CASE
+]]></ST>
     </Implementation>
-    <LineIds Name="RTCManagement">
-      <LineId Id="293" Count="0" />
-      <LineId Id="297" Count="0" />
-      <LineId Id="294" Count="2" />
-      <LineId Id="108" Count="12" />
-      <LineId Id="48" Count="0" />
-      <LineId Id="58" Count="5" />
-      <LineId Id="56" Count="0" />
-      <LineId Id="258" Count="0" />
-      <LineId Id="65" Count="0" />
-      <LineId Id="257" Count="0" />
-      <LineId Id="223" Count="0" />
-      <LineId Id="67" Count="3" />
-      <LineId Id="66" Count="0" />
-      <LineId Id="96" Count="0" />
-      <LineId Id="73" Count="3" />
-      <LineId Id="57" Count="0" />
-      <LineId Id="97" Count="0" />
-      <LineId Id="77" Count="3" />
-      <LineId Id="55" Count="0" />
-      <LineId Id="98" Count="0" />
-      <LineId Id="91" Count="0" />
-      <LineId Id="104" Count="0" />
-      <LineId Id="92" Count="3" />
-      <LineId Id="81" Count="0" />
-      <LineId Id="99" Count="0" />
-      <LineId Id="102" Count="1" />
-      <LineId Id="100" Count="1" />
-      <LineId Id="106" Count="0" />
-      <LineId Id="148" Count="0" />
-      <LineId Id="178" Count="0" />
-      <LineId Id="183" Count="2" />
-      <LineId Id="187" Count="0" />
-      <LineId Id="189" Count="0" />
-      <LineId Id="107" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>

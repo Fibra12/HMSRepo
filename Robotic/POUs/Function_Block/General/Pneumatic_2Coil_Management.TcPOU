@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
   <POU Name="Pneumatic_2Coil_Management" Id="{76a52a57-4e51-47e6-b62e-be1156308e1b}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK Pneumatic_2Coil_Management //V1.0
 // Function block untuk mengolah faceplate dan watchdog pneumatic valve 2 coil
@@ -1397,16 +1397,18 @@ END_VAR
     </Implementation>
     <Action Name="Cycle" Id="{0ac73b5f-61d9-4637-b8e3-ecc3ec4493f1}">
       <Implementation>
-        <ST><![CDATA[PneuAdv(CLK := Pneumatic.oPneumaticAdvanced AND Pneumatic.iSensorAdvanced);
-IF PneuAdv.Q THEN
-	Pneumatic.CyclePneuAdv	:= Pneumatic.CyclePneuAdv + 1;
+        <ST><![CDATA[// Pneumatic Advanced Cycle Counter
+PneuAdv(CLK := Pneumatic.oPneumaticAdvanced AND Pneumatic.iSensorAdvanced); // Pemicu untuk menghitung siklus pneumatik maju dengan menghubungkan sinyal pengontrol dan sensor maju
+IF PneuAdv.Q THEN // Jika siklus pneumatik maju terdeteksi
+	Pneumatic.CyclePneuAdv := Pneumatic.CyclePneuAdv + 1; // Tambahkan satu ke hitungan siklus pneumatik maju
 END_IF
 
-
-PneuRtc(CLK := Pneumatic.oPneumaticRetract AND Pneumatic.iSensorRetract);
-IF PneuRtc.Q THEN
-	Pneumatic.CyclePneuRtc	:= Pneumatic.CyclePneuRtc + 1;
+// Pneumatic Retract Cycle Counter
+PneuRtc(CLK := Pneumatic.oPneumaticRetract AND Pneumatic.iSensorRetract); // Pemicu untuk menghitung siklus pneumatik mundur dengan menghubungkan sinyal pengontrol dan sensor mundur
+IF PneuRtc.Q THEN // Jika siklus pneumatik mundur terdeteksi
+	Pneumatic.CyclePneuRtc := Pneumatic.CyclePneuRtc + 1; // Tambahkan satu ke hitungan siklus pneumatik mundur
 END_IF
+
 (*PneuAdv(CLK := Pneumatic.Trigger_Advanced);
 CASE SeqIndexAdv OF
 	0:
@@ -1438,285 +1440,175 @@ END_CASE*)]]></ST>
     </Action>
     <Action Name="Init" Id="{8d03c11a-dad1-4883-8630-a4dad8d8fdce}">
       <Implementation>
-        <ST><![CDATA[IF bResetError THEN
-	bError			:= FALSE;
-	InitSeqIndex	:= 0;
+        <ST><![CDATA[// Reset Error Handling
+IF bResetError THEN // Jika reset kesalahan diaktifkan
+	bError := FALSE; // Set variabel bError ke FALSE untuk menunjukkan tidak ada kesalahan
+	InitSeqIndex := 0; // Set indeks urutan inisialisasi kembali ke 0
 END_IF
 
-
-IF bEnable AND NOT bInit THEN
-	CASE InitSeqIndex OF
+// Inisialisasi Pneumatic
+IF bEnable AND NOT bInit THEN // Jika sistem diaktifkan dan belum diinisialisasi
+	CASE InitSeqIndex OF // Berdasarkan indeks urutan inisialisasi
 		0:
-			IF xIn_SensorRetract THEN
-				InitSeqIndex	:= 100;
-			ELSIF xin_SensorAdvanced THEN
-				InitSeqIndex	:= 200;
-			ELSIF NOT xIn_SensorRetract AND NOT xIn_SensorAdvanced THEN
-				InitSeqIndex	:= 300;
-			ELSE
-				ErrorID			:= 1;
-				ErrorMsg		:= 'Both Sensor on at Init';
-				InitSeqIndex	:= 999;
+			IF xIn_SensorRetract THEN // Jika sensor retract aktif
+				InitSeqIndex := 100; // Pergi ke langkah 100
+			ELSIF xin_SensorAdvanced THEN // Jika sensor advanced aktif
+				InitSeqIndex := 200; // Pergi ke langkah 200
+			ELSIF NOT xIn_SensorRetract AND NOT xIn_SensorAdvanced THEN // Jika kedua sensor tidak aktif
+				InitSeqIndex := 300; // Pergi ke langkah 300
+			ELSE // Jika kedua sensor aktif pada saat inisialisasi
+				ErrorID := 1; // Set ID kesalahan ke 1
+				ErrorMsg := 'Both Sensor on at Init'; // Pesan kesalahan
+				InitSeqIndex := 999; // Pergi ke langkah 999
 			END_IF
 	
 		100:
-			Pneumatic.oPneumaticRetract 	:= TRUE;
-			InitSeqIndex	:= 1000;
+			Pneumatic.oPneumaticRetract := TRUE; // Aktifkan pneumatik retract
+			InitSeqIndex := 1000; // Pergi ke langkah 1000
 		
 		200:
-			Pneumatic.oPneumaticAdvanced	:= TRUE;
-			InitSeqIndex	:= 1000;
+			Pneumatic.oPneumaticAdvanced := TRUE; // Aktifkan pneumatik advanced
+			InitSeqIndex := 1000; // Pergi ke langkah 1000
 		
 		300:
-			Pneumatic.oPneumaticRetract		:= TRUE;
-			Pneumatic.oPneumaticAdvanced	:= TRUE;
-			ValveTimerInit(In:= TRUE, PT:= TimerValve);
-			IF ValveTimerInit.Q THEN
-			    ValveTimerInit(In:=FALSE);
-				Pneumatic.oPneumaticAdvanced := FALSE;
-				Pneumatic.oPneumaticRetract := FALSE;
-				InitSeqIndex := 1000;
+			Pneumatic.oPneumaticRetract := TRUE; // Aktifkan pneumatik retract
+			Pneumatic.oPneumaticAdvanced := TRUE; // Aktifkan pneumatik advanced
+			ValveTimerInit(In := TRUE, PT := TimerValve); // Aktifkan timer untuk inisialisasi katup
+			IF ValveTimerInit.Q THEN // Jika timer katup aktif
+			    ValveTimerInit(In := FALSE); // Nonaktifkan timer katup
+				Pneumatic.oPneumaticAdvanced := FALSE; // Nonaktifkan pneumatik advanced
+				Pneumatic.oPneumaticRetract := FALSE; // Nonaktifkan pneumatik retract
+				InitSeqIndex := 1000; // Pergi ke langkah 1000
 			END_IF;
 		
 		999:
-			bError	:= TRUE;
+			bError := TRUE; // Set variabel bError ke TRUE untuk menunjukkan kesalahan
 		
 		1000:
-			bInit	:= TRUE;
-		
+			bInit := TRUE; // Set variabel bInit ke TRUE untuk menunjukkan inisialisasi selesai
 	END_CASE
 END_IF
-
-
-
 ]]></ST>
       </Implementation>
     </Action>
     <Action Name="ValveManagement" Id="{4e1eb282-b367-4946-8fce-1656a6a057ae}">
       <Implementation>
-        <ST><![CDATA[
-IF bResetError THEN
-	bError		:= FALSE;
-	ErrorID		:= 0;
-	ErrorMsg	:= '';
-	SeqIndex	:= 0;
+        <ST><![CDATA[// Reset Error Handling
+IF bResetError THEN // Jika reset kesalahan diaktifkan
+	bError := FALSE; // Set variabel bError ke FALSE untuk menunjukkan tidak ada kesalahan
+	ErrorID := 0; // Set ID kesalahan kembali ke 0
+	ErrorMsg := ''; // Kosongkan pesan kesalahan
+	SeqIndex := 0; // Set indeks urutan kembali ke 0
 END_IF
 
-IF bEnable AND bInit AND NOT bError THEN
-	CASE SeqIndex OF
-		0:
-			IF Pneumatic.Trigger_Retract THEN
-				SeqIndex	:= 100;
-			ELSIF Pneumatic.Trigger_Advanced THEN
-				SeqIndex	:= 200;
+// Kontrol Pneumatik
+IF bEnable AND bInit AND NOT bError THEN // Jika sistem diaktifkan, sudah diinisialisasi, dan tidak ada kesalahan
+	CASE SeqIndex OF // Berdasarkan indeks urutan
+		0: // Langkah awal
+			IF Pneumatic.Trigger_Retract THEN // Jika triger retract aktif
+				SeqIndex := 100; // Pergi ke langkah 100
+			ELSIF Pneumatic.Trigger_Advanced THEN // Jika triger advanced aktif
+				SeqIndex := 200; // Pergi ke langkah 200
 			END_IF
 			
-		100:
-			Pneumatic.Trigger_Retract	:= FALSE;
-			IF NOT bBypassPreCheckSensor THEN
-				WatchdogTimer(In:= TRUE, PT:= TimerWatchdogPreRetract);
-				IF Pneumatic.iSensorAdvanced THEN
-					WatchdogTimer(In:= FALSE);
-					SeqIndex	:= 105;
-				ELSIF WatchdogTimer.Q THEN
-					WatchdogTimer(In:= FALSE);
-					Pneumatic.Error_Retract := TRUE;
-					ErrorID					:= 10;
-					ErrorMsg				:= CONCAT(Name,'Error PreCheck Retract');
-					SeqIndex	:= 999;
+		100: // Langkah untuk retract
+			Pneumatic.Trigger_Retract := FALSE; // Nonaktifkan triger retract
+			IF NOT bBypassPreCheckSensor THEN // Jika tidak melewati pengecekan sensor pra-retract
+				WatchdogTimer(In := TRUE, PT := TimerWatchdogPreRetract); // Aktifkan timer pengawas pra-retract
+				IF Pneumatic.iSensorAdvanced THEN // Jika sensor advanced aktif
+					WatchdogTimer(In := FALSE); // Nonaktifkan timer
+					SeqIndex := 105; // Pergi ke langkah 105
+				ELSIF WatchdogTimer.Q THEN // Jika timer habis
+					WatchdogTimer(In := FALSE); // Nonaktifkan timer
+					Pneumatic.Error_Retract := TRUE; // Set kesalahan retract
+					ErrorID := 10; // Set ID kesalahan
+					ErrorMsg := CONCAT(Name, 'Error PreCheck Retract'); // Set pesan kesalahan
+					SeqIndex := 999; // Pergi ke langkah 999
 				END_IF
 			ELSE
-				SeqIndex	:= 105;
+				SeqIndex := 105; // Pergi ke langkah 105
 			END_IF
 	
-		105:	
-			Pneumatic.oPneumaticRetract		:= TRUE;
-			Pneumatic.oPneumaticAdvanced	:= TRUE;
-			ValveTimer(In:= TRUE, PT:= TimerValve);
-			IF ValveTimer.Q THEN
-				ValveTimer(In:= FALSE);
-				Pneumatic.oPneumaticAdvanced	:= FALSE;
-				SeqIndex	:= 110;
+		105: // Langkah setelah pra-retract
+			Pneumatic.oPneumaticRetract := TRUE; // Aktifkan pneumatik retract
+			Pneumatic.oPneumaticAdvanced := TRUE; // Aktifkan pneumatik advanced
+			ValveTimer(In := TRUE, PT := TimerValve); // Aktifkan timer katup
+			IF ValveTimer.Q THEN // Jika timer katup aktif
+				ValveTimer(In := FALSE); // Nonaktifkan timer
+				Pneumatic.oPneumaticAdvanced := FALSE; // Nonaktifkan pneumatik advanced
+				SeqIndex := 110; // Pergi ke langkah 110
 			END_IF
 			
-		110:
-			IF NOT bBypassSensorRetract THEN
-				WatchdogTimer(In:= TRUE, PT:= TimerWatchdogRetract);
-				IF Pneumatic.iSensorRetract THEN
-					WatchdogTimer(In:= FALSE);
-					SeqIndex	:= 0;
-				ELSIF WatchdogTimer.Q THEN
-					WatchdogTimer(In:= FALSE);
-					Pneumatic.Error_Retract := TRUE;
-					ErrorID					:= 11;
-					ErrorMsg				:= CONCAT(Name,'Error Watchdog Retract');
+		110: // Langkah setelah retract
+			IF NOT bBypassSensorRetract THEN // Jika tidak melewati sensor retract
+				WatchdogTimer(In := TRUE, PT := TimerWatchdogRetract); // Aktifkan timer pengawas retract
+				IF Pneumatic.iSensorRetract THEN // Jika sensor retract aktif
+					WatchdogTimer(In := FALSE); // Nonaktifkan timer
+					SeqIndex := 0; // Kembali ke langkah awal
+				ELSIF WatchdogTimer.Q THEN // Jika timer habis
+					WatchdogTimer(In := FALSE); // Nonaktifkan timer
+					Pneumatic.Error_Retract := TRUE; // Set kesalahan retract
+					ErrorID := 11; // Set ID kesalahan
+					ErrorMsg := CONCAT(Name, 'Error Watchdog Retract'); // Set pesan kesalahan
 				END_IF
 			ELSE
-				SeqIndex	:= 0;
+				SeqIndex := 0; // Kembali ke langkah awal
 			END_IF
 		
-			
-		200:
-			Pneumatic.Trigger_Advanced	:= FALSE;
-			IF NOT bBypassPreCheckSensor THEN
-				WatchdogTimer(In:= TRUE, PT:= TimerWatchdogPreAdvanced);
-				IF Pneumatic.iSensorRetract THEN
-					WatchdogTimer(In:= FALSE);
-					SeqIndex	:= 210;
-				ELSIF WatchdogTimer.Q THEN
-					WatchdogTimer(In:= FALSE);
-					Pneumatic.Error_Advanced := TRUE;
-					ErrorID					:= 20;
-					ErrorMsg				:= CONCAT(Name,'Error PreCheck Advanced');
-					SeqIndex	:= 999;
+		200: // Langkah untuk advanced
+			Pneumatic.Trigger_Advanced := FALSE; // Nonaktifkan triger advanced
+			IF NOT bBypassPreCheckSensor THEN // Jika tidak melewati pengecekan sensor pra-advanced
+				WatchdogTimer(In := TRUE, PT := TimerWatchdogPreAdvanced); // Aktifkan timer pengawas pra-advanced
+				IF Pneumatic.iSensorRetract THEN // Jika sensor retract aktif
+					WatchdogTimer(In := FALSE); // Nonaktifkan timer
+					SeqIndex := 210; // Pergi ke langkah 210
+				ELSIF WatchdogTimer.Q THEN // Jika timer habis
+					WatchdogTimer(In := FALSE); // Nonaktifkan timer
+					Pneumatic.Error_Advanced := TRUE; // Set kesalahan advanced
+					ErrorID := 20; // Set ID kesalahan
+					ErrorMsg := CONCAT(Name, 'Error PreCheck Advanced'); // Set pesan kesalahan
+					SeqIndex := 999; // Pergi ke langkah 999
 				END_IF
 			ELSE
-				SeqIndex	:= 205;
+				SeqIndex := 205; // Pergi ke langkah 205
 			END_IF				
 		
-		205:
-			Pneumatic.oPneumaticRetract		:= TRUE;
-			Pneumatic.oPneumaticAdvanced	:= TRUE;
-			ValveTimer(In:= TRUE, PT:= TimerValve);
-			IF ValveTimer.Q THEN
-				Pneumatic.oPneumaticRetract	:= FALSE;
-				SeqIndex	:= 210;
+		205: // Langkah setelah pra-advanced
+			Pneumatic.oPneumaticRetract := TRUE; // Aktifkan pneumatik retract
+			Pneumatic.oPneumaticAdvanced := TRUE; // Aktifkan pneumatik advanced
+			ValveTimer(In := TRUE, PT := TimerValve); // Aktifkan timer katup
+			IF ValveTimer.Q THEN // Jika timer katup aktif
+				Pneumatic.oPneumaticRetract := FALSE; // Nonaktifkan pneumatik retract
+				SeqIndex := 210; // Pergi ke langkah 210
 			END_IF	
 			
-		210:
-			IF NOT bBypassSensorAdvanced THEN
-				WatchdogTimer(In:= TRUE, PT:= TimerWatchdogAdvanced);
-				IF Pneumatic.iSensorAdvanced THEN
-					WatchdogTimer(In:= FALSE);
-					SeqIndex	:= 0;
-				ELSIF WatchdogTimer.Q THEN
-					WatchdogTimer(In:= FALSE);
-					Pneumatic.Error_Advanced := TRUE;
-					ErrorID					:= 21;
-					ErrorMsg				:= CONCAT(Name,'Error Watchdog Advanced');
+		210: // Langkah setelah advanced
+			IF NOT bBypassSensorAdvanced THEN // Jika tidak melewati sensor advanced
+				WatchdogTimer(In := TRUE, PT := TimerWatchdogAdvanced); // Aktifkan timer pengawas advanced
+				IF Pneumatic.iSensorAdvanced THEN // Jika sensor advanced aktif
+					WatchdogTimer(In := FALSE); // Nonaktifkan timer
+					SeqIndex := 0; // Kembali ke langkah awal
+				ELSIF WatchdogTimer.Q THEN // Jika timer habis
+					WatchdogTimer(In := FALSE); // Nonaktifkan timer
+					Pneumatic.Error_Advanced := TRUE; // Set kesalahan advanced
+					ErrorID := 21; // Set ID kesalahan
+					ErrorMsg := CONCAT(Name, 'Error Watchdog Advanced'); // Set pesan kesalahan
 				END_IF
-			ELSE
-				SeqIndex	:= 0;
+				ELSE
+				SeqIndex	:= 0; // Kembali ke langkah awal
 			END_IF					
 	
-		999:
-			bError	:= TRUE;	
-	
+		999: // Langkah jika ada kesalahan
+			bError := TRUE; // Set variabel bError ke TRUE untuk menunjukkan ada kesalahan	
 	
 	END_CASE
 	
-ELSE
-	SeqIndex	:= 0;
-	WatchdogTimer(IN:= FALSE);
+ELSE // Jika tidak ada aktivitas
+	SeqIndex := 0; // Set indeks urutan kembali ke 0
+	WatchdogTimer(IN := FALSE); // Nonaktifkan timer pengawas
 END_IF
-
-
 ]]></ST>
       </Implementation>
     </Action>
-    <LineIds Name="Pneumatic_2Coil_Management.Cycle">
-      <LineId Id="35" Count="1" />
-      <LineId Id="38" Count="6" />
-      <LineId Id="37" Count="0" />
-      <LineId Id="2" Count="0" />
-      <LineId Id="11" Count="1" />
-      <LineId Id="15" Count="2" />
-      <LineId Id="14" Count="0" />
-      <LineId Id="18" Count="4" />
-      <LineId Id="13" Count="0" />
-      <LineId Id="10" Count="0" />
-      <LineId Id="23" Count="11" />
-      <LineId Id="5" Count="0" />
-    </LineIds>
-    <LineIds Name="Pneumatic_2Coil_Management.Init">
-      <LineId Id="27" Count="0" />
-      <LineId Id="29" Count="0" />
-      <LineId Id="31" Count="0" />
-      <LineId Id="30" Count="0" />
-      <LineId Id="28" Count="0" />
-      <LineId Id="2" Count="1" />
-      <LineId Id="7" Count="0" />
-      <LineId Id="10" Count="0" />
-      <LineId Id="16" Count="0" />
-      <LineId Id="22" Count="0" />
-      <LineId Id="18" Count="0" />
-      <LineId Id="20" Count="0" />
-      <LineId Id="23" Count="0" />
-      <LineId Id="26" Count="0" />
-      <LineId Id="24" Count="0" />
-      <LineId Id="32" Count="0" />
-      <LineId Id="34" Count="0" />
-      <LineId Id="25" Count="0" />
-      <LineId Id="19" Count="0" />
-      <LineId Id="17" Count="0" />
-      <LineId Id="15" Count="0" />
-      <LineId Id="35" Count="0" />
-      <LineId Id="50" Count="0" />
-      <LineId Id="49" Count="0" />
-      <LineId Id="36" Count="0" />
-      <LineId Id="38" Count="0" />
-      <LineId Id="51" Count="0" />
-      <LineId Id="42" Count="0" />
-      <LineId Id="39" Count="1" />
-      <LineId Id="53" Count="0" />
-      <LineId Id="66" Count="2" />
-      <LineId Id="71" Count="0" />
-      <LineId Id="69" Count="1" />
-      <LineId Id="56" Count="0" />
-      <LineId Id="46" Count="0" />
-      <LineId Id="43" Count="2" />
-      <LineId Id="37" Count="0" />
-      <LineId Id="47" Count="1" />
-      <LineId Id="14" Count="0" />
-      <LineId Id="8" Count="0" />
-      <LineId Id="4" Count="2" />
-      <LineId Id="1" Count="0" />
-    </LineIds>
-    <LineIds Name="Pneumatic_2Coil_Management.ValveManagement">
-      <LineId Id="2" Count="1" />
-      <LineId Id="8" Count="0" />
-      <LineId Id="125" Count="1" />
-      <LineId Id="10" Count="0" />
-      <LineId Id="9" Count="0" />
-      <LineId Id="4" Count="1" />
-      <LineId Id="20" Count="0" />
-      <LineId Id="22" Count="0" />
-      <LineId Id="30" Count="3" />
-      <LineId Id="26" Count="0" />
-      <LineId Id="34" Count="0" />
-      <LineId Id="36" Count="0" />
-      <LineId Id="127" Count="0" />
-      <LineId Id="37" Count="15" />
-      <LineId Id="68" Count="1" />
-      <LineId Id="71" Count="2" />
-      <LineId Id="124" Count="0" />
-      <LineId Id="74" Count="0" />
-      <LineId Id="76" Count="0" />
-      <LineId Id="75" Count="0" />
-      <LineId Id="70" Count="0" />
-      <LineId Id="53" Count="0" />
-      <LineId Id="55" Count="12" />
-      <LineId Id="35" Count="0" />
-      <LineId Id="28" Count="0" />
-      <LineId Id="112" Count="0" />
-      <LineId Id="77" Count="0" />
-      <LineId Id="128" Count="0" />
-      <LineId Id="78" Count="15" />
-      <LineId Id="113" Count="0" />
-      <LineId Id="116" Count="5" />
-      <LineId Id="115" Count="0" />
-      <LineId Id="114" Count="0" />
-      <LineId Id="94" Count="0" />
-      <LineId Id="96" Count="15" />
-      <LineId Id="27" Count="0" />
-      <LineId Id="29" Count="0" />
-      <LineId Id="24" Count="0" />
-      <LineId Id="23" Count="0" />
-      <LineId Id="12" Count="0" />
-      <LineId Id="14" Count="2" />
-      <LineId Id="13" Count="0" />
-      <LineId Id="6" Count="1" />
-      <LineId Id="1" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>
