@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
   <POU Name="FB_Placing_v2" Id="{773ff4c9-68b5-407a-bcdf-4f8ead4c792f}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_Placing_v2
 VAR_INPUT
@@ -56,368 +56,247 @@ VAR_IN_OUT
 	Data_Count_Total		: UINT;
 END_VAR]]></Declaration>
     <Implementation>
-      <ST><![CDATA[IF Inp_Reset AND Out_PalletJammed THEN
-	Out_PalletJammed	:= FALSE;
-	Sequence 			:= 0;
+      <ST><![CDATA[(IF Inp_Reset AND Out_PalletJammed THEN // Jika sinyal reset aktif dan palet terjammed
+	Out_PalletJammed	:= FALSE; // Matikan sinyal palet terjammed
+	Sequence 			:= 0; // Set urutan langkah ke 0
 END_IF
 
-IF Inp_Enable THEN
+IF Inp_Enable THEN // Jika sinyal enable aktif
 	
-	IF Cmd_Flushing THEN
-		Sts_Flushing:=TRUE;
+	IF Cmd_Flushing THEN // Jika perintah flushing aktif
+		Sts_Flushing:=TRUE; // Set status flushing menjadi TRUE
 	END_IF;
 	
-    CASE Sequence OF
-        0:	(* Check Motor *)
-			 Out_Motor_Fwd := TRUE;
-			 DataTimer(IN:=TRUE, PT:=T#4S);
-			 IF DataTimer.Q OR AccFlushing = 2 THEN
-				 DataTimer(IN:=FALSE);
-				 Out_Motor_Fwd	:= FALSE;
-				 Sequence		:= 10;
+    CASE Sequence OF // Pilih langkah berdasarkan urutan langkah
+        0:	(* Check Motor *) // Langkah 0: Periksa motor
+			 Out_Motor_Fwd := TRUE; // Nyalakan motor maju
+			 DataTimer(IN:=TRUE, PT:=T#4S); // Mulai timer data dengan durasi 4 detik
+			 IF DataTimer.Q OR AccFlushing = 2 THEN // Jika timer data berakhir atau akumulator flushing = 2
+				 DataTimer(IN:=FALSE); // Matikan timer data
+				 Out_Motor_Fwd	:= FALSE; // Matikan motor maju
+				 Sequence		:= 10; // Pergi ke langkah 10
 			 END_IF
 
-		10:  (* Check Sensor *)
-			CurrentJob		:= 'Check Sensor';
-			IF (Inp_SensorFront OR Inp_SensorMiddle OR Inp_SensorBack) AND AccFlushing = 2 THEN
-				Sequence := 600;
-			ELSIF (Inp_SensorFront OR Inp_SensorMiddle OR Inp_SensorBack) AND ((Data_Count_Place > o_MaxCycle AND o_MaxCycle <> 0)  OR Sts_Flushing) THEN
-                Sequence := 500;
-            ELSIF Inp_SensorFront THEN
-                Sequence := 300;
-            ELSIF NOT Inp_SensorFront AND (Inp_SensorMiddle OR Inp_SensorBack)  THEN
-                Sequence := 200;
-            ELSE
-                Sequence := 100;
+		10:  (* Check Sensor *) // Langkah 10: Periksa sensor
+			CurrentJob		:= 'Check Sensor'; // Tentukan pekerjaan saat ini
+			IF (Inp_SensorFront OR Inp_SensorMiddle OR Inp_SensorBack) AND AccFlushing = 2 THEN // Jika salah satu sensor terdeteksi dan akumulator flushing = 2
+				Sequence := 600; // Pergi ke langkah 600
+			ELSIF (Inp_SensorFront OR Inp_SensorMiddle OR Inp_SensorBack) AND ((Data_Count_Place > o_MaxCycle AND o_MaxCycle <> 0)  OR Sts_Flushing) THEN // Jika salah satu sensor terdeteksi dan jumlah data tempat melebihi siklus maksimum atau status flushing aktif
+                Sequence := 500; // Pergi ke langkah 500
+            ELSIF Inp_SensorFront THEN // Jika hanya sensor depan terdeteksi
+                Sequence := 300; // Pergi ke langkah 300
+            ELSIF NOT Inp_SensorFront AND (Inp_SensorMiddle OR Inp_SensorBack)  THEN // Jika tidak ada sensor depan dan salah satu sensor tengah atau belakang terdeteksi
+                Sequence := 200; // Pergi ke langkah 200
+            ELSE // Jika tidak ada sensor terdeteksi
+                Sequence := 100; // Pergi ke langkah 100
             END_IF;
 			
 			
-        100:    (* Request *)
-			CurrentJob		:= 'Request Pallet';
-			Sts_Flushing	:= FALSE;
-            Out_Req			:= TRUE;
-			Out_FB			:= FALSE;
-            IF Inp_FB THEN
-				DataTimer(IN:=FALSE);
-                Sequence := 200;
+        100:    (* Request *) // Langkah 100: Kirim permintaan palet
+			CurrentJob		:= 'Request Pallet'; // Tentukan pekerjaan saat ini
+			Sts_Flushing	:= FALSE; // Matikan status flushing
+            Out_Req			:= TRUE; // Aktifkan sinyal permintaan
+			Out_FB			:= FALSE; // Matikan sinyal kembali
+            IF Inp_FB THEN // Jika sinyal kembali aktif
+				DataTimer(IN:=FALSE); // Matikan timer data
+                Sequence := 200; // Pergi ke langkah 200
             END_IF;       
 			
-        200:    (* Pallet Masuk *)
-			CurrentJob	:= 'Pallet In';
-			PalletOut	:= FALSE;
-			IF NOT Inp_SensorFront AND NOT Inp_SensorMiddle AND NOT Inp_SensorBack THEN
-            	Out_Req := TRUE;
+        200:    (* Pallet Masuk *) // Langkah 200: Palet masuk
+			CurrentJob	:= 'Pallet In'; // Tentukan pekerjaan saat ini
+			PalletOut	:= FALSE; // Set status keluarnya palet menjadi FALSE
+			IF NOT Inp_SensorFront AND NOT Inp_SensorMiddle AND NOT Inp_SensorBack THEN // Jika tidak ada sensor terdeteksi
+            	Out_Req := TRUE; // Aktifkan sinyal permintaan
 			END_IF
-            Out_Motor_Fwd := TRUE;
-            IF Inp_SensorFront AND (Inp_SensorBack OR Inp_SensorMiddle)  THEN
-				DataTimer(IN := TRUE,PT := Set_Tmr_Check);
-                IF DataTimer.Q THEN
-					TWatchDog(IN := FALSE);
-                    DataTimer(IN:=FALSE);
-					Out_PalletJammed	:= FALSE;
-					Out_Motor_Fwd		:= FALSE;
-           			Out_Req				:= FALSE;
-                    Sequence			:= 300;
+            Out_Motor_Fwd := TRUE; // Nyalakan motor maju
+            IF Inp_SensorFront AND (Inp_SensorBack OR Inp_SensorMiddle)  THEN // Jika sensor depan terdeteksi dan salah satu sensor tengah atau belakang terdeteksi
+				DataTimer(IN := TRUE,PT := Set_Tmr_Check); // Mulai timer data dengan durasi yang ditentukan
+                IF DataTimer.Q THEN // Jika timer data berakhir
+					TWatchDog(IN := FALSE); // Matikan watchdog
+                    DataTimer(IN:=FALSE); // Matikan timer data
+					Out_PalletJammed	:= FALSE; // Matikan sinyal palet terjammed
+					Out_Motor_Fwd		:= FALSE; // Matikan motor maju
+           			Out_Req				:= FALSE; // Matikan sinyal permintaan
+                    Sequence			:= 300; // Pergi ke langkah 300
                 END_IF;    
 			ELSE
-				TWatchDog(IN := TRUE, PT := T#15S);
-				IF TWatchDog.Q THEN
-					Sequence	:= 9999;
+				TWatchDog(IN := TRUE, PT := T#15S); // Mulai watchdog dengan durasi 15 detik
+				IF TWatchDog.Q THEN // Jika watchdog berakhir
+					Sequence	:= 9999; // Pergi ke langkah 9999
 				END_IF;
             END_IF;
 			
-        300:
-			CurrentJob	:= 'Check Cycle';
-			IF o_MaxCycle <> 0 THEN
-				IF o_MaxCycle >= Data_Count_Place  THEN
-					Sequence := 400;
+        300: // Langkah 300: Periksa siklus
+			CurrentJob	:= 'Check Cycle'; // Tentukan pekerjaan saat ini
+			IF o_MaxCycle <> 0 THEN // Jika siklus maksimum tidak sama dengan 0
+				IF o_MaxCycle >= Data_Count_Place  THEN // Jika siklus maksimum lebih besar atau sama dengan jumlah data tempat
+					Sequence := 400; // Pergi ke langkah 400
 				ELSE
-					DataTimer(IN := TRUE,PT := T#2S);
-					IF DataTimer.Q THEN
-						DataTimer(IN:=FALSE);
-						Sequence := 500;
+					DataTimer(IN := TRUE,PT := T#2S); // Mulai timer data dengan durasi 2 detik
+					IF DataTimer.Q THEN // Jika timer data berakhir
+						DataTimer(IN:=FALSE); // Matikan timer data
+						Sequence := 500; // Pergi ke langkah 500
 					END_IF;
 				END_IF;
 			END_IF
 			
-        400:
-			CurrentJob		:= 'Place Ready';
-			AccFlushing		:= 0;
-            Out_Rob_Placing := TRUE;
-			PalletID			:= CreateID;
-            IF Inp_Done_Place THEN
-                    Data_Count_Real		:= Data_Count_Real + 1;
-                    Data_Count_Place	:= Data_Count_Place + 1;
-                    Sequence 			:= 450;
-            ELSIF (Cmd_Flushing OR Sts_Flushing) AND NOT bRobotMove THEN
-                Data_Incomplete			:= Data_Incomplete + 1;
-                Sts_Flushing			:= TRUE;
-                Sequence 				:= 500;				
+        400: // Langkah 400: Tempat siap
+			CurrentJob		:= 'Place Ready'; // Tentukan pekerjaan saat ini
+			AccFlushing		:= 0; // Set akumulator flushing menjadi 0
+            Out_Rob_Placing := TRUE; // Aktifkan sinyal robot meletakkan
+			PalletID			:= CreateID; // Tentukan ID palet
+            IF Inp_Done_Place THEN // Jika proses penempatan selesai
+                    Data_Count_Real		:= Data_Count_Real + 1; // Tambahkan jumlah data tempat yang sebenarnya
+                    Data_Count_Place	:= Data_Count_Place + 1; // Tambahkan jumlah data tempat
+                    Sequence 			:= 450; // Pergi ke langkah 450
+            ELSIF (Cmd_Flushing OR Sts_Flushing) AND NOT bRobotMove THEN // Jika perintah flushing atau status flushing aktif dan robot tidak bergerak
+                Data_Incomplete			:= Data_Incomplete + 1; // Tambahkan jumlah data yang tidak lengkap
+                Sts_Flushing			:= TRUE; // Set status flushing menjadi TRUE
+                Sequence 				:= 500; // Pergi ke langkah 500				
             END_IF;
 			
-        450:
-            Out_Rob_Placing := FALSE;
-            IF NOT Inp_Done_Place THEN
-                Sequence := 460;
+        450: // Langkah 450: Persiapan tempat selesai
+            Out_Rob_Placing := FALSE; // Matikan sinyal robot meletakkan
+            IF NOT Inp_Done_Place THEN // Jika proses penempatan belum selesai
+                Sequence := 460; // Pergi ke langkah 460
             END_IF;	
 			
-		460:
-			IF PalletID <> '' THEN
-				CounterBarcode	:= Data_Count_Real;
-				Sequence 		:= 300;
+		460: // Langkah 460: Penyelesaian penempatan
+			IF PalletID <> '' THEN // Jika ID palet tidak kosong
+				CounterBarcode	:= Data_Count_Real; // Tentukan counter barcode
+				Sequence 		:= 300; // Pergi ke langkah 300
 			END_IF
 			
-		500:
-			CurrentJob		:= 'Create Pallet ID';
-			DataTimer(IN := TRUE,PT := T#500MS);
-			IF DataTimer.Q THEN
-				DataTimer(IN := FALSE);
-				Sequence		:= 550;
+		500: // Langkah 500: Buat ID palet
+			CurrentJob		:= 'Create Pallet ID'; // Tentukan pekerjaan saat ini
+			DataTimer(IN := TRUE,PT := T#500MS); // Mulai timer data dengan durasi 500 ms
+			IF DataTimer.Q THEN // Jika timer data berakhir
+				DataTimer(IN := FALSE); // Matikan timer data
+				Sequence		:= 550; // Pergi ke langkah 550
 			END_IF
 						
-		550:
-			AccFlushing		:= 1;
-			Sequence		:= 600;
+		550: // Langkah 550: Selesai pembuatan ID palet
+			AccFlushing		:= 1; // Set akumulator flushing menjadi 1
+			Sequence		:= 600; // Pergi ke langkah 600
 			
-		600:
-			Out_Rob_Placing := FALSE;
-			Out_FB 			:= FALSE;
-			Out_Req 		:= FALSE;
-			CurrentJob		:= 'Waiting Acc Flushing';
-			IF (PalletID <> '' AND AccFlushing = 2) OR bBypassFGHS OR Data_Count_Real = 0 THEN
-                Sequence := 900;
+		600: // Langkah 600: Menunggu akumulator flushing
+			Out_Rob_Placing := FALSE; // Matikan sinyal robot meletakkan
+			Out_FB 			:= FALSE; // Matikan sinyal kembali
+			Out_Req 		:= FALSE; // Matikan sinyal permintaan
+			CurrentJob		:= 'Waiting Acc Flushing'; // Tentukan pekerjaan saat ini
+			IF (PalletID <> '' AND AccFlushing = 2) OR bBypassFGHS OR Data_Count_Real = 0 THEN // Jika ID palet tidak kosong dan akumulator flushing = 2 atau bypass FGHS aktif atau jumlah data tempat sebenarnya = 0
+                Sequence := 900; // Pergi ke langkah 900
             END_IF;
 		
-		900:	(* Positioning Pallet Out *)
-			CurrentJob		:= 'Positioning Pallet Out';
-			Out_Rob_Placing := FALSE;
-			Out_FB 			:= TRUE;
-			Out_Req 		:= TRUE;
-			Out_Motor_Rev	:= TRUE;
-            IF Inp_SensorBack THEN
-                DataTimer(IN := TRUE,PT := T#100MS);
-                IF DataTimer.Q THEN
-					TWatchDog(IN := FALSE);
-					DataTimer(IN:=FALSE);
-					Out_Motor_Rev	:= FALSE;
-                    Sequence		:= 1000;
+		900:	(* Positioning Pallet Out *) // Langkah 900: Posisi palet keluar
+			CurrentJob		:= 'Positioning Pallet Out'; // Tentukan pekerjaan saat ini
+			Out_Rob_Placing := FALSE; // Matikan sinyal robot meletakkan
+			Out_FB 			:= TRUE; // Aktifkan sinyal kembali
+			Out_Req 		:= TRUE; // Aktifkan sinyal permintaan
+			Out_Motor_Rev	:= TRUE; // Nyalakan motor mundur
+            IF Inp_SensorBack THEN // Jika sensor belakang terdeteksi
+                DataTimer(IN := TRUE,PT := T#100MS); // Mulai timer data dengan durasi 100 ms
+                IF DataTimer.Q THEN // Jika timer data berakhir
+					TWatchDog(IN := FALSE); // Matikan watchdog
+					DataTimer(IN:=FALSE); // Matikan timer data
+					Out_Motor_Rev	:= FALSE; // Matikan motor mundur
+                    Sequence		:= 1000; // Pergi ke langkah 1000
                 END_IF;
 			ELSE
-				TWatchDog(IN := TRUE, PT := T#15S);
-				IF TWatchDog.Q THEN
-					Sequence		:= 9999;
+				TWatchDog(IN := TRUE, PT := T#15S); // Mulai watchdog dengan durasi 15 detik
+				IF TWatchDog.Q THEN // Jika watchdog berakhir
+					Sequence		:= 9999; // Pergi ke langkah 9999
 				END_IF;
             END_IF;
 			            
-        1000:    (* Menunggu Request *)
-			Out_Rob_Placing := FALSE;
-			CurrentJob		:= 'Waiting Request';
-			Out_FB 			:= TRUE;
-			Out_Req 		:= TRUE;
-            IF Inp_Req AND Inp_FB AND (AccFlushing = 2 OR bBypassFGHS OR Data_Count_Real = 0) THEN
-                Sequence := 1100;
+        1000:    (* Menunggu Request *) // Langkah 1000: Menunggu permintaan
+			Out_Rob_Placing := FALSE; // Matikan sinyal robot meletakkan
+			CurrentJob		:= 'Waiting Request'; // Tentukan pekerjaan saat ini
+			Out_FB 			:= TRUE; // Aktifkan sinyal kembali
+			Out_Req 		:= TRUE; // Aktifkan sinyal permintaan
+            IF Inp_Req AND Inp_FB AND (AccFlushing = 2 OR bBypassFGHS OR Data_Count_Real = 0) THEN // Jika permintaan dan sinyal kembali aktif dan akumulator flushing = 2 atau bypass FGHS aktif atau jumlah data tempat sebenarnya = 0
+                Sequence := 1100; // Pergi ke langkah 1100
             END_IF;
 			
-        1100:    (* Pallet Keluar *)
-			CurrentJob		:= 'Pallet Out';
-            Out_Motor_Rev	:= TRUE;
-            IF (NOT Inp_SensorBack AND NOT Inp_SensorFront )AND NOT Inp_Req THEN
-                DataTimer(IN := TRUE,PT := T#500ms);
-                IF DataTimer.Q THEN
-					TWatchDog(IN := FALSE);
-					DataTimer(IN:=FALSE);
-					Out_FB			:= FALSE;
-					Out_Motor_Rev	:= FALSE;
-                    Sequence		:= 1200;
+        1100:    (* Pallet Keluar *) // Langkah 1100: Palet keluar
+			CurrentJob		:= 'Pallet Out'; // Tentukan pekerjaan saat ini
+            Out_Motor_Rev	:= TRUE; // Nyalakan motor mundur
+            IF (NOT Inp_SensorBack AND NOT Inp_SensorFront )AND NOT Inp_Req THEN // Jika tidak ada sensor depan dan belakang dan tidak ada permintaan
+                DataTimer(IN := TRUE,PT := T#500ms); // Mulai timer data dengan durasi 500 ms
+                IF DataTimer.Q THEN // Jika timer data berakhir
+					TWatchDog(IN := FALSE); // Matikan watchdog
+					DataTimer(IN:=FALSE); // Matikan timer data
+					Out_FB			:= FALSE; // Matikan sinyal kembali
+					Out_Motor_Rev	:= FALSE; // Matikan motor mundur
+                    Sequence		:= 1200; // Pergi ke langkah 1200
                 END_IF;
 			ELSE
-				TWatchDog(IN := TRUE, PT := T#15S);
-				IF TWatchDog.Q THEN
-					Sequence		:= 9999;
+				TWatchDog(IN := TRUE, PT := T#15S); // Mulai watchdog dengan durasi 15 detik
+				IF TWatchDog.Q THEN // Jika watchdog berakhir
+					Sequence		:= 9999; // Pergi ke langkah 9999
 				END_IF;
             END_IF;
 			
-        1200:
-			AccFlushing			:= 0;
-			IF NOT Sts_Flushing THEN
-			Data_Pallet_Total	:= Data_Pallet_Total + 1;
+        1200: // Langkah 1200: Selesai palet keluar
+			AccFlushing			:= 0; // Set akumulator flushing menjadi 0
+			IF NOT Sts_Flushing THEN // Jika status flushing tidak aktif
+			Data_Pallet_Total	:= Data_Pallet_Total + 1; // Tambahkan jumlah palet secara total
 			END_IF
-			Data_Count_Total	:= Data_Count_Total + Data_Count_Real;
-			Sequence			:= 1300;
+			Data_Count_Total	:= Data_Count_Total + Data_Count_Real; // Tambahkan jumlah data tempat secara total
+			Sequence			:= 1300; // Pergi ke langkah 1300
 		   
-        1300:
-			CounterBarcode		:= 0;
-            Data_Count_Real		:= 0;
-			Data_Count_Place	:= 1;
-			PalletID			:= '';
-			PalletOut			:= TRUE;
-            IF NOT Inp_Req THEN
-                Sequence		:= 100;
+        1300: // Langkah 1300: Persiapan ulang
+			CounterBarcode		:= 0; // Reset counter barcode
+            Data_Count_Real		:= 0; // Reset jumlah data tempat sebenarnya
+			Data_Count_Place	:= 1; // Reset jumlah data tempat
+			PalletID			:= ''; // Reset ID palet
+			PalletOut			:= TRUE; // Set status keluar palet menjadi TRUE
+            IF NOT Inp_Req THEN // Jika tidak ada permintaan
+                Sequence		:= 100; // Pergi ke langkah 100
             END_IF;
 			
-		9999:
-			TWatchDog(IN := FALSE);
-			DataTimer(IN:=FALSE);
-			Out_PalletJammed	:= TRUE;
-			Out_Motor_Rev 		:= FALSE;
-			Out_Motor_Fwd 		:= FALSE;
+		9999: // Langkah 9999: Penanganan timeout
+			TWatchDog(IN := FALSE); // Matikan watchdog
+			DataTimer(IN:=FALSE); // Matikan timer data
+			Out_PalletJammed	:= TRUE; // Aktifkan sinyal palet terjammed
+			Out_Motor_Rev 		:= FALSE; // Matikan motor mundur
+			Out_Motor_Fwd 		:= FALSE; // Matikan motor maju
 			
         END_CASE;
 ELSE
-  	DataTimer(IN:=FALSE);
-	TWatchDog(IN := FALSE);
-	Out_Motor_Rev 		:= FALSE;
-	Out_Motor_Fwd 		:= FALSE;
-    Out_Rob_Placing 	:= FALSE;
-    Out_Req 			:= FALSE;
-	Out_FB 				:= FALSE;
-	CurrentJob			:= 'Machine Stopped';
-	IF Inp_GlobalReset THEN
-        Sequence 		:= 0;
-        Out_FB 			:= FALSE;
-        Sts_Flushing 	:= FALSE;
+  	DataTimer(IN:=FALSE); // Matikan timer data
+	TWatchDog(IN := FALSE); // Matikan watchdog
+	Out_Motor_Rev 		:= FALSE; // Matikan motor mundur
+	Out_Motor_Fwd 		:= FALSE; // Matikan motor maju
+    Out_Rob_Placing 	:= FALSE; // Matikan sinyal robot meletakkan
+    Out_Req 			:= FALSE; // Matikan sinyal permintaan
+	Out_FB 				:= FALSE; // Matikan sinyal kembali
+	CurrentJob			:= 'Machine Stopped'; // Tentukan pekerjaan saat ini
+	IF Inp_GlobalReset THEN // Jika reset global aktif
+        Sequence 		:= 0; // Set urutan langkah ke 0
+        Out_FB 			:= FALSE; // Matikan sinyal kembali
+        Sts_Flushing 	:= FALSE; // Matikan status flushing
     END_IF;
 END_IF;
 
 //Sequence Index
-SeqIndex	:= Sequence;
+SeqIndex	:= Sequence; // Set indeks urutan langkah
 
-IF Data_Count_Place = 0 THEN
-    Data_Count_Place  := 1;
+IF Data_Count_Place = 0 THEN // Jika jumlah data tempat = 0
+    Data_Count_Place  := 1; // Set jumlah data tempat menjadi 1
 END_IF;
 
-Data_Count_Place := Data_Count_Real+1;
+Data_Count_Place := Data_Count_Real+1; // Tentukan jumlah data tempat dengan menambahkan jumlah data tempat sebenarnya dengan 1
 
 // Calculate Max Cycle
-o_MaxCycle :=i_Data*i_MaxStacking;
+o_MaxCycle :=i_Data*i_MaxStacking; // Hitung siklus maksimum
 
-IF Inp_ResetData THEN
-    Data_Count_Total	:= 0;
-    Data_Pallet_Total 	:= 0;
-    Data_Incomplete 	:= 0;
+IF Inp_ResetData THEN // Jika reset data aktif
+    Data_Count_Total	:= 0; // Reset jumlah data tempat secara total
+    Data_Pallet_Total 	:= 0; // Reset jumlah palet secara total
+    Data_Incomplete 	:= 0; // Reset jumlah data yang tidak lengkap
 END_IF;
 ]]></ST>
     </Implementation>
-    <LineIds Name="FB_Placing_v2">
-      <LineId Id="2415" Count="0" />
-      <LineId Id="2417" Count="0" />
-      <LineId Id="2649" Count="0" />
-      <LineId Id="2418" Count="0" />
-      <LineId Id="2416" Count="0" />
-      <LineId Id="577" Count="5" />
-      <LineId Id="2531" Count="0" />
-      <LineId Id="584" Count="0" />
-      <LineId Id="2535" Count="3" />
-      <LineId Id="2541" Count="0" />
-      <LineId Id="2540" Count="0" />
-      <LineId Id="2539" Count="0" />
-      <LineId Id="2534" Count="0" />
-      <LineId Id="2533" Count="0" />
-      <LineId Id="1886" Count="0" />
-      <LineId Id="2880" Count="1" />
-      <LineId Id="586" Count="9" />
-      <LineId Id="603" Count="1" />
-      <LineId Id="1887" Count="0" />
-      <LineId Id="1701" Count="0" />
-      <LineId Id="605" Count="2" />
-      <LineId Id="2032" Count="0" />
-      <LineId Id="608" Count="0" />
-      <LineId Id="621" Count="2" />
-      <LineId Id="1888" Count="0" />
-      <LineId Id="2825" Count="0" />
-      <LineId Id="2302" Count="0" />
-      <LineId Id="624" Count="0" />
-      <LineId Id="2303" Count="0" />
-      <LineId Id="625" Count="6" />
-      <LineId Id="1702" Count="1" />
-      <LineId Id="632" Count="5" />
-      <LineId Id="639" Count="1" />
-      <LineId Id="652" Count="1" />
-      <LineId Id="1889" Count="0" />
-      <LineId Id="1939" Count="0" />
-      <LineId Id="654" Count="8" />
-      <LineId Id="1940" Count="0" />
-      <LineId Id="663" Count="1" />
-      <LineId Id="1890" Count="0" />
-      <LineId Id="2126" Count="0" />
-      <LineId Id="666" Count="0" />
-      <LineId Id="2879" Count="0" />
-      <LineId Id="667" Count="0" />
-      <LineId Id="674" Count="2" />
-      <LineId Id="678" Count="6" />
-      <LineId Id="2477" Count="0" />
-      <LineId Id="686" Count="2" />
-      <LineId Id="2593" Count="3" />
-      <LineId Id="2598" Count="0" />
-      <LineId Id="2597" Count="0" />
-      <LineId Id="2127" Count="1" />
-      <LineId Id="2251" Count="0" />
-      <LineId Id="2131" Count="0" />
-      <LineId Id="2243" Count="0" />
-      <LineId Id="2248" Count="0" />
-      <LineId Id="2246" Count="0" />
-      <LineId Id="2245" Count="0" />
-      <LineId Id="2129" Count="0" />
-      <LineId Id="2240" Count="2" />
-      <LineId Id="2181" Count="2" />
-      <LineId Id="2188" Count="1" />
-      <LineId Id="2184" Count="0" />
-      <LineId Id="2186" Count="1" />
-      <LineId Id="2185" Count="0" />
-      <LineId Id="2079" Count="0" />
-      <LineId Id="2750" Count="0" />
-      <LineId Id="2753" Count="0" />
-      <LineId Id="2772" Count="0" />
-      <LineId Id="2754" Count="0" />
-      <LineId Id="2751" Count="0" />
-      <LineId Id="2757" Count="5" />
-      <LineId Id="2764" Count="7" />
-      <LineId Id="2756" Count="0" />
-      <LineId Id="2755" Count="0" />
-      <LineId Id="698" Count="0" />
-      <LineId Id="1986" Count="0" />
-      <LineId Id="1891" Count="0" />
-      <LineId Id="1751" Count="1" />
-      <LineId Id="699" Count="4" />
-      <LineId Id="1892" Count="0" />
-      <LineId Id="705" Count="6" />
-      <LineId Id="1706" Count="0" />
-      <LineId Id="712" Count="5" />
-      <LineId Id="719" Count="1" />
-      <LineId Id="732" Count="1" />
-      <LineId Id="2133" Count="0" />
-      <LineId Id="2354" Count="0" />
-      <LineId Id="734" Count="0" />
-      <LineId Id="2355" Count="0" />
-      <LineId Id="735" Count="3" />
-      <LineId Id="2826" Count="0" />
-      <LineId Id="739" Count="1" />
-      <LineId Id="2480" Count="0" />
-      <LineId Id="2823" Count="0" />
-      <LineId Id="741" Count="2" />
-      <LineId Id="2407" Count="2" />
-      <LineId Id="2420" Count="0" />
-      <LineId Id="2410" Count="0" />
-      <LineId Id="2413" Count="0" />
-      <LineId Id="2412" Count="0" />
-      <LineId Id="2411" Count="0" />
-      <LineId Id="744" Count="3" />
-      <LineId Id="751" Count="0" />
-      <LineId Id="1707" Count="0" />
-      <LineId Id="752" Count="1" />
-      <LineId Id="1796" Count="0" />
-      <LineId Id="1893" Count="0" />
-      <LineId Id="754" Count="3" />
-      <LineId Id="760" Count="1" />
-      <LineId Id="2424" Count="0" />
-      <LineId Id="2423" Count="0" />
-      <LineId Id="2425" Count="0" />
-      <LineId Id="762" Count="3" />
-      <LineId Id="1841" Count="0" />
-      <LineId Id="1840" Count="0" />
-      <LineId Id="766" Count="7" />
-      <LineId Id="777" Count="0" />
-      <LineId Id="9" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>

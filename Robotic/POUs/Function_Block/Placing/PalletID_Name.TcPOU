@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
   <POU Name="PalletID_Name" Id="{10a30c02-f6db-4cc0-8861-05e0a84d5e94}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK PalletID_Name
 VAR_INPUT
@@ -26,25 +26,22 @@ VAR PERSISTENT
 	SeqIndex: INT;
 END_VAR]]></Declaration>
     <Implementation>
-      <ST><![CDATA[PalletID:=PalletData;
+      <ST><![CDATA[PalletID:=PalletData; // Assign nilai dari variabel PalletData ke variabel PalletID
 
-CASE SeqIndex OF
-	0:
-		IF (CounterBox=1) THEN
-			SeqIndex:=10;
-		END_IF
-	10:
-		PalletData:=CONCAT(PalletNumber,CONCAT(sHour,CONCAT(sMinutes,CONCAT(sSeconds,CONCAT(sDate,CONCAT(sMonth,sYear))))));
-		SeqIndex:=20;
-	20:
-		IF NOT (CounterBox=1) THEN
-			SeqIndex:=0;
-		END_IF
-END_CASE]]></ST>
+CASE SeqIndex OF // Memulai blok pemilihan kasus berdasarkan nilai SeqIndex
+	0: // Kasus saat SeqIndex = 0
+		IF (CounterBox=1) THEN // Jika nilai CounterBox adalah 1
+			SeqIndex:=10; // Ganti nilai SeqIndex menjadi 10
+		END_IF // Selesai kondisi IF
+	10: // Kasus saat SeqIndex = 10
+		PalletData:=CONCAT(PalletNumber,CONCAT(sHour,CONCAT(sMinutes,CONCAT(sSeconds,CONCAT(sDate,CONCAT(sMonth,sYear)))))); // Gabungkan nilai-nilai string yang diberikan dalam variabel PalletData
+		SeqIndex:=20; // Ganti nilai SeqIndex menjadi 20
+	20: // Kasus saat SeqIndex = 20
+		IF NOT (CounterBox=1) THEN // Jika nilai CounterBox bukan 1
+			SeqIndex:=0; // Ganti nilai SeqIndex menjadi 0
+		END_IF // Selesai kondisi IF
+END_CASE // Selesai blok pemilihan kasus
+]]></ST>
     </Implementation>
-    <LineIds Name="PalletID_Name">
-      <LineId Id="3" Count="13" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>

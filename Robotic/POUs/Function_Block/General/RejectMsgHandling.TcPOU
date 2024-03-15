@@ -26,30 +26,7 @@ VAR
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[// Inisialisasi program
-FUNCTION_BLOCK RejectMsgHandling
-VAR_INPUT
-	bReject			: BOOL; // Sinyal untuk menunjukkan jika ada penolakan
-	bRejectID		: INT; // ID penolakan
-	RejectType		: STRING; // Jenis penolakan
-	Counter			: UINT; // Jumlah penolakan
-	RejectMsg		: STRING; // Pesan penolakan
-	Timestamp		: STRING; // Timestamp penolakan
-	bResetBuffer	: BOOL; // Sinyal untuk mereset buffer
-END_VAR
-VAR_OUTPUT
-END_VAR
-VAR_IN_OUT
-	dtRejectHistory	: ARRAY [1..20] OF stRejectData; // Array untuk menyimpan riwayat penolakan
-END_VAR
-VAR
-	i				: UINT; // Variabel loop
-	j				: UINT; // Variabel loop
-	LastIndex		: UINT; // Indeks terakhir dalam array riwayat penolakan
-	EmptyArray		: ARRAY [1..20] OF stRejectData; // Array kosong untuk reset
-	SeqIndex		: UINT; // Indeks urutan langkah dalam program
-END_VAR
-
+      <ST><![CDATA[
 // Logika program
 CASE SeqIndex OF
 	0:
