@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
   <POU Name="MotorManagement" Id="{98de7ba3-21d2-47ac-a773-f5065995e3fd}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK MotorManagement
 VAR_IN_OUT
@@ -2287,63 +2287,75 @@ END_VAR
     </Implementation>
     <Action Name="CheckErrorID" Id="{5f9c736a-4588-46b8-895d-2ff440181742}">
       <Implementation>
-        <ST><![CDATA[IF Error THEN
+        <ST><![CDATA[// Mengatur ErrorID berdasarkan kondisi Error
+IF Error THEN
+	// Jika ada Error
 	IF StatusError THEN
+		// Jika StatusError aktif, mengatur ErrorID menjadi 1
 		ErrorID:=1;
 	ELSIF PowerOff THEN
-			ErrorID:=2;
-		ELSIF LocalSwitch_Off THEN
-				ErrorID:=3;
-			ELSIF MotorCannotRunning THEN
-					ErrorID:=10;
-				ELSE
-					ErrorID:=90;
-			END_IF
+		// Jika PowerOff aktif, mengatur ErrorID menjadi 2
+		ErrorID:=2;
+	ELSIF LocalSwitch_Off THEN
+		// Jika LocalSwitch_Off aktif, mengatur ErrorID menjadi 3
+		ErrorID:=3;
+	ELSIF MotorCannotRunning THEN
+		// Jika MotorCannotRunning aktif, mengatur ErrorID menjadi 10
+		ErrorID:=10;
+	ELSE
+		// Jika tidak ada kondisi Error yang memenuhi, mengatur ErrorID menjadi 90
+		ErrorID:=90;
+	END_IF
 ELSE
+	// Jika tidak ada Error, mengatur ErrorID menjadi 0
 	ErrorID:=0;
 END_IF
 
-Motor.ErrorID:=ErrorID;]]></ST>
+// Mengassign ErrorID ke Motor.ErrorID
+Motor.ErrorID:=ErrorID;
+]]></ST>
       </Implementation>
     </Action>
     <Action Name="RunningHours" Id="{fae03b09-f2db-4f7e-9e84-4d4fd28f0412}">
       <Implementation>
-        <ST><![CDATA[CASE SeqCal OF
+        <ST><![CDATA[// Memilih langkah berdasarkan SeqCal
+CASE SeqCal OF
 	0:
-		Motor.RunningTime	:= tRunningHours;
+		// Langkah 0: Mengatur Motor.RunningTime dengan tRunningHours
+		Motor.RunningTime := tRunningHours;
+		// Jika Status_MotorRunning aktif, lanjut ke langkah 1
 		IF Motor.Status_MotorRunning THEN
-			SeqCal	:= 1;
+			SeqCal := 1;
 		END_IF
 		
 	1:
-		RunningTimer(IN:=TRUE,PT:=LTIME#1H);
-		Motor.RunningTime	:= tRunningHours + RunningTimer.ET;
+		// Langkah 1: Menghitung waktu berjalan menggunakan RunningTimer
+		RunningTimer(IN:=TRUE, PT:=LTIME#1H);
+		Motor.RunningTime := tRunningHours + RunningTimer.ET;
+		// Jika RunningTimer telah mencapai waktu yang ditetapkan atau Status_MotorRunning tidak aktif, lanjut ke langkah 2
 		IF RunningTimer.Q OR NOT Motor.Status_MotorRunning THEN
 			RunningTimer(IN:=FALSE);
-			SeqCal	:= 2;
+			SeqCal := 2;
 		END_IF
 		
 	2:
-		tRunningHours	:= Motor.RunningTime;
-		SeqCal			:= 0;
+		// Langkah 2: Memperbarui tRunningHours dengan nilai terbaru dari Motor.RunningTime
+		tRunningHours := Motor.RunningTime;
+		// Kembali ke langkah awal
+		SeqCal := 0;
 END_CASE
 
-Motor.RunningHours	:= LTIME_TO_LREAL(Motor.RunningTime) / LTIME_TO_LREAL(LTIME#1H);]]></ST>
+// Mengkonversi Motor.RunningTime ke jam dan menyimpannya di Motor.RunningHours
+Motor.RunningHours := LTIME_TO_LREAL(Motor.RunningTime) / LTIME_TO_LREAL(LTIME#1H);
+]]></ST>
       </Implementation>
     </Action>
     <LineIds Name="MotorManagement.CheckErrorID">
-      <LineId Id="2" Count="15" />
+      <LineId Id="18" Count="25" />
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="MotorManagement.RunningHours">
-      <LineId Id="1" Count="1" />
-      <LineId Id="4" Count="3" />
-      <LineId Id="9" Count="5" />
-      <LineId Id="16" Count="0" />
-      <LineId Id="15" Count="0" />
-      <LineId Id="17" Count="3" />
-      <LineId Id="3" Count="0" />
-      <LineId Id="22" Count="0" />
+      <LineId Id="23" Count="28" />
       <LineId Id="21" Count="0" />
     </LineIds>
   </POU>

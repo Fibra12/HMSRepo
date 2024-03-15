@@ -25,144 +25,295 @@ VAR PERSISTENT
 	m					: INT;
 	n					: INT;
 END_VAR
+
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[//Get Time & Parsing
-dt_OEE.DateCurrent := DT_TO_DATE(CurrentTime);
-dt_OEE.TimeCurrent := DT_TO_TOD(CurrentTime);
+      <ST><![CDATA[```plaintext
+// Mengambil tanggal dan waktu saat ini
+dt_OEE.DateCurrent := DT_TO_DATE(CurrentTime); // Mengubah waktu saat ini menjadi tanggal
+dt_OEE.TimeCurrent := DT_TO_TOD(CurrentTime); // Mengubah waktu saat ini menjadi waktu hari ini
 
-dt_OEE.TimeShift[1].StartShift	:= TOD#06:00:00;
-dt_OEE.TimeShift[2].StartShift	:= TOD#14:00:00;
-dt_OEE.TimeShift[3].StartShift	:= TOD#22:00:00;
+// Mengatur waktu awal dan akhir dari setiap shift
+dt_OEE.TimeShift[1].StartShift := TOD#06:00:00; // Shift 1 dimulai pada pukul 06:00:00
+dt_OEE.TimeShift[2].StartShift := TOD#14:00:00; // Shift 2 dimulai pada pukul 14:00:00
+dt_OEE.TimeShift[3].StartShift := TOD#22:00:00; // Shift 3 dimulai pada pukul 22:00:00
 
-dt_OEE.TimeShift[1].EndShift	:= TOD#14:00:00;
-dt_OEE.TimeShift[2].EndShift	:= TOD#22:00:00;
-dt_OEE.TimeShift[3].EndShift	:= TOD#06:00:00;
+dt_OEE.TimeShift[1].EndShift := TOD#14:00:00; // Shift 1 berakhir pada pukul 14:00:00
+dt_OEE.TimeShift[2].EndShift := TOD#22:00:00; // Shift 2 berakhir pada pukul 22:00:00
+dt_OEE.TimeShift[3].EndShift := TOD#06:00:00; // Shift 3 berakhir pada pukul 06:00:00
 
-(**Get Data**)
-IF (( dt_OEE.TimeCurrent >  dt_OEE.TimeShift[1].EndShift) AND ( dt_OEE.TimeCurrent < dt_OEE.TimeShift[1].EndShift + T#3S)) 
-    OR (( dt_OEE.TimeCurrent >  dt_OEE.TimeShift[2].EndShift) AND ( dt_OEE.TimeCurrent < dt_OEE.TimeShift[2].EndShift + T#3S)) 
-    OR (( dt_OEE.TimeCurrent >  dt_OEE.TimeShift[3].EndShift) AND ( dt_OEE.TimeCurrent < dt_OEE.TimeShift[3].EndShift + T#3S))  THEN
-    IF NOT  bGetData THEN
+// Memeriksa apakah saat ini merupakan saat untuk mengambil data
+IF ((dt_OEE.TimeCurrent > dt_OEE.TimeShift[1].EndShift) AND (dt_OEE.TimeCurrent < dt_OEE.TimeShift[1].EndShift + T#3S)) OR
+   ((dt_OEE.TimeCurrent > dt_OEE.TimeShift[2].EndShift) AND (dt_OEE.TimeCurrent < dt_OEE.TimeShift[2].EndShift + T#3S)) OR
+   ((dt_OEE.TimeCurrent > dt_OEE.TimeShift[3].EndShift) AND (dt_OEE.TimeCurrent < dt_OEE.TimeShift[3].EndShift + T#3S)) THEN
+    // Jika waktu saat ini berada di antara akhir shift 1, 2, atau 3, dan belum mengambil data sebelumnya, maka set bGetData menjadi TRUE
+    IF NOT bGetData THEN
          bGetData := TRUE;
-         StartedDate	:=  dt_OEE.DateCurrent;
-         StartedShift	:=  dt_OEE.CurrentShift;
+         StartedDate := dt_OEE.DateCurrent; // Menyimpan tanggal saat dimulainya pengambilan data
+         StartedShift := dt_OEE.CurrentShift; // Menyimpan shift saat dimulainya pengambilan data
     END_IF;
 ELSE
-     bGetData := FALSE;
+     bGetData := FALSE; // Jika tidak memenuhi kondisi di atas, set bGetData menjadi FALSE
 END_IF;
 
-(**Shift Checking**)
-IF NOT  SaveData THEN
-    IF ( dt_OEE.TimeCurrent >  dt_OEE.TimeShift[1].StartShift) AND ( dt_OEE.TimeCurrent <  dt_OEE.TimeShift[1].EndShift) THEN
-         dt_OEE.CurrentShift := 1;
-    ELSIF ( dt_OEE.TimeCurrent >  dt_OEE.TimeShift[2].StartShift) AND ( dt_OEE.TimeCurrent <  dt_OEE.TimeShift[2].EndShift) THEN
-         dt_OEE.CurrentShift := 2;
-    ELSIF ( dt_OEE.TimeCurrent >  dt_OEE.TimeShift[3].StartShift) OR ( dt_OEE.TimeCurrent <  dt_OEE.TimeShift[3].EndShift) THEN
-         dt_OEE.CurrentShift := 3;
+// Memeriksa dan menetapkan shift saat ini
+IF NOT SaveData THEN
+    IF (dt_OEE.TimeCurrent > dt_OEE.TimeShift[1].StartShift) AND (dt_OEE.TimeCurrent < dt_OEE.TimeShift[1].EndShift) THEN
+         dt_OEE.CurrentShift := 1; // Jika waktu saat ini berada di antara shift 1, tetapkan shift saat ini menjadi 1
+    ELSIF (dt_OEE.TimeCurrent > dt_OEE.TimeShift[2].StartShift) AND (dt_OEE.TimeCurrent < dt_OEE.TimeShift[2].EndShift) THEN
+         dt_OEE.CurrentShift := 2; // Jika waktu saat ini berada di antara shift 2, tetapkan shift saat ini menjadi 2
+    ELSIF (dt_OEE.TimeCurrent > dt_OEE.TimeShift[3].StartShift) OR (dt_OEE.TimeCurrent < dt_OEE.TimeShift[3].EndShift) THEN
+         dt_OEE.CurrentShift := 3; // Jika waktu saat ini berada di antara shift 3, tetapkan shift saat ini menjadi 3
     END_IF;
 END_IF;
 
-(** Function to Clear Data Record **)
-(*IF dt_OEE.Reset THEN	
-	    FOR m := 1 TO 6 BY 1 DO
-	        FOR n := 0 TO 2 BY 1 DO
-	            dt_OEE.CounterRecord[m, n].Data1 		:= 0;
-	            dt_OEE.CounterRecord[m, n].Data2		:= 0;
-	            dt_OEE.CounterRecord[m, n].Data3 		:= 0;
-	            dt_OEE.CounterRecord[m, n].Data4 		:= 0;
-				dt_OEE.CounterRecord[m, n].ProductCode 	:='';
-	        END_FOR;
-	    END_FOR;
-END_IF;*)
-
-(** Function to copy daily information to history AND Reset Timer**)
-IF (( dt_OEE.TimeCurrent >  dt_OEE.TimeShift[3].EndShift) AND ( dt_OEE.TimeCurrent < ( dt_OEE.TimeShift[3].EndShift+T#3S))) AND NOT Sts_DailyShiftEnd THEN
+// Fungsi untuk menghapus rekaman data dan mengatur ulang timer
+IF ((dt_OEE.TimeCurrent > dt_OEE.TimeShift[3].EndShift) AND (dt_OEE.TimeCurrent < (dt_OEE.TimeShift[3].EndShift + T#3S))) AND NOT Sts_DailyShiftEnd THEN
     SaveData := TRUE;
-	    FOR j := 5 TO 0 BY -1 DO
-	        FOR k := 0 TO 2 BY 1 DO
-	            dt_OEE.CounterRecord[j + 1, k].Data1 		:= dt_OEE.CounterRecord[j, k].Data1;
-	            dt_OEE.CounterRecord[j + 1, k].Data2 		:= dt_OEE.CounterRecord[j, k].Data2;
-	            dt_OEE.CounterRecord[j + 1, k].Data3 		:= dt_OEE.CounterRecord[j, k].Data3;
-	            dt_OEE.CounterRecord[j + 1, k].Data4 		:= dt_OEE.CounterRecord[j, k].Data4;
-				dt_OEE.CounterRecord[j + 1, k].ProductCode 	:= dt_OEE.CounterRecord[j, k].ProductCode;
-	            dt_OEE.DateRecord[j + 1] 					:= dt_OEE.DateRecord[j];
-	        END_FOR;
-	    END_FOR;
-		
-	    FOR l := 0 TO 2 BY 1 DO
-	        dt_OEE.CounterRecord[0, l].Data1 		:= 0;
-	        dt_OEE.CounterRecord[0, l].Data2 		:= 0;
-	        dt_OEE.CounterRecord[0, l].Data3 		:= 0;
-	        dt_OEE.CounterRecord[0, l].Data4 		:= 0;
-			dt_OEE.CounterRecord[0, l].ProductCode 		:='';
-	        Sts_DailyShiftEnd := TRUE;
-	    END_FOR;
+    // Pindahkan rekaman data satu per satu ke data sebelumnya
+    FOR j := 5 TO 0 BY -1 DO
+        FOR k := 0 TO 2 BY 1 DO
+            dt_OEE.CounterRecord[j + 1, k] := dt_OEE.CounterRecord[j, k];
+            dt_OEE.DateRecord[j + 1] := dt_OEE.DateRecord[j];
+        END_FOR;
+    END_FOR;
+    
+    // Kosongkan data untuk shift hari ini
+    FOR l := 0 TO 2 BY 1 DO
+        dt_OEE.CounterRecord[0, l] := 0;
+        Sts_DailyShiftEnd := TRUE;
+    END_FOR;
 ELSE
     SaveData := FALSE;
 END_IF;
 
 IF dt_OEE.CurrentShift <> 1 THEN
-    Sts_DailyShiftEnd := FALSE;
+    Sts_DailyShiftEnd := FALSE; // Jika tidak pada shift 1, set Sts_DailyShiftEnd menjadi FALSE
 END_IF;
 
+// Memilih data produksi untuk shift saat ini
 CASE t_OEE.CurrentShift OF
 	1:
 		dt_OEE.DateRecord[0] := StartedDate;
-		dt_OEE.CounterRecord[ 0,0].ProductCode := Dt_Production.ProductCode;
-		dt_OEE.CounterRecord[ 0,0].Data1 := Dt_Production.Data1;
-		dt_OEE.CounterRecord[ 0,0].Data2 := Dt_Production.Data2;
-		dt_OEE.CounterRecord[ 0,0].Data3 := Dt_Production.Data3;
+		dt_OEE.CounterRecord[0, 0] := Dt_Production;
 	2:
-		dt_OEE.CounterRecord[ 0,1].ProductCode := Dt_Production.ProductCode;
-		dt_OEE.CounterRecord[ 0,1].Data1 := Dt_Production.Data1;
-		dt_OEE.CounterRecord[ 0,1].Data2 := Dt_Production.Data2;
-		dt_OEE.CounterRecord[ 0,1].Data3 := Dt_Production.Data3;
+		dt_OEE.CounterRecord[0, 1] := Dt_Production;
 	3:
-		dt_OEE.CounterRecord[ 0,2].ProductCode := Dt_Production.ProductCode;
-		dt_OEE.CounterRecord[ 0,2].Data1 := Dt_Production.Data1;
-		dt_OEE.CounterRecord[ 0,2].Data2 := Dt_Production.Data2;
-		dt_OEE.CounterRecord[ 0,2].Data3 := Dt_Production.Data3;
+		dt_OEE.CounterRecord[0, 2] := Dt_Production;
 END_CASE;
 
-(**Writting Data to Current Shift**)
-//======================== Line ========================//
+// Menyalin data dari shift sebelumnya ke shift saat ini
+dt_OEE.HMI_Counter[0] := dt_OEE.CounterRecord[Dt_OEE.HMI_NumberPrev, 0];
+dt_OEE.HMI_Counter[1] := dt_OEE.CounterRecord[Dt_OEE.HMI_NumberPrev, 1];
+dt_OEE.HMI_Counter[2] := dt_OEE.CounterRecord[Dt_OEE.HMI_NumberPrev, 2];
 
-dt_OEE.HMI_Counter[0] := dt_OEE.CounterRecord[Dt_OEE.HMI_NumberPrev,0];
-dt_OEE.HMI_Counter[1] := dt_OEE.CounterRecord[Dt_OEE.HMI_NumberPrev,1];
-dt_OEE.HMI_Counter[2] := dt_OEE.CounterRecord[Dt_OEE.HMI_NumberPrev,2];
+// Menghitung total counter
+Dt_OEE.TotalCounter.Data1 := dt_OEE.HMI_Counter[0].Data1 + dt_OEE.HMI_Counter[1].Data1 + dt_OEE.HMI_Counter[2].Data1;
+Dt_OEE.TotalCounter.Data2 := dt_OEE.HMI_Counter[0].Data2 + dt_OEE.HMI_Counter[1].Data2 + dt_OEE.HMI_Counter[2].Data2;
+Dt_OEE.TotalCounter.Data3 := dt_OEE.HMI_Counter[0].Data3 + dt_OEE.HMI_Counter[1].Data3 + dt_OEE.HMI_Counter[2].Data3;
+Dt_OEE.TotalCounter.Data4 := dt_OEE.HMI_Counter[0].Data4 + dt_OEE.HMI_Counter[1].Data4 + dt_OEE.HMI_Counter[2].Data4;
 
-//Total Counter
-Dt_OEE.TotalCounter.Data1	:= dt_OEE.HMI_Counter[0].Data1 + dt_OEE.HMI_Counter[1].Data1 + dt_OEE.HMI_Counter[2].Data1;
-Dt_OEE.TotalCounter.Data2	:= dt_OEE.HMI_Counter[0].Data2 + dt_OEE.HMI_Counter[1].Data2 + dt_OEE.HMI_Counter[2].Data2;
-Dt_OEE.TotalCounter.Data3	:= dt_OEE.HMI_Counter[0].Data3 + dt_OEE.HMI_Counter[1].Data3 + dt_OEE.HMI_Counter[2].Data3;
-Dt_OEE.TotalCounter.Data4	:= dt_OEE.HMI_Counter[0].Data4 + dt_OEE.HMI_Counter[1].Data4 + dt_OEE.HMI_Counter[2].Data4;
-
- 
+// Memastikan nilai HMI_NumberPrev dalam rentang yang valid
 IF dt_OEE.HMI_NumberPrev < 0 THEN
+
+
 	dt_OEE.HMI_NumberPrev := 6;
-ELSIF dt_OEE.HMI_NumberPrev > 6  THEN
+ELSIF dt_OEE.HMI_NumberPrev > 6 THEN
 	dt_OEE.HMI_NumberPrev := 0;
-END_IF;]]></ST>
+END_IF;
+
+```plaintext
+// Mengambil tanggal dan waktu saat ini
+dt_OEE.DateCurrent := DT_TO_DATE(CurrentTime); // Mengubah waktu saat ini menjadi tanggal
+dt_OEE.TimeCurrent := DT_TO_TOD(CurrentTime); // Mengubah waktu saat ini menjadi waktu hari ini
+
+// Mengatur waktu awal dan akhir dari setiap shift
+dt_OEE.TimeShift[1].StartShift := TOD#06:00:00; // Shift 1 dimulai pada pukul 06:00:00
+dt_OEE.TimeShift[2].StartShift := TOD#14:00:00; // Shift 2 dimulai pada pukul 14:00:00
+dt_OEE.TimeShift[3].StartShift := TOD#22:00:00; // Shift 3 dimulai pada pukul 22:00:00
+
+dt_OEE.TimeShift[1].EndShift := TOD#14:00:00; // Shift 1 berakhir pada pukul 14:00:00
+dt_OEE.TimeShift[2].EndShift := TOD#22:00:00; // Shift 2 berakhir pada pukul 22:00:00
+dt_OEE.TimeShift[3].EndShift := TOD#06:00:00; // Shift 3 berakhir pada pukul 06:00:00
+
+// Memeriksa apakah saat ini merupakan saat untuk mengambil data
+IF ((dt_OEE.TimeCurrent > dt_OEE.TimeShift[1].EndShift) AND (dt_OEE.TimeCurrent < dt_OEE.TimeShift[1].EndShift + T#3S)) OR
+   ((dt_OEE.TimeCurrent > dt_OEE.TimeShift[2].EndShift) AND (dt_OEE.TimeCurrent < dt_OEE.TimeShift[2].EndShift + T#3S)) OR
+   ((dt_OEE.TimeCurrent > dt_OEE.TimeShift[3].EndShift) AND (dt_OEE.TimeCurrent < dt_OEE.TimeShift[3].EndShift + T#3S)) THEN
+    // Jika waktu saat ini berada di antara akhir shift 1, 2, atau 3, dan belum mengambil data sebelumnya, maka set bGetData menjadi TRUE
+    IF NOT bGetData THEN
+         bGetData := TRUE;
+         StartedDate := dt_OEE.DateCurrent; // Menyimpan tanggal saat dimulainya pengambilan data
+         StartedShift := dt_OEE.CurrentShift; // Menyimpan shift saat dimulainya pengambilan data
+    END_IF;
+ELSE
+     bGetData := FALSE; // Jika tidak memenuhi kondisi di atas, set bGetData menjadi FALSE
+END_IF;
+
+// Memeriksa dan menetapkan shift saat ini
+IF NOT SaveData THEN
+    IF (dt_OEE.TimeCurrent > dt_OEE.TimeShift[1].StartShift) AND (dt_OEE.TimeCurrent < dt_OEE.TimeShift[1].EndShift) THEN
+         dt_OEE.CurrentShift := 1; // Jika waktu saat ini berada di antara shift 1, tetapkan shift saat ini menjadi 1
+    ELSIF (dt_OEE.TimeCurrent > dt_OEE.TimeShift[2].StartShift) AND (dt_OEE.TimeCurrent < dt_OEE.TimeShift[2].EndShift) THEN
+         dt_OEE.CurrentShift := 2; // Jika waktu saat ini berada di antara shift 2, tetapkan shift saat ini menjadi 2
+    ELSIF (dt_OEE.TimeCurrent > dt_OEE.TimeShift[3].StartShift) OR (dt_OEE.TimeCurrent < dt_OEE.TimeShift[3].EndShift) THEN
+         dt_OEE.CurrentShift := 3; // Jika waktu saat ini berada di antara shift 3, tetapkan shift saat ini menjadi 3
+    END_IF;
+END_IF;
+
+// Fungsi untuk menghapus rekaman data dan mengatur ulang timer
+IF ((dt_OEE.TimeCurrent > dt_OEE.TimeShift[3].EndShift) AND (dt_OEE.TimeCurrent < (dt_OEE.TimeShift[3].EndShift + T#3S))) AND NOT Sts_DailyShiftEnd THEN
+    SaveData := TRUE;
+    // Pindahkan rekaman data satu per satu ke data sebelumnya
+    FOR j := 5 TO 0 BY -1 DO
+        FOR k := 0 TO 2 BY 1 DO
+            dt_OEE.CounterRecord[j + 1, k] := dt_OEE.CounterRecord[j, k];
+            dt_OEE.DateRecord[j + 1] := dt_OEE.DateRecord[j];
+        END_FOR;
+    END_FOR;
+    
+    // Kosongkan data untuk shift hari ini
+    FOR l := 0 TO 2 BY 1 DO
+        dt_OEE.CounterRecord[0, l] := 0;
+        Sts_DailyShiftEnd := TRUE;
+    END_FOR;
+ELSE
+    SaveData := FALSE;
+END_IF;
+
+IF dt_OEE.CurrentShift <> 1 THEN
+    Sts_DailyShiftEnd := FALSE; // Jika tidak pada shift 1, set Sts_DailyShiftEnd menjadi FALSE
+END_IF;
+
+// Memilih data produksi untuk shift saat ini
+CASE dt_OEE.CurrentShift OF
+	1:
+		dt_OEE.DateRecord[0] := StartedDate;
+		dt_OEE.CounterRecord[0, 0] := Dt_Production;
+	2:
+		dt_OEE.CounterRecord[0, 1] := Dt_Production;
+	3:
+		dt_OEE.CounterRecord[0, 2] := Dt_Production;
+END_CASE;
+
+// Menyalin data dari shift sebelumnya ke shift saat ini
+dt_OEE.HMI_Counter[0] := dt_OEE.CounterRecord[Dt_OEE.HMI_NumberPrev, 0];
+dt_OEE.HMI_Counter[1] := dt_OEE.CounterRecord[Dt_OEE.HMI_NumberPrev, 1];
+dt_OEE.HMI_Counter[2] := dt_OEE.CounterRecord[Dt_OEE.HMI_NumberPrev, 2];
+
+// Menghitung total counter
+Dt_OEE.TotalCounter.Data1 := dt_OEE.HMI_Counter[0].Data1 + dt_OEE.HMI_Counter[1].Data1 + dt_OEE.HMI_Counter[2].Data1;
+Dt_OEE.TotalCounter.Data2 := dt_OEE.HMI_Counter[0].Data2 + dt_OEE.HMI_Counter[1].Data2 + dt_OEE.HMI_Counter[2].Data2;
+Dt_OEE.TotalCounter.Data3 := dt_OEE.HMI_Counter[0].Data3 + dt_OEE.HMI_Counter[1].Data3 + dt_OEE.HMI_Counter[2].Data3;
+Dt_OEE.TotalCounter.Data4 := dt_OEE.HMI_Counter[0].Data4 + dt_OEE.HMI_Counter[1].Data4 + dt_OEE.HMI_Counter[2].Data4;
+
+// Memastikan nilai HMI_NumberPrev dalam rentang yang valid
+IF dt_OEE.HMI_NumberPrev < 0 THEN
+
+
+	dt_OEE.HMI_NumberPrev := 6;
+ELSIF dt_OEE.HMI_NumberPrev > 6 THEN
+	dt_OEE.HMI_NumberPrev := 0;
+END_IF;
+
+```plaintext
+// Mengambil tanggal dan waktu saat ini
+dt_OEE.DateCurrent := DT_TO_DATE(CurrentTime); // Mengubah waktu saat ini menjadi tanggal
+dt_OEE.TimeCurrent := DT_TO_TOD(CurrentTime); // Mengubah waktu saat ini menjadi waktu hari ini
+
+// Mengatur waktu awal dan akhir dari setiap shift
+dt_OEE.TimeShift[1].StartShift := TOD#06:00:00; // Shift 1 dimulai pada pukul 06:00:00
+dt_OEE.TimeShift[2].StartShift := TOD#14:00:00; // Shift 2 dimulai pada pukul 14:00:00
+dt_OEE.TimeShift[3].StartShift := TOD#22:00:00; // Shift 3 dimulai pada pukul 22:00:00
+
+dt_OEE.TimeShift[1].EndShift := TOD#14:00:00; // Shift 1 berakhir pada pukul 14:00:00
+dt_OEE.TimeShift[2].EndShift := TOD#22:00:00; // Shift 2 berakhir pada pukul 22:00:00
+dt_OEE.TimeShift[3].EndShift := TOD#06:00:00; // Shift 3 berakhir pada pukul 06:00:00
+
+// Memeriksa apakah saat ini merupakan saat untuk mengambil data
+IF ((dt_OEE.TimeCurrent > dt_OEE.TimeShift[1].EndShift) AND (dt_OEE.TimeCurrent < dt_OEE.TimeShift[1].EndShift + T#3S)) OR
+   ((dt_OEE.TimeCurrent > dt_OEE.TimeShift[2].EndShift) AND (dt_OEE.TimeCurrent < dt_OEE.TimeShift[2].EndShift + T#3S)) OR
+   ((dt_OEE.TimeCurrent > dt_OEE.TimeShift[3].EndShift) AND (dt_OEE.TimeCurrent < dt_OEE.TimeShift[3].EndShift + T#3S)) THEN
+    // Jika waktu saat ini berada di antara akhir shift 1, 2, atau 3, dan belum mengambil data sebelumnya, maka set bGetData menjadi TRUE
+    IF NOT bGetData THEN
+         bGetData := TRUE;
+         StartedDate := dt_OEE.DateCurrent; // Menyimpan tanggal saat dimulainya pengambilan data
+         StartedShift := dt_OEE.CurrentShift; // Menyimpan shift saat dimulainya pengambilan data
+    END_IF;
+ELSE
+     bGetData := FALSE; // Jika tidak memenuhi kondisi di atas, set bGetData menjadi FALSE
+END_IF;
+
+// Memeriksa dan menetapkan shift saat ini
+IF NOT SaveData THEN
+    IF (dt_OEE.TimeCurrent > dt_OEE.TimeShift[1].StartShift) AND (dt_OEE.TimeCurrent < dt_OEE.TimeShift[1].EndShift) THEN
+         dt_OEE.CurrentShift := 1; // Jika waktu saat ini berada di antara shift 1, tetapkan shift saat ini menjadi 1
+    ELSIF (dt_OEE.TimeCurrent > dt_OEE.TimeShift[2].StartShift) AND (dt_OEE.TimeCurrent < dt_OEE.TimeShift[2].EndShift) THEN
+         dt_OEE.CurrentShift := 2; // Jika waktu saat ini berada di antara shift 2, tetapkan shift saat ini menjadi 2
+    ELSIF (dt_OEE.TimeCurrent > dt_OEE.TimeShift[3].StartShift) OR (dt_OEE.TimeCurrent < dt_OEE.TimeShift[3].EndShift) THEN
+         dt_OEE.CurrentShift := 3; // Jika waktu saat ini berada di antara shift 3, tetapkan shift saat ini menjadi 3
+    END_IF;
+END_IF;
+
+// Fungsi untuk menghapus rekaman data dan mengatur ulang timer
+IF ((dt_OEE.TimeCurrent > dt_OEE.TimeShift[3].EndShift) AND (dt_OEE.TimeCurrent < (dt_OEE.TimeShift[3].EndShift + T#3S))) AND NOT Sts_DailyShiftEnd THEN
+    SaveData := TRUE;
+    // Pindahkan rekaman data satu per satu ke data sebelumnya
+    FOR j := 5 TO 0 BY -1 DO
+        FOR k := 0 TO 2 BY 1 DO
+            dt_OEE.CounterRecord[j + 1, k] := dt_OEE.CounterRecord[j, k];
+            dt_OEE.DateRecord[j + 1] := dt_OEE.DateRecord[j];
+        END_FOR;
+    END_FOR;
+    
+    // Kosongkan data untuk shift hari ini
+    FOR l := 0 TO 2 BY 1 DO
+        dt_OEE.CounterRecord[0, l] := 0;
+        Sts_DailyShiftEnd := TRUE;
+    END_FOR;
+ELSE
+    SaveData := FALSE;
+END_IF;
+
+IF dt_OEE.CurrentShift <> 1 THEN
+    Sts_DailyShiftEnd := FALSE; // Jika tidak pada shift 1, set Sts_DailyShiftEnd menjadi FALSE
+END_IF;
+
+// Memilih data produksi untuk shift saat ini
+CASE t_OEE.CurrentShift OF
+	1:
+		dt_OEE.DateRecord[0] := StartedDate;
+		dt_OEE.CounterRecord[0, 0] := Dt_Production;
+	2:
+		dt_OEE.CounterRecord[0, 1] := Dt_Production;
+	3:
+		dt_OEE.CounterRecord[0, 2] := Dt_Production;
+END_CASE;
+
+// Menyalin data dari shift sebelumnya ke shift saat ini
+dt_OEE.HMI_Counter[0] := dt_OEE.CounterRecord[Dt_OEE.HMI_NumberPrev, 0];
+dt_OEE.HMI_Counter[1] := dt_OEE.CounterRecord[Dt_OEE.HMI_NumberPrev, 1];
+dt_OEE.HMI_Counter[2] := dt_OEE.CounterRecord[Dt_OEE.HMI_NumberPrev, 2];
+
+// Menghitung total counter
+Dt_OEE.TotalCounter.Data1 := dt_OEE.HMI_Counter[0].Data1 + dt_OEE.HMI_Counter[1].Data1 + dt_OEE.HMI_Counter[2].Data1;
+Dt_OEE.TotalCounter.Data2 := dt_OEE.HMI_Counter[0].Data2 + dt_OEE.HMI_Counter[1].Data2 + dt_OEE.HMI_Counter[2].Data2;
+Dt_OEE.TotalCounter.Data3 := dt_OEE.HMI_Counter[0].Data3 + dt_OEE.HMI_Counter[1].Data3 + dt_OEE.HMI_Counter[2].Data3;
+Dt_OEE.TotalCounter.Data4 := dt_OEE.HMI_Counter[0].Data4 + dt_OEE.HMI_Counter[1].Data4 + dt_OEE.HMI_Counter[2].Data4;
+
+// Memastikan nilai HMI_NumberPrev dalam rentang yang valid
+IF dt_OEE.HMI_NumberPrev < 0 THEN
+
+
+	dt_OEE.HMI_NumberPrev := 6;
+ELSIF dt_OEE.HMI_NumberPrev > 6 THEN
+	dt_OEE.HMI_NumberPrev := 0;
+END_IF;
+]]></ST>
     </Implementation>
     <LineIds Name="OEECounter">
-      <LineId Id="9" Count="0" />
-      <LineId Id="37" Count="0" />
-      <LineId Id="34" Count="0" />
-      <LineId Id="211" Count="0" />
-      <LineId Id="213" Count="1" />
-      <LineId Id="212" Count="0" />
-      <LineId Id="208" Count="2" />
-      <LineId Id="39" Count="0" />
-      <LineId Id="494" Count="0" />
-      <LineId Id="381" Count="0" />
-      <LineId Id="495" Count="9" />
-      <LineId Id="395" Count="2" />
-      <LineId Id="505" Count="7" />
-      <LineId Id="406" Count="66" />
-      <LineId Id="474" Count="9" />
-      <LineId Id="300" Count="0" />
-      <LineId Id="202" Count="3" />
+      <LineId Id="739" Count="92" />
+      <LineId Id="836" Count="187" />
       <LineId Id="94" Count="0" />
     </LineIds>
   </POU>

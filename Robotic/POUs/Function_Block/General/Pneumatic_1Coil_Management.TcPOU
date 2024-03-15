@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
   <POU Name="Pneumatic_1Coil_Management" Id="{ccb4f153-69e5-4b35-b246-b531fd5cf5e3}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK Pneumatic_1Coil_Management
 // Function block untuk mengolah faceplate dan watchdog pneumatic valve 1 coil
@@ -896,142 +896,152 @@ END_VAR]]></Declaration>
     </Implementation>
     <Action Name="Cycle" Id="{3b80401e-da04-4389-a863-a469b7bff54b}">
       <Implementation>
-        <ST><![CDATA[PneuAdv (Clk := Pneumatic.oPneumatic);
-IF PneuAdv.Q THEN
-	Pneumatic.CyclePneu	:= Pneumatic.CyclePneu + 1;
-END_IF]]></ST>
+        <ST><![CDATA[// Pneumatic Advancement
+PneuAdv(Clk := Pneumatic.oPneumatic); // Memantau sinyal keluaran pneumatik sebagai pemicu
+
+IF PneuAdv.Q THEN // Jika pneumatik maju
+Pneumatic.CyclePneu := Pneumatic.CyclePneu + 1; // Tambahkan satu ke siklus pneumatik
+END_IF;]]></ST>
       </Implementation>
     </Action>
     <Action Name="ValveManagement" Id="{841fccbe-1ad3-4ca7-a1f5-b8b3ff32283d}">
       <Implementation>
-        <ST><![CDATA[IF bResetError THEN
-	SeqIndex	:= 0;
-	ErrorID		:= 0;
-	ErrorMsg	:= '';
-	bError		:= FALSE;
+        <ST><![CDATA[// Reset Error Handling
+IF bResetError THEN // Jika sinyal reset error aktif
+SeqIndex := 0; // Reset indeks urutan aksi
+ErrorID := 0; // Reset ID error
+ErrorMsg := ''; // Reset pesan error
+bError := FALSE; // Set indikator error menjadi tidak aktif
 END_IF;
 
-IF (bEnable OR Pneumatic.TestModeActive ) AND NOT bError THEN
-	CASE SeqIndex OF
-		0:
-			WatchdogTimer(In:= FALSE);
-			IF Pneumatic.Trigger_Retract AND NOT Pneumatic.FBDone_Retract THEN
-				Pneumatic.FBDone_Retract:=FALSE;
-				Pneumatic.FBDone_Advanced:=FALSE;
-				SeqIndex	:= 100;
-			ELSIF Pneumatic.Trigger_Advanced THEN
-				Pneumatic.FBDone_Retract:=FALSE;
-				Pneumatic.FBDone_Advanced:=FALSE;
-				SeqIndex	:= 200;
-			END_IF;
+// Main Sequence
+IF (bEnable OR Pneumatic.TestModeActive) AND NOT bError THEN // Jika sistem diaktifkan atau dalam mode pengujian dan tidak ada error
+CASE SeqIndex OF // Periksa indeks urutan aksi
+        0: // Langkah awal
+            WatchdogTimer(In:=FALSE); // Nonaktifkan timer pengawas
+            IF Pneumatic.Trigger_Retract AND NOT Pneumatic.FBDone_Retract THEN // Jika pemicu mundur aktif dan proses mundur belum selesai
+               Pneumatic.FBDone_Retract := FALSE; // Reset status selesai mundur
+               Pneumatic.FBDone_Advanced := FALSE; // Reset status selesai maju
+               SeqIndex := 100; // Pindah ke langkah 100
+            ELSIF Pneumatic.Trigger_Advanced THEN // Jika pemicu maju aktif
+               Pneumatic.FBDone_Retract := FALSE; // Reset status selesai mundur
+               Pneumatic.FBDone_Advanced := FALSE; // Reset status selesai maju
+               SeqIndex := 200; // Pindah ke langkah 200
+            END_IF;
 		
-		100:
-			Pneumatic.Trigger_Retract	:= FALSE;
-			IF NOT bBypassPreCheckSensor THEN
-				WatchdogTimer(In:= TRUE, PT:= TimerWatchdogPreRetract);
-				IF Pneumatic.iSensorAdvanced THEN
-					WatchdogTimer(In:= FALSE);
-					SeqIndex	:= 110;
-				ELSIF WatchdogTimer.Q THEN
-					WatchdogTimer(In:= FALSE);
-					Pneumatic.ErrorRetract := TRUE;
-					ErrorID					:= 10;
-					ErrorMsg				:= 'Error PreCheck Retract';
-					SeqIndex	:= 999;
-				END_IF;
-			ELSE
-				SeqIndex	:= 110;
-			END_IF;
-	
-		110:
-			Pneumatic.oPneumatic := FALSE;
-			IF NOT bBypassSensorRetract THEN
-				WatchdogTimer(In:= TRUE, PT:= TimerWatchdogRetract);
-				IF Pneumatic.iSensorRetract THEN
-					Pneumatic.FBDone_Retract:=TRUE;
-					WatchdogTimer(In:= FALSE);
-					SeqIndex	:= 0;
-				ELSIF WatchdogTimer.Q THEN
-					WatchdogTimer(In:= FALSE);
-					Pneumatic.ErrorRetract := TRUE;
-					ErrorID					:= 11;
-					ErrorMsg				:= 'Error Watchdog Retract';
-				END_IF;
-			ELSE
-				TimerBypass(In:= TRUE, PT:= TimerBypassSensorRetract);
-				IF TimerBypass.Q THEN
-					Pneumatic.FBDone_Retract:=TRUE;
-					TimerBypass(In:= FALSE);
-					SeqIndex	:= 0;
-				END_IF;
-			END_IF;
-			
-		200:
-			Pneumatic.Trigger_Advanced	:= FALSE;
-			IF NOT bBypassPreCheckSensor THEN
-				WatchdogTimer(In:= TRUE, PT:= TimerWatchdogPreAdvanced);
-				IF Pneumatic.iSensorRetract THEN
-					WatchdogTimer(In:= FALSE);
-					SeqIndex	:= 210;
-				ELSIF WatchdogTimer.Q THEN
-					WatchdogTimer(In:= FALSE);
-					Pneumatic.ErrorAdvanced := TRUE;
-					ErrorID					:= 20;
-					ErrorMsg				:= 'Error PreCheck Advanced';
-					SeqIndex	:= 999;
-				END_IF;
-			ELSE
-				SeqIndex	:= 210;
-			END_IF;				
 		
-		210:
-			Pneumatic.oPneumatic := TRUE;
-			IF NOT bBypassSensorAdvanced THEN
-				WatchdogTimer(In:= TRUE, PT:= TimerWatchdogAdvanced);
-				IF Pneumatic.iSensorAdvanced THEN
-					Pneumatic.FBDone_Advanced:=TRUE;
-					WatchdogTimer(In:= FALSE);
-					SeqIndex	:= 0;
-				ELSIF WatchdogTimer.Q THEN
-					WatchdogTimer(In:= FALSE);
-					Pneumatic.ErrorAdvanced := TRUE;
-					ErrorID					:= 21;
-					ErrorMsg				:= 'Error Watchdog Advanced';
-				END_IF;
-			ELSE
-				TimerBypass(In:= TRUE, PT:= TimerBypassSensorAdvanced);
-				IF TimerBypass.Q THEN
-					Pneumatic.FBDone_Advanced:=TRUE;
-					TimerBypass(In:= FALSE);
-					SeqIndex	:= 0;
-				END_IF;
-				
-			END_IF	;				
+		100: // Langkah untuk mundur
+		Pneumatic.Trigger_Retract := FALSE; // Nonaktifkan pemicu mundur
+		IF NOT bBypassPreCheckSensor THEN // Jika tidak dilewati pemeriksaan sensor mundur
+			WatchdogTimer(In:=TRUE, PT:=TimerWatchdogPreRetract); // Aktifkan timer pengawas untuk pemeriksaan sensor mundur
+			IF Pneumatic.iSensorAdvanced THEN // Jika sensor maju terdeteksi
+				WatchdogTimer(In:=FALSE); // Nonaktifkan timer pengawas
+				SeqIndex := 110; // Pindah ke langkah 110
+			ELSIF WatchdogTimer.Q THEN // Jika timer pengawas mencapai waktu maksimum
+				WatchdogTimer(In:=FALSE); // Nonaktifkan timer pengawas
+				Pneumatic.ErrorRetract := TRUE; // Set indikator error mundur
+				ErrorID := 10; // Set ID error
+				ErrorMsg := 'Error PreCheck Retract'; // Set pesan error
+				SeqIndex := 999; // Pindah ke langkah penanganan error
+			END_IF;
+		ELSE // Jika dilewati pemeriksaan sensor mundur
+			SeqIndex := 110; // Pindah ke langkah 110
+		END_IF;
+
+	110: // Langkah mundur berikutnya
+		Pneumatic.oPneumatic := FALSE; // Matikan pengontrol pneumatik
+		IF NOT bBypassSensorRetract THEN // Jika tidak dilewati pemeriksaan sensor mundur
+			WatchdogTimer(In:=TRUE, PT:=TimerWatchdogRetract); // Aktifkan timer pengawas untuk pemeriksaan sensor mundur
+			IF Pneumatic.iSensorRetract THEN // Jika sensor mundur terdeteksi
+				Pneumatic.FBDone_Retract := TRUE; // Set status selesai mundur
+				WatchdogTimer(In:=FALSE); // Nonaktifkan timer pengawas
+				SeqIndex := 0; // Reset indeks urutan aksi
+			ELSIF WatchdogTimer.Q THEN // Jika timer pengawas mencapai waktu maksimum
+				WatchdogTimer(In:=FALSE); // Nonaktifkan timer pengawas
+				Pneumatic.ErrorRetract := TRUE; // Set indikator error mundur
+				ErrorID := 11; // Set ID error
+				ErrorMsg := 'Error Watchdog Retract'; // Set pesan error
+			END_IF;
+		ELSE // Jika dilewati pemeriksaan sensor mundur
+			TimerBypass(In:=TRUE, PT:=TimerBypassSensorRetract); // Aktifkan timer lewati sensor mundur
+			IF TimerBypass.Q THEN // Jika timer lewati sensor mundur mencapai waktu
+				Pneumatic.FBDone_Retract := TRUE; // Set status selesai mundur
+				TimerBypass(In:=FALSE); // Nonaktifkan timer lewati sensor mundur
+				SeqIndex := 0; // Reset indeks urutan aksi
+			END_IF;
+		END_IF;
+		
+	200: // Langkah untuk maju
+		Pneumatic.Trigger_Advanced := FALSE; // Nonaktifkan pemicu maju
+		IF NOT bBypassPreCheckSensor THEN // Jika tidak dilewati pemeriksaan sensor maju
+			WatchdogTimer(In:=TRUE, PT:=TimerWatchdogPreAdvanced); // Aktifkan timer pengawas untuk pemeriksaan sensor maju
+			IF Pneumatic.iSensorRetract THEN // Jika sensor mundur terdeteksi
+				WatchdogTimer(In:=FALSE); // Nonaktifkan timer pengawas
+				SeqIndex := 210; // Pindah ke langkah 210
+			ELSIF WatchdogTimer.Q THEN // Jika timer pengawas mencapai waktu maksimum
+				WatchdogTimer(In:=FALSE); // Nonaktifkan timer pengawas
+				Pneumatic.ErrorAdvanced := TRUE; // Set indikator error maju
+				ErrorID := 20; // Set ID error
+				ErrorMsg := 'Error PreCheck Advanced'; // Set pesan error
+				SeqIndex := 999; // Pindah ke langkah penanganan error
+			END_IF;
+		ELSE // Jika dilewati pemeriksaan sensor maju
+			SeqIndex := 210; // Pindah ke langkah 210
+		END_IF;				
 	
-		999:
-			bError	:= TRUE;	
-			
-	END_CASE;
+	210: // Langkah maju berikutnya
+		Pneumatic.oPneumatic := TRUE; // Aktifkan pengontrol pneumatik
+		IF NOT bBypassSensorAdvanced THEN // Jika tidak dilewati pemeriksaan sensor maju
+			WatchdogTimer(In:=TRUE, PT:=TimerWatchdogAdvanced); // Aktifkan timer pengawas untuk pemeriksaan sensor maju
+			IF Pneumatic.iSensorAdvanced THEN // Jika sensor maju terdeteksi
+				Pneumatic.FBDone_Advanced := TRUE; // Set status selesai maju
+				WatchdogTimer(In:=FALSE); // Nonaktifkan timer pengawas
+				SeqIndex := 0; // Reset indeks urutan aksi
+			ELSIF WatchdogTimer.Q THEN // Jika timer pengawas mencapai waktu maksimum
+				WatchdogTimer(In:=FALSE); // Nonaktifkan timer pengawas
+				Pneumatic.ErrorAdvanced := TRUE; // Set indikator error maju
+				ErrorID := 21; // Set ID error
+				ErrorMsg := 'Error Watchdog Advanced'; // Set pesan error
+			END_IF;
+		ELSE // Jika dilewati pemeriksaan sensor maju
+			TimerBypass(In:=TRUE, PT:=TimerBypassSensorAdvanced); // Aktifkan timer lewati sensor maju
+			IF TimerBypass.Q THEN // Jika timer lewati sensor maju mencapai waktu
+				Pneumatic.FBDone_Advanced := TRUE; // Set status selesai maju
+				TimerBypass(In:=FALSE); // Nonaktifkan timer lewati sensor maju
+				SeqIndex := 0; // Reset indeks urutan aksi
+			END_IF;
+		END_IF;				
+
+	999: // Langkah penanganan error
+		bError := TRUE; // Set indikator error menjadi aktif	
+END_CASE;
 ELSE
-	IF bError OR Pneumatic.TestModeActive THEN
-		SeqIndex := 0;
-	END_IF;
-	WatchdogTimer(IN:= FALSE);
-	Pneumatic.Trigger_Advanced	:= FALSE;
-	Pneumatic.Trigger_Retract	:= FALSE;
-	Pneumatic.FBDone_Retract	:= FALSE;
-	Pneumatic.FBDone_Advanced	:= FALSE;
+    IF bError OR Pneumatic.TestModeActive THEN // Jika terjadi error atau dalam mode pengujian
+       SeqIndex := 0; // Reset indeks urutan aksi
+    END_IF;
+    WatchdogTimer(IN:=FALSE); // Nonaktifkan timer pengawas
+    Pneumatic.Trigger_Advanced := FALSE; // Nonaktifkan pemicu maju
+    Pneumatic.Trigger_Retract := FALSE; // Nonaktifkan pemicu mundur
+    Pneumatic.FBDone_Retract := FALSE; // Reset status selesai mundur
+    Pneumatic.FBDone_Advanced := FALSE; // Reset status selesai maju
 END_IF;
 
 ]]></ST>
       </Implementation>
     </Action>
     <LineIds Name="Pneumatic_1Coil_Management.Cycle">
-      <LineId Id="2" Count="2" />
+      <LineId Id="5" Count="4" />
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="Pneumatic_1Coil_Management.ValveManagement">
-      <LineId Id="109" Count="118" />
+      <LineId Id="420" Count="10" />
+      <LineId Id="441" Count="9" />
+      <LineId Id="321" Count="0" />
+      <LineId Id="332" Count="1" />
+      <LineId Id="451" Count="83" />
+      <LineId Id="216" Count="0" />
+      <LineId Id="535" Count="8" />
+      <LineId Id="226" Count="1" />
       <LineId Id="1" Count="0" />
     </LineIds>
   </POU>
