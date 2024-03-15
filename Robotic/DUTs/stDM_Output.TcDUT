@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="stDM_Output" Id="{37713d26-10c2-4eaa-b130-f9993dabea97}">
+    <Declaration><![CDATA[TYPE stDM_Output :
+	
+STRUCT
+	TriggerEnable		: BOOL;
+	Trigger				: BOOL;
+	BufferResultsEnable	: BOOL;
+	ResultsAck			: BOOL;
+	UserDataOption		: UINT;
+	UserDataLength		: UINT;
+	UserData			: ARRAY [0..487] OF BYTE;
+END_STRUCT
+
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

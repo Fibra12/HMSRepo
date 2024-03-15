@@ -1,0 +1,191 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <GVL Name="Status_GVL" Id="{1e7b14d6-6244-498b-8ca4-41145c093987}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+VAR_GLOBAL
+	bFl_RunButton_Robotic	: BOOL;
+	bFl_StopButton_Robotic	: BOOL;
+	bFl_ResetButton_Robotic	: BOOL;
+	bFl_Acknowledge_Robotic	: BOOL;
+	bFl_Manual_Robotic		: BOOL;
+	bFl_EStop_Robotic		: BOOL;
+	bFl_ReqReleaseDoor		: BOOL;
+	bFl_StsDoorReleased		: BOOL;
+	
+	
+	//Error
+	stErrorRobot			: ARRAY [1..100] OF BOOL;
+	stErrorPicking			: ARRAY [1..100] OF BOOL;
+	stErrorPlacing1			: ARRAY [1..100] OF BOOL;
+	stErrorPlacing2			: ARRAY [1..100] OF BOOL;
+	stErrorPlacing3			: ARRAY [1..100] OF BOOL;
+	stErrorPlacing4			: ARRAY [1..100] OF BOOL;
+	arAlarmHistory			: ARRAY [0..100] OF stErrorData;
+	arAlarmActive			: ARRAY [0..100] OF stErrorData;
+	arRejectMsg				: ARRAY [1..20] OF stRejectData;
+	Module_Error			: ARRAY [1..10] OF BOOL;
+	WarningAcc				: ARRAY [1..4] OF BOOL;
+	
+	bTrig_LED_MachineRunning_Robotic	: BOOL;
+	bTrig_LED_MachineError_Robotic		: BOOL;
+	bTrig_TowerLamp_Red_Robotic			: BOOL;
+	bTrig_TowerLamp_Yellow_Robotic		: BOOL;
+	bTrig_TowerLamp_Green_Robotic		: BOOL;
+	bTrig_TowerLamp_Blue_Robotic		: BOOL;
+	bTrig_Buzzer_Robotic				: BOOL;
+	bTrig_LED_Acknowledge_Robotic		: BOOL;
+	bTrig_LED_Auto_Robotic				: BOOL;
+	bTrig_LED_Manual_Robotic			: BOOL;
+	bTrig_LED_SafetyDoor_Robotic		: BOOL;
+	
+	
+	(*===============Auto Flsuhing==================*)
+	
+	AutoFlush_Placing1					: BOOL;
+	AutoFlush_Placing2					: BOOL;
+	AutoFlush_Placing3					: BOOL;
+	AutoFlush_Placing4					: BOOL;
+	PalletOut_1							: BOOL;
+	PalletOut_2							: BOOL;
+	PalletOut_3							: BOOL;
+	PalletOut_4							: BOOL;
+	
+	(*===============Safety==================*)
+	bAirPressure_Robotic				: BOOL;
+	bSafety_DoorRobotic					: BOOL;
+	bRelease_DoorRobotic				: BOOL;
+	
+	
+	(*=============== Data ==================*)
+	BarcodeResult						: STRING;
+	BarcodePlace						: INT;
+	Edit								: ARRAY [1..4] OF BOOL;
+	Upload								: ARRAY [1..4] OF BOOL;
+	Download							: ARRAY [1..4] OF BOOL;
+	Save								: ARRAY [1..4] OF BOOL;
+	Cancel								: ARRAY [1..4] OF BOOL;
+	StsEdit								: ARRAY [1..4] OF BOOL;
+	
+	QtyCyclePerLayer					: ARRAY [1..4] OF UINT;
+	CurrentLayer						: ARRAY [1..4] OF UINT;
+	CycleAtLayer						: ARRAY [1..4] OF UINT;
+	
+	
+	(*=============== Status ==================*)
+	
+	RequestEmptyPallet					: ARRAY [1..4] OF BOOL;
+	RequestLoadPallet					: ARRAY [1..4] OF BOOL;
+	FB_RequestShuttle					: ARRAY [1..4] OF BOOL;
+	PlacingReady						: ARRAY [1..4] OF BOOL;
+	RejectReady							: BOOL;
+	RejectFull							: BOOL;
+	ModullarInfeedBusy					: BOOL;
+	
+	ErrorCollectBarcode					: ARRAY [1..4] OF BOOL;
+	ErrorMsgCollectBarcode				: ARRAY [1..4] OF STRING;
+	stCheckShuttlePos					: ARRAY [0..4] OF stCheckShuttle;
+	 
+	
+	
+	(*===============Feedback Motor==================*)
+	//Infeed
+	bFdbk_Picking				: BOOL;
+	bFdbk_Placing1				: BOOL;
+	bFdbk_Placing2				: BOOL;
+	bFdbk_Placing3				: BOOL;
+	bFdbk_Placing4				: BOOL;
+	
+	(*===============Reedswitch==================*)
+	bRsw_Centering_Rtc			: BOOL;
+	bRsw_Centering_Adv			: BOOL;
+	bRsw_GapMaker_Rtc			: BOOL;
+	bRsw_GapMaker_Adv			: BOOL;
+	bRsw_StopperTransfer_Rtc	: BOOL;
+	bRsw_StopperTransfer_Adv	: BOOL;
+	
+	(*===============Photosensor==================*)
+	//Infeed
+	bPsr_Picking1				: BOOL;
+	bPsr_Picking2				: BOOL;
+	bPsr_Picking3				: BOOL;
+	bPsr_Picking4				: BOOL;
+	bPsr_Barcode1				: BOOL;
+	bPsr_Barcode2				: BOOL;
+	bPsr_Barcode3				: BOOL;
+	bPsr_Barcode4				: BOOL;
+	bPsr_Centering				: BOOL;
+	bPsr_TransferInfeed_Front	: BOOL;
+	bPsr_TransferInfeed_Mid		: BOOL;
+	bPsr_TransferInfeed_Back	: BOOL;
+	
+	//Placing
+	bPsr_Placing1_Back			: BOOL;
+	bPsr_Placing1_Mid			: BOOL;
+	bPsr_Placing1_Front			: BOOL;
+	bPsr_Placing2_Back			: BOOL;
+	bPsr_Placing2_Front			: BOOL;
+	bPsr_Placing3_Back			: BOOL;
+	bPsr_Placing3_Front			: BOOL;
+	bPsr_Placing4_Back			: BOOL;
+	bPsr_Placing4_Mid			: BOOL;
+	bPsr_Placing4_Front			: BOOL;
+	
+	
+	strTimeEvent				: STRING;
+
+END_VAR
+
+VAR_GLOBAL PERSISTENT
+	(*===============stMotor==================*)
+	//Infeed
+	stMotor_Picking						: stMotor;
+	stMotor_Placing1					: stMotor;
+	stMotor_Placing2					: stMotor;
+	stMotor_Placing3					: stMotor;
+	stMotor_Placing4					: stMotor;	
+
+	(*===============Pneumatic==================*)
+	stPneu_Centering					: stPneumatic1;
+	stPneu_GapMaker						: stPneumatic2; 
+	stPneu_StopperTransfer				: stPneumatic1;	
+
+	(*===============Data Recipe==================*)
+	RecipeLine							: ARRAY [1..4] OF stProductInfo;
+	arProductList						: ARRAY [1..40] OF stProductInfo;
+	RecipeNumber						: ARRAY [1..4] OF USINT;
+	OffsetPattern1						: ARRAY [1..40] OF stCustomPattern;
+	OffsetPattern2						: ARRAY [1..40] OF stCustomPattern;
+	OffsetPattern3						: ARRAY [1..40] OF stCustomPattern;
+	OffsetPattern4						: ARRAY [1..40] OF stCustomPattern;
+	
+	
+	(*===============FGHS Var==================*)
+	//To FGHS
+	//==> Read Only
+	arPallet_LinkUp						: ARRAY [1..4] OF STRING; // Source Link Up
+	arCurrent_EAN						: ARRAY [1..4] OF STRING; // Currently used EAN
+	arCurrent_CodeVariant				: ARRAY [1..4] OF STRING; // Currently used Code Variant
+	arPalletID							: ARRAY [1..4] OF STRING; // Generated Pallet ID
+	arBarcodePallet 					: ARRAY [1..4,1..60] OF STRING; // Array of Barcode Product at Pallet
+	arBarcodePalletTime 				: ARRAY [1..4,1..60] OF DT; // Array of Placing Time Product at Pallet
+	arCounterProduct					: ARRAY [1..4] OF BYTE; // Counter Product at Pallet
+	arRejectList						: ARRAY [1..3] OF BOOL; // Status Reject : 1. Reject Bad Read, 2. No Match Barcode to Reference, 3. Placing Not Ready
+	arAlarmList							: ARRAY [1..300] OF BOOL; // Active Alarm
+	//Time
+	Time_PLC							: STRING(31);
+	
+	//==> Full Access
+	arAccFlushingPallet					: ARRAY [1..4] OF BYTE; //Status Pallet : 0. Procees Palletizing, 1. Request Pallet to Flushing, 2. Acc Flushing  
+	arPlanned_EAN						: ARRAY [1..4] OF STRING; // Planned EAN for Brand Change
+	arPlanned_CodeVariant				: ARRAY [1..4] OF STRING; // Planned Code Variant for Brand Change
+	
+	//Internal
+	arPalletStackingDone				: ARRAY [1..4] OF BOOL; //Pallet Request to Flush
+	arPalletizingBuffer					: ARRAY [1..4] OF stPalletTrackingData; 
+	arDataPallet1						: ARRAY [1..60] OF stDataPallet;
+	arDataPallet2						: ARRAY [1..60] OF stDataPallet;
+	arDataPallet3						: ARRAY [1..60] OF stDataPallet;
+	arDataPallet4						: ARRAY [1..60] OF stDataPallet;
+END_VAR]]></Declaration>
+  </GVL>
+</TcPlcObject>

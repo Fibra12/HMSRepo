@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="ShiftTime" Id="{da04ad29-9c8f-4ba0-b925-7069dcbd949d}">
+    <Declaration><![CDATA[TYPE ShiftTime :	
+STRUCT
+	Running		: TIME;
+	Stopped		: TIME;
+	Error		: TIME;
+	sRunning	: STRING;
+	sStopped	: STRING;
+	sError		: STRING;
+END_STRUCT
+END_TYPE]]></Declaration>
+  </DUT>
+</TcPlcObject>

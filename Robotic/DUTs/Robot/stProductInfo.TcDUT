@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="stProductInfo" Id="{579b996e-03d0-4615-a4d9-ea99f873d955}">
+    <Declaration><![CDATA[TYPE stProductInfo :
+	STRUCT
+		ProductName				: STRING;
+		BarcodeReference		: STRING;
+		EANVariant				: STRING;
+		LinkUpSource			: STRING;
+		CodeVariant				: STRING;
+		ProductLength			: UINT;
+		ProductWidth			: UINT;
+		ProductHeight			: UINT;
+		ProductPattern			: USINT;
+		Stacking				: UINT;
+		OffsetPattern			: stCustomPattern;
+	END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

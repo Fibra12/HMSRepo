@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="stMachineState" Id="{45de3a53-93c4-4338-9240-a23508b68e53}">
+    <Declaration><![CDATA[TYPE stMachineState :
+STRUCT
+	Error 		: BOOL;
+	CheckSafety	: BOOL;
+	Aborted		: BOOL;
+	Initialize	: BOOL;
+	CheckToRun	: BOOL;
+	Ready		: BOOL;
+	Running		: BOOL;
+	Stopped		: BOOL;
+	ManualMode	: BOOL;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

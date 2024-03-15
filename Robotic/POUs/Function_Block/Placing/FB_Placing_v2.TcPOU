@@ -1,0 +1,423 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Placing_v2" Id="{773ff4c9-68b5-407a-bcdf-4f8ead4c792f}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Placing_v2
+VAR_INPUT
+	Inp_Enable				: BOOL;
+	Inp_Reset				: BOOL;
+	Inp_SensorBack			: BOOL;
+	Inp_SensorMiddle		: BOOL;
+	Inp_SensorFront			: BOOL;
+	Cmd_Flushing			: BOOL;
+	bRobotMove				: BOOL;
+	Inp_Done_Place			: BOOL;
+	Inp_Req					: BOOL;
+	i_Data					: UINT;
+	i_Pattern				: UINT;
+	i_MaxStacking			: UINT;
+	Inp_FB					: BOOL;
+	Set_Tmr_Check			: TIME;
+	Inp_GlobalReset			: BOOL;
+	Inp_ResetData			: BOOL;
+	bBypassFGHS				: BOOL;
+	CreateID				: STRING;
+	
+END_VAR
+VAR_OUTPUT
+	Out_Motor_Fwd			: BOOL;
+	Out_Motor_Rev			: BOOL;
+	Out_Req					: BOOL;
+	Out_FB					: BOOL;
+	Out_PalletJammed		: BOOL;
+	Out_Rob_Placing			: BOOL;
+	CurrentJob				: STRING;
+	SeqIndex				: INT;
+	PalletOut				: BOOL;
+END_VAR
+VAR_OUTPUT PERSISTENT
+	PalletID				: STRING;
+	CounterBarcode			: BYTE;
+END_VAR
+
+VAR
+	Sts_Flushing			: BOOL;
+	o_MaxCycle				: UINT;
+	DataTimer				: TON;
+	TWatchDog				: TON;
+	Sequence				: INT;
+END_VAR
+
+VAR_IN_OUT
+	AccFlushing				: BYTE;
+	Data_Count_Place		: USINT;
+	Data_Count_Real			: USINT;
+	Data_Incomplete			: UINT;
+	Data_Pallet_Total		: UINT;
+	Data_Count_Total		: UINT;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF Inp_Reset AND Out_PalletJammed THEN
+	Out_PalletJammed	:= FALSE;
+	Sequence 			:= 0;
+END_IF
+
+IF Inp_Enable THEN
+	
+	IF Cmd_Flushing THEN
+		Sts_Flushing:=TRUE;
+	END_IF;
+	
+    CASE Sequence OF
+        0:	(* Check Motor *)
+			 Out_Motor_Fwd := TRUE;
+			 DataTimer(IN:=TRUE, PT:=T#4S);
+			 IF DataTimer.Q OR AccFlushing = 2 THEN
+				 DataTimer(IN:=FALSE);
+				 Out_Motor_Fwd	:= FALSE;
+				 Sequence		:= 10;
+			 END_IF
+
+		10:  (* Check Sensor *)
+			CurrentJob		:= 'Check Sensor';
+			IF (Inp_SensorFront OR Inp_SensorMiddle OR Inp_SensorBack) AND AccFlushing = 2 THEN
+				Sequence := 600;
+			ELSIF (Inp_SensorFront OR Inp_SensorMiddle OR Inp_SensorBack) AND ((Data_Count_Place > o_MaxCycle AND o_MaxCycle <> 0)  OR Sts_Flushing) THEN
+                Sequence := 500;
+            ELSIF Inp_SensorFront THEN
+                Sequence := 300;
+            ELSIF NOT Inp_SensorFront AND (Inp_SensorMiddle OR Inp_SensorBack)  THEN
+                Sequence := 200;
+            ELSE
+                Sequence := 100;
+            END_IF;
+			
+			
+        100:    (* Request *)
+			CurrentJob		:= 'Request Pallet';
+			Sts_Flushing	:= FALSE;
+            Out_Req			:= TRUE;
+			Out_FB			:= FALSE;
+            IF Inp_FB THEN
+				DataTimer(IN:=FALSE);
+                Sequence := 200;
+            END_IF;       
+			
+        200:    (* Pallet Masuk *)
+			CurrentJob	:= 'Pallet In';
+			PalletOut	:= FALSE;
+			IF NOT Inp_SensorFront AND NOT Inp_SensorMiddle AND NOT Inp_SensorBack THEN
+            	Out_Req := TRUE;
+			END_IF
+            Out_Motor_Fwd := TRUE;
+            IF Inp_SensorFront AND (Inp_SensorBack OR Inp_SensorMiddle)  THEN
+				DataTimer(IN := TRUE,PT := Set_Tmr_Check);
+                IF DataTimer.Q THEN
+					TWatchDog(IN := FALSE);
+                    DataTimer(IN:=FALSE);
+					Out_PalletJammed	:= FALSE;
+					Out_Motor_Fwd		:= FALSE;
+           			Out_Req				:= FALSE;
+                    Sequence			:= 300;
+                END_IF;    
+			ELSE
+				TWatchDog(IN := TRUE, PT := T#15S);
+				IF TWatchDog.Q THEN
+					Sequence	:= 9999;
+				END_IF;
+            END_IF;
+			
+        300:
+			CurrentJob	:= 'Check Cycle';
+			IF o_MaxCycle <> 0 THEN
+				IF o_MaxCycle >= Data_Count_Place  THEN
+					Sequence := 400;
+				ELSE
+					DataTimer(IN := TRUE,PT := T#2S);
+					IF DataTimer.Q THEN
+						DataTimer(IN:=FALSE);
+						Sequence := 500;
+					END_IF;
+				END_IF;
+			END_IF
+			
+        400:
+			CurrentJob		:= 'Place Ready';
+			AccFlushing		:= 0;
+            Out_Rob_Placing := TRUE;
+			PalletID			:= CreateID;
+            IF Inp_Done_Place THEN
+                    Data_Count_Real		:= Data_Count_Real + 1;
+                    Data_Count_Place	:= Data_Count_Place + 1;
+                    Sequence 			:= 450;
+            ELSIF (Cmd_Flushing OR Sts_Flushing) AND NOT bRobotMove THEN
+                Data_Incomplete			:= Data_Incomplete + 1;
+                Sts_Flushing			:= TRUE;
+                Sequence 				:= 500;				
+            END_IF;
+			
+        450:
+            Out_Rob_Placing := FALSE;
+            IF NOT Inp_Done_Place THEN
+                Sequence := 460;
+            END_IF;	
+			
+		460:
+			IF PalletID <> '' THEN
+				CounterBarcode	:= Data_Count_Real;
+				Sequence 		:= 300;
+			END_IF
+			
+		500:
+			CurrentJob		:= 'Create Pallet ID';
+			DataTimer(IN := TRUE,PT := T#500MS);
+			IF DataTimer.Q THEN
+				DataTimer(IN := FALSE);
+				Sequence		:= 550;
+			END_IF
+						
+		550:
+			AccFlushing		:= 1;
+			Sequence		:= 600;
+			
+		600:
+			Out_Rob_Placing := FALSE;
+			Out_FB 			:= FALSE;
+			Out_Req 		:= FALSE;
+			CurrentJob		:= 'Waiting Acc Flushing';
+			IF (PalletID <> '' AND AccFlushing = 2) OR bBypassFGHS OR Data_Count_Real = 0 THEN
+                Sequence := 900;
+            END_IF;
+		
+		900:	(* Positioning Pallet Out *)
+			CurrentJob		:= 'Positioning Pallet Out';
+			Out_Rob_Placing := FALSE;
+			Out_FB 			:= TRUE;
+			Out_Req 		:= TRUE;
+			Out_Motor_Rev	:= TRUE;
+            IF Inp_SensorBack THEN
+                DataTimer(IN := TRUE,PT := T#100MS);
+                IF DataTimer.Q THEN
+					TWatchDog(IN := FALSE);
+					DataTimer(IN:=FALSE);
+					Out_Motor_Rev	:= FALSE;
+                    Sequence		:= 1000;
+                END_IF;
+			ELSE
+				TWatchDog(IN := TRUE, PT := T#15S);
+				IF TWatchDog.Q THEN
+					Sequence		:= 9999;
+				END_IF;
+            END_IF;
+			            
+        1000:    (* Menunggu Request *)
+			Out_Rob_Placing := FALSE;
+			CurrentJob		:= 'Waiting Request';
+			Out_FB 			:= TRUE;
+			Out_Req 		:= TRUE;
+            IF Inp_Req AND Inp_FB AND (AccFlushing = 2 OR bBypassFGHS OR Data_Count_Real = 0) THEN
+                Sequence := 1100;
+            END_IF;
+			
+        1100:    (* Pallet Keluar *)
+			CurrentJob		:= 'Pallet Out';
+            Out_Motor_Rev	:= TRUE;
+            IF (NOT Inp_SensorBack AND NOT Inp_SensorFront )AND NOT Inp_Req THEN
+                DataTimer(IN := TRUE,PT := T#500ms);
+                IF DataTimer.Q THEN
+					TWatchDog(IN := FALSE);
+					DataTimer(IN:=FALSE);
+					Out_FB			:= FALSE;
+					Out_Motor_Rev	:= FALSE;
+                    Sequence		:= 1200;
+                END_IF;
+			ELSE
+				TWatchDog(IN := TRUE, PT := T#15S);
+				IF TWatchDog.Q THEN
+					Sequence		:= 9999;
+				END_IF;
+            END_IF;
+			
+        1200:
+			AccFlushing			:= 0;
+			IF NOT Sts_Flushing THEN
+			Data_Pallet_Total	:= Data_Pallet_Total + 1;
+			END_IF
+			Data_Count_Total	:= Data_Count_Total + Data_Count_Real;
+			Sequence			:= 1300;
+		   
+        1300:
+			CounterBarcode		:= 0;
+            Data_Count_Real		:= 0;
+			Data_Count_Place	:= 1;
+			PalletID			:= '';
+			PalletOut			:= TRUE;
+            IF NOT Inp_Req THEN
+                Sequence		:= 100;
+            END_IF;
+			
+		9999:
+			TWatchDog(IN := FALSE);
+			DataTimer(IN:=FALSE);
+			Out_PalletJammed	:= TRUE;
+			Out_Motor_Rev 		:= FALSE;
+			Out_Motor_Fwd 		:= FALSE;
+			
+        END_CASE;
+ELSE
+  	DataTimer(IN:=FALSE);
+	TWatchDog(IN := FALSE);
+	Out_Motor_Rev 		:= FALSE;
+	Out_Motor_Fwd 		:= FALSE;
+    Out_Rob_Placing 	:= FALSE;
+    Out_Req 			:= FALSE;
+	Out_FB 				:= FALSE;
+	CurrentJob			:= 'Machine Stopped';
+	IF Inp_GlobalReset THEN
+        Sequence 		:= 0;
+        Out_FB 			:= FALSE;
+        Sts_Flushing 	:= FALSE;
+    END_IF;
+END_IF;
+
+//Sequence Index
+SeqIndex	:= Sequence;
+
+IF Data_Count_Place = 0 THEN
+    Data_Count_Place  := 1;
+END_IF;
+
+Data_Count_Place := Data_Count_Real+1;
+
+// Calculate Max Cycle
+o_MaxCycle :=i_Data*i_MaxStacking;
+
+IF Inp_ResetData THEN
+    Data_Count_Total	:= 0;
+    Data_Pallet_Total 	:= 0;
+    Data_Incomplete 	:= 0;
+END_IF;
+]]></ST>
+    </Implementation>
+    <LineIds Name="FB_Placing_v2">
+      <LineId Id="2415" Count="0" />
+      <LineId Id="2417" Count="0" />
+      <LineId Id="2649" Count="0" />
+      <LineId Id="2418" Count="0" />
+      <LineId Id="2416" Count="0" />
+      <LineId Id="577" Count="5" />
+      <LineId Id="2531" Count="0" />
+      <LineId Id="584" Count="0" />
+      <LineId Id="2535" Count="3" />
+      <LineId Id="2541" Count="0" />
+      <LineId Id="2540" Count="0" />
+      <LineId Id="2539" Count="0" />
+      <LineId Id="2534" Count="0" />
+      <LineId Id="2533" Count="0" />
+      <LineId Id="1886" Count="0" />
+      <LineId Id="2880" Count="1" />
+      <LineId Id="586" Count="9" />
+      <LineId Id="603" Count="1" />
+      <LineId Id="1887" Count="0" />
+      <LineId Id="1701" Count="0" />
+      <LineId Id="605" Count="2" />
+      <LineId Id="2032" Count="0" />
+      <LineId Id="608" Count="0" />
+      <LineId Id="621" Count="2" />
+      <LineId Id="1888" Count="0" />
+      <LineId Id="2825" Count="0" />
+      <LineId Id="2302" Count="0" />
+      <LineId Id="624" Count="0" />
+      <LineId Id="2303" Count="0" />
+      <LineId Id="625" Count="6" />
+      <LineId Id="1702" Count="1" />
+      <LineId Id="632" Count="5" />
+      <LineId Id="639" Count="1" />
+      <LineId Id="652" Count="1" />
+      <LineId Id="1889" Count="0" />
+      <LineId Id="1939" Count="0" />
+      <LineId Id="654" Count="8" />
+      <LineId Id="1940" Count="0" />
+      <LineId Id="663" Count="1" />
+      <LineId Id="1890" Count="0" />
+      <LineId Id="2126" Count="0" />
+      <LineId Id="666" Count="0" />
+      <LineId Id="2879" Count="0" />
+      <LineId Id="667" Count="0" />
+      <LineId Id="674" Count="2" />
+      <LineId Id="678" Count="6" />
+      <LineId Id="2477" Count="0" />
+      <LineId Id="686" Count="2" />
+      <LineId Id="2593" Count="3" />
+      <LineId Id="2598" Count="0" />
+      <LineId Id="2597" Count="0" />
+      <LineId Id="2127" Count="1" />
+      <LineId Id="2251" Count="0" />
+      <LineId Id="2131" Count="0" />
+      <LineId Id="2243" Count="0" />
+      <LineId Id="2248" Count="0" />
+      <LineId Id="2246" Count="0" />
+      <LineId Id="2245" Count="0" />
+      <LineId Id="2129" Count="0" />
+      <LineId Id="2240" Count="2" />
+      <LineId Id="2181" Count="2" />
+      <LineId Id="2188" Count="1" />
+      <LineId Id="2184" Count="0" />
+      <LineId Id="2186" Count="1" />
+      <LineId Id="2185" Count="0" />
+      <LineId Id="2079" Count="0" />
+      <LineId Id="2750" Count="0" />
+      <LineId Id="2753" Count="0" />
+      <LineId Id="2772" Count="0" />
+      <LineId Id="2754" Count="0" />
+      <LineId Id="2751" Count="0" />
+      <LineId Id="2757" Count="5" />
+      <LineId Id="2764" Count="7" />
+      <LineId Id="2756" Count="0" />
+      <LineId Id="2755" Count="0" />
+      <LineId Id="698" Count="0" />
+      <LineId Id="1986" Count="0" />
+      <LineId Id="1891" Count="0" />
+      <LineId Id="1751" Count="1" />
+      <LineId Id="699" Count="4" />
+      <LineId Id="1892" Count="0" />
+      <LineId Id="705" Count="6" />
+      <LineId Id="1706" Count="0" />
+      <LineId Id="712" Count="5" />
+      <LineId Id="719" Count="1" />
+      <LineId Id="732" Count="1" />
+      <LineId Id="2133" Count="0" />
+      <LineId Id="2354" Count="0" />
+      <LineId Id="734" Count="0" />
+      <LineId Id="2355" Count="0" />
+      <LineId Id="735" Count="3" />
+      <LineId Id="2826" Count="0" />
+      <LineId Id="739" Count="1" />
+      <LineId Id="2480" Count="0" />
+      <LineId Id="2823" Count="0" />
+      <LineId Id="741" Count="2" />
+      <LineId Id="2407" Count="2" />
+      <LineId Id="2420" Count="0" />
+      <LineId Id="2410" Count="0" />
+      <LineId Id="2413" Count="0" />
+      <LineId Id="2412" Count="0" />
+      <LineId Id="2411" Count="0" />
+      <LineId Id="744" Count="3" />
+      <LineId Id="751" Count="0" />
+      <LineId Id="1707" Count="0" />
+      <LineId Id="752" Count="1" />
+      <LineId Id="1796" Count="0" />
+      <LineId Id="1893" Count="0" />
+      <LineId Id="754" Count="3" />
+      <LineId Id="760" Count="1" />
+      <LineId Id="2424" Count="0" />
+      <LineId Id="2423" Count="0" />
+      <LineId Id="2425" Count="0" />
+      <LineId Id="762" Count="3" />
+      <LineId Id="1841" Count="0" />
+      <LineId Id="1840" Count="0" />
+      <LineId Id="766" Count="7" />
+      <LineId Id="777" Count="0" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
+  <POU Name="Alarm_Event_History" Id="{4c475acc-baf9-44ee-870c-75f3fe09e658}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK Alarm_Event_History
+
+VAR_INPUT
+	bError			: BOOL;
+	bErrorID		: UINT;
+	strErrorMsg		: STRING;
+	TimeStop		: STRING;	
+	bResetBuffer	: BOOL;
+END_VAR
+VAR_OUTPUT
+	bEnable_Out		: BOOL;
+END_VAR
+VAR
+	EmptyArray 		: INT ;
+	temp 			: INT ;
+	leght 			: INT := 100;
+	rTrig_Error 	: R_TRIG;
+	j				: INT;
+END_VAR
+VAR_IN_OUT
+	dtErrorHistory	: ARRAY [0..100] OF stErrorData;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[(*
+	=============FB Error History V0.1===========
+*)
+rTrig_Error(clk:= bError);
+bEnable_Out := NOT bError;
+
+     IF rTrig_Error.Q THEN 
+    // Memulai perekaman data kesalahan baru saat terjadi kesalahan baru
+       dtErrorHistory[0].Status      := 1;            // Set status entri kesalahan sebagai aktif
+       dtErrorHistory[0].ErrorID     := bErrorID;    // Simpan ID kesalahan
+       dtErrorHistory[0].ErrorMsg    := strErrorMsg;    // Simpan pesan kesalahan
+       dtErrorHistory[0].TimeStop    := TimeStop;    // Simpan waktu terjadinya kesalahan
+
+    // Geser data kesalahan lama ke posisi yang lebih tinggi dalam array
+       temp := leght;
+       FOR EmptyArray := 1 TO leght BY 1 DO 
+          dtErrorHistory[temp].Status        := dtErrorHistory[temp-1].Status ;
+          dtErrorHistory[temp].ErrorID       := dtErrorHistory[temp-1].ErrorID ;
+          dtErrorHistory[temp].ErrorMsg      := dtErrorHistory[temp-1].ErrorMsg ;
+          dtErrorHistory[temp].TimeStop      := dtErrorHistory[temp-1].TimeStop ;
+          temp := temp-1;
+       END_FOR
+
+    // Menetapkan nilai kosong untuk entri kesalahan terbaru
+       dtErrorHistory[0].Status      := 0;
+       dtErrorHistory[0].ErrorID     := 0;
+       dtErrorHistory[0].ErrorMsg    := '';
+       dtErrorHistory[0].TimeStop    := '';
+     END_IF 
+
+	
+     IF dtErrorHistory[100].Status = 1 THEN
+    // Jika entri kesalahan terakhir menunjukkan status aktif
+    // Artinya buffer kesalahan sudah penuh, maka lakukan pembersihan
+        FOR j := 1  TO leght BY 1 DO 
+        // Reset nilai-nilai dalam setiap entri array untuk membersihkan riwayat kesalahan
+           dtErrorHistory[j].Status      := 0;
+           dtErrorHistory[j].ErrorID     := 0;
+           dtErrorHistory[j].ErrorMsg    := '';
+           dtErrorHistory[j].TimeStop    := '';
+        END_FOR
+     END_IF
+]]></ST>
+    </Implementation>
+    <LineIds Name="Alarm_Event_History">
+      <LineId Id="280" Count="2" />
+      <LineId Id="379" Count="25" />
+      <LineId Id="303" Count="1" />
+      <LineId Id="405" Count="10" />
+      <LineId Id="145" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

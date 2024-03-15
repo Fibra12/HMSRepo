@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="ShiftCounter" Id="{961739d1-7f29-458f-aeb4-afad7a099d02}">
+    <Declaration><![CDATA[TYPE ShiftCounter :	
+STRUCT
+	Data1		: UINT;
+	Data2		: UINT;
+	Data3		: UINT;
+	Data4		: UINT;
+	ProductCode	: STRING(31);
+END_STRUCT
+END_TYPE]]></Declaration>
+  </DUT>
+</TcPlcObject>

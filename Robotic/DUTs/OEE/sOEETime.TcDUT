@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="sOEETime" Id="{47153aca-b9b3-4d46-b791-c1cd05f276a3}">
+    <Declaration><![CDATA[TYPE sOEETime :	
+STRUCT
+	RecordTime			: ARRAY[0..6,0..2] OF ShiftTime;
+	RecordDate			: ARRAY[0..6] OF DATE;
+	HMI_Time			: ARRAY[0..2] OF ShiftTime;
+	TimeShift			: ARRAY[1..3] OF StartShift_EndShift;				
+	HMI_Date			: DATE;
+	HMI_NumberPrev		: UINT;
+	CurrentShift		: UINT;
+	DateCurrent			: DATE;
+	TimeCurrent			: TIME_OF_DAY;
+	Reset				: BOOL;
+	TotalTime			: ShiftTime;
+	Precentage			: ARRAY[0..2] OF Precentage_Time;							
+END_STRUCT
+END_TYPE]]></Declaration>
+  </DUT>
+</TcPlcObject>

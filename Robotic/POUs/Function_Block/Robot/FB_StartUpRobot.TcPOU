@@ -1,0 +1,200 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_StartUpRobot" Id="{64cc200c-9645-4623-b1a6-aa2cd55f0af7}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_StartUpRobot
+VAR_INPUT
+	Inp_Enable					: BOOL;
+	Inp_Stop					: BOOL;
+	Inp_Robot_MotorON			: BOOL;
+	Inp_Robot_MotorOff			: BOOL;
+	Inp_Robot_HomeDone			: BOOL;
+	Inp_Robot_CycleOn			: BOOL;
+	Inp_Running					: BOOL;
+	Inp_GlobalReset				: BOOL;
+END_VAR
+VAR_OUTPUT
+	Out_Robot_StopProgram		: BOOL;
+	Out_Robot_TriggerMotorOff	: BOOL;
+	Out_Robot_TriggerMotorOn	: BOOL;
+	Out_Robot_StartProgramAtMain: BOOL;
+	Out_Robot_StartProgram		: BOOL;
+	Out_Robot_TriggerHome		: BOOL;
+	Out_RobotReady				: BOOL;
+	Out_Robot_TriggerRunning	: BOOL;
+END_VAR
+VAR
+	Sequence_Abort				: INT;
+	Sequence_Run				: INT;
+	DataTimer					: TON;
+	Sts_RobotHasBeenRun			: BOOL;
+	Sts_RobotHasBeenHome		: BOOL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF Inp_Enable AND NOT Inp_Stop THEN
+    
+    Sequence_Abort := 0;
+    Out_Robot_StopProgram := FALSE;
+    Out_Robot_TriggerMotorOff := FALSE;
+    
+    CASE Sequence_Run OF
+        0:
+            IF Inp_Robot_MotorOff AND NOT Inp_Robot_MotorON THEN
+                Sequence_Run := 10;
+            ELSIF NOT Inp_Robot_MotorOff AND Inp_Robot_MotorON THEN
+                Sequence_Run := 20;
+            END_IF;
+        10:
+            Out_Robot_TriggerMotorOn := TRUE;
+            IF NOT Inp_Robot_MotorOff AND Inp_Robot_MotorON THEN
+                Out_Robot_TriggerMotorOn := FALSE;
+				DataTimer(IN := FALSE);
+                Sequence_Run := 30;
+            ELSE
+                DataTimer(IN := TRUE,PT := T#100MS);
+                IF DataTimer.Q THEN
+                    DataTimer(IN := FALSE);
+                    Sequence_Run := 0;
+                END_IF;
+            END_IF;
+        20:
+            Out_Robot_TriggerMotorOn := FALSE;
+            IF NOT Sts_RobotHasBeenRun THEN
+                Sequence_Run := 30;
+            ELSE
+                Sequence_Run := 40;
+            END_IF;
+        30:
+            Out_Robot_StartProgramAtMain := TRUE;
+            IF Inp_Robot_CycleOn THEN
+                Sts_RobotHasBeenRun := TRUE;
+                Out_Robot_StartProgramAtMain := FALSE;
+				DataTimer(IN := FALSE);
+                Sequence_Run := 50;
+            ELSE
+                DataTimer(IN := TRUE,PT := T#100MS);
+                IF DataTimer.Q THEN
+                    DataTimer(IN := FALSE);
+                    Sequence_Run := 20;
+                END_IF;
+            END_IF;
+        40:
+            Out_Robot_StartProgram := TRUE;
+            IF Inp_Robot_CycleOn THEN
+                Out_Robot_StartProgram:= FALSE;
+				DataTimer(IN := FALSE);
+                Sequence_Run := 50;
+            ELSE
+                DataTimer(IN := TRUE,PT := T#100MS);
+                IF DataTimer.Q THEN
+                    DataTimer(IN := FALSE);
+                    Sequence_Run := 20;
+                END_IF;
+            END_IF;
+        50:
+            IF NOT Sts_RobotHasBeenHome THEN
+                Sequence_Run := 60;
+            ELSE
+                Sequence_Run := 80;
+            END_IF;
+        60:
+            Out_Robot_TriggerHome := TRUE;
+            IF Inp_Robot_HomeDone THEN
+                Out_Robot_TriggerHome := FALSE;
+                Sequence_Run := 70;
+            END_IF;
+        70:
+            IF NOT Inp_Robot_HomeDone THEN
+                Sts_RobotHasBeenHome:= TRUE;
+                Sequence_Run := 80;
+            END_IF;
+        80:
+            Out_RobotReady := TRUE;
+            IF Inp_Running THEN
+                Sequence_Run := 90;
+            END_IF;
+        90:
+            Out_Robot_TriggerRunning := TRUE;
+                
+    END_CASE;
+    
+ELSE
+    
+    CASE Sequence_Abort OF
+        0:
+            IF Inp_Robot_CycleOn THEN
+                Sequence_Abort := 10;
+            ELSE
+                Sequence_Abort := 20;
+            END_IF;
+        10:
+            Out_Robot_StopProgram := TRUE;
+            IF NOT Inp_Robot_CycleOn THEN
+                Out_Robot_StopProgram := FALSE;
+				DataTimer(IN := FALSE);
+                Sequence_Abort := 20;
+            ELSE
+                DataTimer(IN := TRUE,PT := T#100MS);
+                IF DataTimer.Q THEN
+                    DataTimer(IN := FALSE);
+                    Out_Robot_StopProgram := FALSE;
+                    Sequence_Abort := 0;
+                END_IF;
+            END_IF;
+        20:
+            IF Inp_Robot_MotorON AND NOT Inp_Robot_MotorOff THEN
+                Sequence_Abort := 25;
+            ELSIF NOT Inp_Robot_MotorON AND Inp_Robot_MotorOff THEN
+                Sequence_Abort := 40;
+            END_IF;
+        25:
+            DataTimer(IN := TRUE,PT := T#100MS);
+                IF DataTimer.Q THEN
+                    DataTimer(IN := FALSE);
+                    Out_Robot_StopProgram := FALSE;
+                    Sequence_Abort := 30;
+                END_IF;
+        30:
+            Out_Robot_TriggerMotorOff := TRUE;
+            IF Inp_Robot_MotorOff AND NOT Inp_Robot_MotorON THEN
+                Out_Robot_TriggerMotorOff := FALSE;
+                Sequence_Abort := 30;
+            ELSE
+               DataTimer(IN := TRUE,PT := T#100MS);
+                IF DataTimer.Q THEN
+                    DataTimer(IN := FALSE);
+                    Out_Robot_StopProgram := FALSE;
+                    Sequence_Abort := 20;
+                END_IF;
+            END_IF;
+			40:
+			        Out_Robot_TriggerMotorOff := FALSE;
+					
+    END_CASE;
+    
+    DataTimer(IN := FALSE);
+    Sequence_Run := 0;
+    Out_Robot_TriggerRunning := FALSE;
+    Out_Robot_TriggerMotorOn := FALSE;
+    Out_Robot_StartProgram := FALSE;
+    Out_Robot_StartProgramAtMain := FALSE;
+    Out_Robot_TriggerHome := FALSE;
+    
+    IF Inp_GlobalReset THEN
+        Out_RobotReady := FALSE;
+        Sts_RobotHasBeenRun := FALSE;
+        Sts_RobotHasBeenHome := FALSE;
+    END_IF;
+	
+	IF Inp_Stop THEN
+		Out_Robot_StopProgram:=TRUE;
+	END_IF;
+    
+END_IF;]]></ST>
+    </Implementation>
+    <LineIds Name="FB_StartUpRobot">
+      <LineId Id="10" Count="158" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

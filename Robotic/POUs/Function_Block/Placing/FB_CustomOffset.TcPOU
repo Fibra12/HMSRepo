@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_CustomOffset" Id="{416f4b3c-f8a6-460b-9224-70178879ea89}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_CustomOffset
+VAR_INPUT
+	Dt_OffsetPlacing	: stCustomOffset;
+	iCounter			: INT;
+END_VAR
+VAR_OUTPUT
+	iOffset_X			: UINT;
+	iOffset_Y			: UINT;
+	iLayer				: INT;
+	iCycle				: INT;
+END_VAR
+VAR
+	
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[iCycle := iCounter MOD 18;
+IF iCycle=0 THEN
+	iCycle:=18;
+END_IF
+
+iLayer := 1+((iCounter-1)/9);
+
+iOffset_X := INT_TO_UINT(Dt_OffsetPlacing.iOffset_X[iCycle]);
+iOffset_Y := INT_TO_UINT(Dt_OffsetPlacing.iOffset_Y[iCycle]);]]></ST>
+    </Implementation>
+    <LineIds Name="FB_CustomOffset">
+      <LineId Id="9" Count="0" />
+      <LineId Id="18" Count="2" />
+      <LineId Id="41" Count="0" />
+      <LineId Id="21" Count="1" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="17" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

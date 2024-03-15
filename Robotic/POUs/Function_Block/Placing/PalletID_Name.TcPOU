@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="PalletID_Name" Id="{10a30c02-f6db-4cc0-8861-05e0a84d5e94}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK PalletID_Name
+VAR_INPUT
+	CounterBox	: USINT;
+	
+	sYear		: STRING;
+	sMonth		: STRING;
+	sDate		: STRING;
+	sHour		: STRING;
+	sMinutes	: STRING;
+	sSeconds	: STRING;
+	PalletNumber: STRING(2);
+	LineNumber	: STRING(2);
+END_VAR
+VAR_OUTPUT PERSISTENT
+	PalletID	: STRING;
+END_VAR
+VAR
+	Timer: TON;
+END_VAR
+
+VAR PERSISTENT
+	PalletData: STRING;
+	SeqIndex: INT;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[PalletID:=PalletData;
+
+CASE SeqIndex OF
+	0:
+		IF (CounterBox=1) THEN
+			SeqIndex:=10;
+		END_IF
+	10:
+		PalletData:=CONCAT(PalletNumber,CONCAT(sHour,CONCAT(sMinutes,CONCAT(sSeconds,CONCAT(sDate,CONCAT(sMonth,sYear))))));
+		SeqIndex:=20;
+	20:
+		IF NOT (CounterBox=1) THEN
+			SeqIndex:=0;
+		END_IF
+END_CASE]]></ST>
+    </Implementation>
+    <LineIds Name="PalletID_Name">
+      <LineId Id="3" Count="13" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,210 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
+  <POU Name="FGHS_DataCollect_Palletizing" Id="{267513fd-c549-43c2-88a0-5f1da95b57d7}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FGHS_DataCollect_Palletizing
+
+VAR_INPUT
+	ENI					: BOOL;
+	bResetBuffer		: BOOL;
+	bReset				: BOOL;
+	bHandshake			: BOOL;
+	bDonePick			: BOOL;
+	bDonePlace			: BOOL;	
+	iCycleBox			: UINT;
+	iLine				: STRING;
+	Barcode				: STRING;
+	PalletID			: STRING;	
+	Timestamp			: DT;
+	ProductData			: stProductInfo;
+END_VAR
+
+
+VAR_OUTPUT
+	ENO					: BOOL;
+	Error				: BOOL;
+	ErrorMsg			: STRING;
+	DoneScan			: BOOL;
+END_VAR
+
+VAR_IN_OUT
+	arBuffer			: stPalletTrackingData;
+END_VAR
+
+VAR PERSISTENT
+	EmptyArray			: stPalletTrackingData;
+	TempBarcode			: STRING;
+	DataTimer			: TON;
+	R_DonePlace			: R_TRIG;
+	R_DonePick			: R_TRIG;
+	T_DonePick			: TOF;
+	SeqIndex			: INT;
+	SeqIndex2			: INT;
+	Index				: UINT;
+	LastCycle			: UINT;
+	BarcodeEAN			: STRING;
+	CodeVariant			: STRING;
+	BarcodeLinkUp		: STRING;
+	BarcodeResult		: STRING;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF ENI THEN
+	ENO	:= TRUE;
+END_IF
+IF bReset THEN
+	Error 		:= FALSE;
+	ErrorMsg	:= '';
+END_IF
+
+
+//Get Data Barcode at Picking to Temp Variable
+CASE SeqIndex OF 
+	0:
+		DoneScan	:= FALSE;
+		IF bDonePick THEN
+			SeqIndex	:= 1;
+		END_IF
+		
+	1:
+		TempBarcode	:= Barcode;
+		DoneScan	:= TRUE;
+		//IF arBuffer.BarcodeProduct[iCycleBox] = TempBarcode THEN
+		//	Warning	:= TRUE;
+		//END_IF
+		
+		IF NOT bDonePick THEN
+			SeqIndex	:= 0;
+		END_IF
+		
+		
+END_CASE
+
+//Get Data Barcode and Timestamp when Product Placed at Pallet
+R_DonePlace(CLK:= bDonePlace);
+IF R_DonePlace.Q THEN
+	arBuffer.BarcodeProduct[iCycleBox]		:= TempBarcode;
+	arBuffer.BarcodeProductTime[iCycleBox]	:= Timestamp;
+	
+	
+	
+END_IF
+
+
+//Move Pallet ID 
+IF iCycleBox > 1 AND PalletID <> '' THEN
+	arBuffer.PalletID			:= PalletID;
+	arBuffer.PalletCreationDate	:= Timestamp;
+	arBuffer.EANVariant			:= ProductData.EANVariant;
+	arBuffer.CodeVariant		:= ProductData.CodeVariant;
+	arBuffer.CounterProduct		:= iCycleBox-1;
+ELSIF (PalletID = '' AND bHandshake) OR bResetBuffer THEN //
+	arBuffer					:= EmptyArray;
+END_IF
+
+
+IF iCycleBox > 1 THEN
+	//Detect Dupilcate Barcode
+	IF arBuffer.BarcodeProduct[iCycleBox] = arBuffer.BarcodeProduct[iCycleBox-1] THEN // OR (R_DonePick.Q AND TempBarcode = arBuffer.BarcodeProduct[iCycleBox-1])) AND arBuffer.BarcodeProduct[iCycleBox-1] <> ''
+		Error		:= TRUE;
+		ErrorMsg	:= CONCAT('Duplicate Barcode at Placing ',iLine);
+	END_IF	
+	
+	(* Split Barcode *)
+	BarcodeResult	:= arBuffer.BarcodeProduct[iCycleBox-1];
+	BarcodeEAN		:= DELETE(DELETE(BarcodeResult,3,0),24,15);
+	CodeVariant		:= DELETE(DELETE(BarcodeResult,19,0),20,3);
+	BarcodeLinkUp	:= DELETE(DELETE(BarcodeResult,33,0),6,3);
+	
+	//Detect Misplaced Barcode
+	IF ProductData.LinkUpSource <> BarcodeLinkUp AND BarcodeResult <> '' AND (ProductData.LinkUpSource <> '0' OR ProductData.LinkUpSource <> '') THEN
+		Error		:= TRUE;
+		ErrorMsg	:= CONCAT('Mixing Barcode at Placing ',iLine);
+	END_IF 
+	
+END_IF
+
+
+
+//Release Barcode 
+IF LastCycle <> iCycleBox AND iCycleBox > 1 AND PalletID <> '' AND NOT ENI THEN
+	FOR Index := iCycleBox+1 TO 60 BY 1 DO	
+		arBuffer.BarcodeProduct[Index]		:= EmptyArray.BarcodeProduct[Index];
+		arBuffer.BarcodeProductTime[Index]	:= EmptyArray.BarcodeProductTime[Index];
+	END_FOR
+	LastCycle	:= iCycleBox;
+END_IF
+
+
+
+]]></ST>
+    </Implementation>
+    <LineIds Name="FGHS_DataCollect_Palletizing">
+      <LineId Id="22" Count="0" />
+      <LineId Id="455" Count="1" />
+      <LineId Id="523" Count="1" />
+      <LineId Id="755" Count="0" />
+      <LineId Id="525" Count="0" />
+      <LineId Id="457" Count="0" />
+      <LineId Id="470" Count="0" />
+      <LineId Id="318" Count="0" />
+      <LineId Id="586" Count="1" />
+      <LineId Id="714" Count="0" />
+      <LineId Id="588" Count="6" />
+      <LineId Id="711" Count="1" />
+      <LineId Id="710" Count="0" />
+      <LineId Id="713" Count="0" />
+      <LineId Id="595" Count="0" />
+      <LineId Id="597" Count="1" />
+      <LineId Id="709" Count="0" />
+      <LineId Id="599" Count="0" />
+      <LineId Id="585" Count="0" />
+      <LineId Id="471" Count="0" />
+      <LineId Id="458" Count="0" />
+      <LineId Id="509" Count="0" />
+      <LineId Id="113" Count="0" />
+      <LineId Id="459" Count="0" />
+      <LineId Id="462" Count="0" />
+      <LineId Id="526" Count="0" />
+      <LineId Id="779" Count="1" />
+      <LineId Id="460" Count="0" />
+      <LineId Id="536" Count="0" />
+      <LineId Id="472" Count="0" />
+      <LineId Id="466" Count="0" />
+      <LineId Id="465" Count="0" />
+      <LineId Id="467" Count="0" />
+      <LineId Id="469" Count="0" />
+      <LineId Id="474" Count="4" />
+      <LineId Id="468" Count="0" />
+      <LineId Id="758" Count="0" />
+      <LineId Id="517" Count="0" />
+      <LineId Id="514" Count="0" />
+      <LineId Id="759" Count="0" />
+      <LineId Id="520" Count="1" />
+      <LineId Id="756" Count="0" />
+      <LineId Id="518" Count="0" />
+      <LineId Id="843" Count="0" />
+      <LineId Id="845" Count="3" />
+      <LineId Id="844" Count="0" />
+      <LineId Id="760" Count="2" />
+      <LineId Id="778" Count="0" />
+      <LineId Id="777" Count="0" />
+      <LineId Id="776" Count="0" />
+      <LineId Id="838" Count="0" />
+      <LineId Id="519" Count="0" />
+      <LineId Id="833" Count="0" />
+      <LineId Id="832" Count="0" />
+      <LineId Id="697" Count="0" />
+      <LineId Id="516" Count="0" />
+      <LineId Id="698" Count="0" />
+      <LineId Id="700" Count="0" />
+      <LineId Id="704" Count="0" />
+      <LineId Id="706" Count="0" />
+      <LineId Id="705" Count="0" />
+      <LineId Id="702" Count="0" />
+      <LineId Id="701" Count="0" />
+      <LineId Id="763" Count="0" />
+      <LineId Id="114" Count="1" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

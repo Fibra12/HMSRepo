@@ -1,0 +1,274 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
+  <POU Name="FB_StateManager" Id="{ea98802c-378d-4a3d-aea6-108656d79e76}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_StateManager
+VAR_IN_OUT
+	stMachineCurrentState			: stMachineState;
+END_VAR
+VAR_INPUT
+	bButtonAcknowledge				: BOOL;		// User Input for Error Acknowledgement
+	bButtonReset					: BOOL;		// User Input for Reset 
+	bButtonRun						: BOOL;		// User Input for Starting Machine Running Sequence
+	bButtonStop						: BOOL;		// User Input for Stopping Machine Running Sequence
+	bFinishReset					: BOOL;
+	bFinishPowerUp					: BOOL;
+	bFinishHoming					: BOOL;
+	bMachineManualMode				: BOOL;		// Input(s) Required to Change Machine Operation Mode Into Manual Mode
+	bMachineAutoMode				: BOOL;		// Input(s) Required to Change Machine Operation Mode Into Auto Mode
+	bMachineError					: BOOL;		// Input(s) required to make the machine goes into error state
+END_VAR
+VAR_OUTPUT
+	bError							: BOOL;		
+	strErrorMsg						: STRING;	
+	strMachineState					: STRING;
+END_VAR
+VAR
+	bFL_AutoModeActive				: BOOL;
+	bFL_ManualModeActive			: BOOL;
+	bInit							: BOOL;
+	StateIndex						: UINT;
+	bFL_Error						: BOOL;
+	F_TRIG_AUTO						: F_TRIG;
+	F_TRIG_MANUAL					: F_TRIG;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[//=======StateManager v1.1=======
+//Used UDTs: MachineState - v1.0
+//
+//Changelog: 
+//v1.1 [23.02.2022] Edit Mode selection logic - Fabrilian Asali
+//v1.0 [15.01.2021] Start Function block development - Fabrilian Asali
+//
+//===================================
+
+// Inisialisasi state mesin saat program pertama kali dijalankan
+IF NOT bInit THEN
+    stMachineCurrentState.Error       := FALSE;          // Set error state mesin menjadi false
+    stMachineCurrentState.CheckSafety := FALSE;          // Set status pemeriksaan keselamatan menjadi false
+    stMachineCurrentState.Aborted     := FALSE;          // Set status pembatalan menjadi false
+    stMachineCurrentState.Initialize  := FALSE;          // Set status inisialisasi menjadi false
+    stMachineCurrentState.CheckToRun  := FALSE;          // Set status pemeriksaan untuk menjalankan menjadi false
+    stMachineCurrentState.Ready       := FALSE;          // Set status siap menjadi false
+    stMachineCurrentState.Running     := FALSE;          // Set status berjalan menjadi false
+    stMachineCurrentState.Stopped     := FALSE;          // Set status berhenti menjadi false
+    stMachineCurrentState.ManualMode  := FALSE;          // Set status mode manual menjadi false
+    bFL_Error  := FALSE;                                 // Set flag error menjadi false
+    StateIndex := 0;                                     // Set indeks state menjadi 0
+    bInit      := TRUE;                                  // Set flag inisialisasi menjadi true
+END_IF;
+
+// Logika untuk mendeteksi kesalahan dan mengatur status mesin menjadi kesalahan jika terdeteksi
+IF bMachineError AND NOT bFL_Error THEN
+    StateIndex := 0;                 // Set indeks state menjadi 0
+    bFL_Error  := TRUE;              // Set flag error menjadi true
+END_IF;
+
+// Logika untuk mereset pesan kesalahan saat tombol acknowledge ditekan
+IF bButtonAcknowledge THEN
+    bError      := FALSE;                // Set status error menjadi false
+    strErrorMsg := '';                   // Kosongkan pesan kesalahan
+END_IF;
+
+// Logika pemilihan mode otomatis/manual
+IF bMachineAutoMode AND NOT bMachineManualMode THEN  //jika status mode aktif & mode mesin manual non-aktif, maka
+    bFL_AutoModeActive   := TRUE;      // Set flag mode otomatis aktif menjadi true
+    bFL_ManualModeActive := FALSE;     // Set flag mode manual aktif menjadi false
+ELSIF NOT bMachineAutoMode AND bMachineManualMode THEN
+    bFL_AutoModeActive   := FALSE;       // Set flag mode otomatis aktif menjadi false
+    bFL_ManualModeActive := TRUE;        // Set flag mode manual aktif menjadi true
+ELSE
+    bError               := TRUE;                               // Set status error menjadi true
+    strErrorMsg          := 'Operation Mode Fault Detected.';   // Set pesan kesalahan
+    bFL_AutoModeActive   := FALSE;                              // Set flag mode otomatis aktif menjadi false
+    bFL_ManualModeActive := FALSE;                              // Set flag mode manual aktif menjadi false
+END_IF;
+
+// Trigger untuk deteksi perubahan mode otomatis
+F_TRIG_AUTO(CLK := bMachineAutoMode);
+// Trigger untuk deteksi perubahan mode manual
+F_TRIG_MANUAL(CLK := bMachineManualMode);
+// Logika untuk menangani perubahan mode otomatis atau manual
+IF F_TRIG_AUTO.Q OR F_TRIG_MANUAL.Q THEN
+    bError := TRUE;                                     // Set status error menjadi true
+    strErrorMsg := 'Operation Mode Change Detected.';   // Set pesan kesalahan
+    bFL_AutoModeActive := FALSE;                        // Set flag mode otomatis aktif menjadi false
+    bFL_ManualModeActive := FALSE;                      // Set flag mode manual aktif menjadi false
+    StateIndex := 0;                                    // Set indeks state menjadi 0
+END_IF
+
+	
+	
+	//V1.0 Selection Logic Code
+	
+		(*
+		IF bMachineAutoMode AND NOT bMachineManualMode THEN
+			bFL_AutoModeActive 							:= TRUE;
+			bFL_ManualModeActive					 	:= FALSE;
+		ELSIF NOT bMachineAutoMode AND bMachineManualMode THEN
+			bFL_ManualModeActive					 	:= TRUE;
+			bFL_AutoModeActive 							:= FALSE;
+		ELSE
+			bError 										:= TRUE;
+			strErrorMsg 								:= 'Operation Mode Change Detected.';
+			bFL_AutoModeActive 							:= FALSE;
+			bFL_ManualModeActive						:= FALSE;
+		END_IF;
+		*)
+
+
+
+
+CASE StateIndex OF
+	0: //Error State
+		stMachineCurrentState.Error 		:= TRUE;
+		stMachineCurrentState.CheckSafety	:= FALSE;
+		stMachineCurrentState.Aborted		:= FALSE;
+		stMachineCurrentState.Initialize	:= FALSE;
+		stMachineCurrentState.CheckToRun	:= FALSE;
+		stMachineCurrentState.Ready			:= FALSE;
+		stMachineCurrentState.Running		:= FALSE;
+		stMachineCurrentState.Stopped		:= FALSE;
+		stMachineCurrentState.ManualMode	:= FALSE;
+		strMachineState						:= 'Error';
+		IF bButtonAcknowledge THEN		
+			StateIndex := 10;
+		END_IF;
+	
+	10: //CheckSafety State
+		stMachineCurrentState.Error 		:= FALSE;
+		stMachineCurrentState.CheckSafety	:= TRUE;
+		stMachineCurrentState.Aborted		:= FALSE;
+		stMachineCurrentState.Initialize	:= FALSE;
+		stMachineCurrentState.CheckToRun	:= FALSE;
+		stMachineCurrentState.Ready			:= FALSE;
+		stMachineCurrentState.Running		:= FALSE;
+		stMachineCurrentState.Stopped		:= FALSE;
+		stMachineCurrentState.ManualMode	:= FALSE;
+		strMachineState						:= 'Safety';
+		IF NOT bMachineError THEN		
+			StateIndex 	:= 20;
+			bFL_Error		:= FALSE;
+		ELSE
+			bError 			:= TRUE;
+			strErrorMsg := 'Machine Check Safety Failed';
+			StateIndex	:= 0;
+		END_IF;	
+
+	20: //Aborted State | auto manual mode branching
+		stMachineCurrentState.Error 		:= FALSE;
+		stMachineCurrentState.CheckSafety	:= FALSE;
+		stMachineCurrentState.Aborted		:= TRUE;
+		stMachineCurrentState.Initialize	:= FALSE;
+		stMachineCurrentState.CheckToRun	:= FALSE;
+		stMachineCurrentState.Ready			:= FALSE;
+		stMachineCurrentState.Running		:= FALSE;
+		stMachineCurrentState.Stopped		:= FALSE;
+		stMachineCurrentState.ManualMode	:= FALSE;
+		strMachineState						:= 'Aborted';		
+		IF bFL_AutoModeActive AND bButtonReset THEN
+			StateIndex := 30;
+		ELSIF bFL_ManualModeActive THEN
+			StateIndex := 1000;
+		END_IF;
+
+	30: //Initialize State
+		stMachineCurrentState.Error 		:= FALSE;
+		stMachineCurrentState.CheckSafety	:= FALSE;
+		stMachineCurrentState.Aborted		:= FALSE;
+		stMachineCurrentState.Initialize	:= TRUE;
+		stMachineCurrentState.CheckToRun	:= FALSE;
+		stMachineCurrentState.Ready			:= FALSE;
+		stMachineCurrentState.Running		:= FALSE;
+		stMachineCurrentState.Stopped		:= FALSE;
+		stMachineCurrentState.ManualMode	:= FALSE;
+		strMachineState						:= 'Initialize';				
+		IF bFinishReset AND bFinishPowerUp THEN
+			StateIndex := 40;
+		END_IF;
+		
+	40: //CheckToRun State
+		stMachineCurrentState.Error 		:= FALSE;
+		stMachineCurrentState.CheckSafety	:= FALSE;
+		stMachineCurrentState.Aborted		:= FALSE;
+		stMachineCurrentState.Initialize	:= FALSE;
+		stMachineCurrentState.CheckToRun	:= TRUE;
+		stMachineCurrentState.Ready			:= FALSE;
+		stMachineCurrentState.Running		:= FALSE;
+		stMachineCurrentState.Stopped		:= FALSE;
+		stMachineCurrentState.ManualMode	:= FALSE;
+		strMachineState						:= 'Check Run';		
+		IF bFinishHoming THEN
+			StateIndex := 50;
+		END_IF;
+		
+	50: //Ready State
+		stMachineCurrentState.Error 		:= FALSE;
+		stMachineCurrentState.CheckSafety	:= FALSE;
+		stMachineCurrentState.Aborted		:= FALSE;
+		stMachineCurrentState.Initialize	:= FALSE;
+		stMachineCurrentState.CheckToRun	:= FALSE;
+		stMachineCurrentState.Ready			:= TRUE;
+		stMachineCurrentState.Running		:= FALSE;
+		stMachineCurrentState.Stopped		:= FALSE;
+		stMachineCurrentState.ManualMode	:= FALSE;
+		strMachineState						:= 'Ready';				
+		IF bButtonRun THEN
+			StateIndex := 60;
+		END_IF;
+		
+	60: //Running State
+		stMachineCurrentState.Error 		:= FALSE;
+		stMachineCurrentState.CheckSafety	:= FALSE;
+		stMachineCurrentState.Aborted		:= FALSE;
+		stMachineCurrentState.Initialize	:= FALSE;
+		stMachineCurrentState.CheckToRun	:= FALSE;
+		stMachineCurrentState.Ready			:= FALSE;
+		stMachineCurrentState.Running		:= TRUE;
+		stMachineCurrentState.Stopped		:= FALSE;
+		stMachineCurrentState.ManualMode	:= FALSE;
+		strMachineState						:= 'Running';		
+		IF bButtonStop THEN
+			StateIndex := 70;
+		END_IF;
+		
+	70: //Stopped State
+		stMachineCurrentState.Error 		:= FALSE;
+		stMachineCurrentState.CheckSafety	:= FALSE;
+		stMachineCurrentState.Aborted		:= FALSE;
+		stMachineCurrentState.Initialize	:= FALSE;
+		stMachineCurrentState.CheckToRun	:= FALSE;
+		stMachineCurrentState.Ready			:= FALSE;
+		stMachineCurrentState.Running		:= FALSE;
+		stMachineCurrentState.Stopped		:= TRUE;
+		stMachineCurrentState.ManualMode	:= FALSE;
+		strMachineState						:= 'Stopped';
+		IF bButtonRun THEN
+			StateIndex := 60;
+		END_IF;
+		
+	1000: //Manual mode operation state
+		stMachineCurrentState.Error 		:= FALSE;
+		stMachineCurrentState.CheckSafety	:= FALSE;
+		stMachineCurrentState.Aborted		:= FALSE;
+		stMachineCurrentState.Initialize	:= FALSE;
+		stMachineCurrentState.CheckToRun	:= FALSE;
+		stMachineCurrentState.Ready			:= FALSE;
+		stMachineCurrentState.Running		:= FALSE;
+		stMachineCurrentState.Stopped		:= FALSE;
+		stMachineCurrentState.ManualMode	:= TRUE;
+		strMachineState						:= 'Manual';
+		IF bFL_AutoModeActive THEN
+			StateIndex := 0;
+		END_IF
+END_CASE;]]></ST>
+    </Implementation>
+    <LineIds Name="FB_StateManager">
+      <LineId Id="902" Count="8" />
+      <LineId Id="1261" Count="53" />
+      <LineId Id="1260" Count="0" />
+      <LineId Id="962" Count="163" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_CheckShuttlePos" Id="{5c28c69c-ee2d-4618-98fc-a764ee58274a}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_CheckShuttlePos
+VAR_INPUT
+	bEnable				: BOOL;
+	OFFSET				: DINT;
+	ACT					: DINT;
+	Shuttle				: ARRAY[0..4] OF stShuttle;
+END_VAR
+VAR_OUTPUT
+	CheckShuttle		: ARRAY [0..4] OF stCheckShuttle;
+END_VAR
+VAR
+	Sequence			: INT;
+	DIFF_EMPTY			: DINT;
+	DIFF_LOAD			: DINT;
+	DIFF_TEMP			: DINT;
+	DataTimer			: TON;
+	WatchDog			: TON;
+	TEMP				: DINT;
+	Index				: INT;
+	Init				: BOOL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[//Check Postion
+IF ABS(TEMP - ACT) > 5 THEN
+	DIFF_TEMP := (TEMP - ACT);
+ELSE
+	DIFF_TEMP := 0;
+END_IF;
+
+(* ================== Check Shuttle Position ================== *)
+IF (DIFF_TEMP <> 0 AND ACT <> 0) OR NOT Init THEN
+	FOR Index := 0 TO 4 BY 1 DO
+		//Check Empty Pallet Position
+		IF ABS(Shuttle[Index].PositionEmpty - ACT) > OFFSET THEN
+			DIFF_EMPTY := (Shuttle[Index].PositionEmpty - ACT);
+		ELSE
+			DIFF_EMPTY := 0;
+		END_IF;
+		
+		IF DIFF_EMPTY = 0 THEN
+			CheckShuttle[Index].AtEmpty := TRUE;
+		ELSE
+			CheckShuttle[Index].AtEmpty := FALSE;
+		END_IF 	
+		
+		//Check Load Pallet Position
+		IF ABS(Shuttle[Index].PositionLoaded - ACT) > OFFSET THEN
+			DIFF_LOAD := (Shuttle[Index].PositionLoaded - ACT);
+		ELSE
+			DIFF_LOAD := 0;
+		END_IF;
+		
+		IF DIFF_LOAD = 0 THEN
+			CheckShuttle[Index].AtLoad := TRUE;
+		ELSE
+			CheckShuttle[Index].AtLoad := FALSE;
+		END_IF 	
+	
+	END_FOR
+	//Update Position
+	TEMP	:= ACT;	
+	Init	:= TRUE;
+END_IF
+
+]]></ST>
+    </Implementation>
+    <LineIds Name="FB_CheckShuttlePos">
+      <LineId Id="462" Count="0" />
+      <LineId Id="457" Count="3" />
+      <LineId Id="455" Count="1" />
+      <LineId Id="453" Count="0" />
+      <LineId Id="380" Count="0" />
+      <LineId Id="417" Count="0" />
+      <LineId Id="434" Count="0" />
+      <LineId Id="423" Count="3" />
+      <LineId Id="420" Count="0" />
+      <LineId Id="427" Count="1" />
+      <LineId Id="431" Count="2" />
+      <LineId Id="430" Count="0" />
+      <LineId Id="437" Count="0" />
+      <LineId Id="439" Count="10" />
+      <LineId Id="438" Count="0" />
+      <LineId Id="422" Count="0" />
+      <LineId Id="421" Count="0" />
+      <LineId Id="452" Count="0" />
+      <LineId Id="450" Count="0" />
+      <LineId Id="484" Count="0" />
+      <LineId Id="418" Count="0" />
+      <LineId Id="379" Count="0" />
+      <LineId Id="375" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

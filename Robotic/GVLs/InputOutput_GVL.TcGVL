@@ -1,0 +1,205 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <GVL Name="InputOutput_GVL" Id="{9a157e8e-b486-4b50-b408-93f23ec9b4a3}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+VAR_GLOBAL
+	//Barcode Reader Communication
+	xIn_BarcodeReader_Picking1		AT %I* : stDM_Input;
+	xOut_BarcodeReader_Picking1		AT %Q* : stDM_Output;	
+	
+	xIn_BarcodeReader_Picking2		AT %I* : stDM_Input;
+	xOut_BarcodeReader_Picking2		AT %Q* : stDM_Output;
+
+	xIn_BarcodeReader_Picking3		AT %I* : stDM_Input;
+	xOut_BarcodeReader_Picking3		AT %Q* : stDM_Output;	
+	
+	xIn_BarcodeReader_Picking4		AT %I* : stDM_Input;
+	xOut_BarcodeReader_Picking4		AT %Q* : stDM_Output;
+	
+	xIn_BarcodeReader_Picking2B		AT %I* : stDM_Input;
+	xOut_BarcodeReader_Picking2B	AT %Q* : stDM_Output;
+	
+	xIn_BarcodeReader_Picking3B		AT %I* : stDM_Input;
+	xOut_BarcodeReader_Picking3B	AT %Q* : stDM_Output;	
+	
+	BarcodeReader_Picking1_State	AT %I*	: UINT;
+	BarcodeReader_Picking2_State	AT %I*	: UINT;
+	BarcodeReader_Picking3_State	AT %I*	: UINT;
+	BarcodeReader_Picking4_State	AT %I*	: UINT;
+	
+	BarcodeReader_Picking2B_State	AT %I*	: UINT;
+	BarcodeReader_Picking3B_State	AT %I*	: UINT;
+	
+	//Robot Communication
+	xIn_Robot						AT %I*	: stRobot_Input;
+	xOut_Robot						AT %Q*	: stRobot_Output;
+
+	xIn_ConnectionRobot				AT %I*	: ARRAY [1..64] OF USINT;
+	xOut_ConnectionRobot			AT %Q*	: ARRAY [1..64] OF USINT;
+
+	
+	
+	//Subscriber Input From PLC Outfeed  
+	Shuttle_stsMachine				AT %I*	: STRING(31);
+	Infeed_stsMachine				AT %I*	: STRING(31);
+	Outfeed_stsMachine				AT %I*	: STRING(31);
+	Dispenser_stsMachine			AT %I*	: STRING(31);
+	Status_EcSlave					AT %I*	: ARRAY [1..10] OF BOOL;
+	Digital_Input					AT %I*	: ARRAY [1..128] OF BOOL;
+	Digital_Output					AT %I*	: ARRAY [1..80] OF BOOL;
+	LoadPalletGoOut					AT %I*	: BOOL;
+	ShuttlePosition					AT %I*	: DINT;
+	FB_RequestShuttle				AT %I*	: ARRAY [0..4] OF BOOL;
+	stErrorOutfeed					AT %I*	: ARRAY [1..100] OF BOOL;
+	stErrorShuttle					AT %I*	: ARRAY [1..100] OF BOOL;
+	stErrorDispenser				AT %I*	: ARRAY [1..100] OF BOOL;
+	stErrorInfeed					AT %I*	: ARRAY [1..100] OF BOOL;
+	ErrorShuttleEmpty				AT %I*	: STRING(31);
+	ErrorShuttleLoad				AT %I*	: STRING(31);
+	SeqIndexOutfeed					AT %I*	: ARRAY [1..10] OF INT;
+	MTBF_Motor						AT %I*	: ARRAY [1..50] OF LREAL;
+	MTBF_Pneumatic					AT %I*	: ARRAY [1..25] OF UINT;
+	
+	//Publisher Output to PLC Outfeed
+	RequestEmptyPallet				AT %Q*	: ARRAY [1..4] OF BOOL;
+	RequestLoadPallet				AT %Q*	: ARRAY [1..4] OF BOOL;	
+	Counter							AT %Q*	: ARRAY [1..4] OF USINT;
+	
+	ControlButton					AT %Q*	: ARRAY [1..20] OF BOOL;
+	TmrOutfeed						AT %Q*	: ARRAY [1..25] OF UINT;
+	TestMode						AT %Q*	: ARRAY [1..100] OF BOOL;
+	Shuttle_Speed					AT %Q*	: ARRAY [1..4] OF REAL;
+	stShuttleSequence				AT %Q*	: ARRAY [0..4] OF stShuttle;
+	Shuttle_Offset					AT %Q*	: DINT;
+	Error_Safety					AT %Q*	: BOOL;
+	PickingBusy						AT %Q*	: BOOL;
+	
+
+	//Main Panel (P1)
+	//Digital Input 16 Point EL1809
+	xIn1000				AT 		%I*			: BOOL;		// Push Button Run at Main Panel
+	xIn1001				AT 		%I*			: BOOL;		// Push Button Stop at Main Panel
+	xIn1002				AT 		%I*			: BOOL;		// Push Button Alarm Reset at Main Panel
+	xIn1003				AT 		%I*			: BOOL;		// Push Button Acknowledge at Main Panel
+	xIn1004				AT 		%I*			: BOOL;		// Emergency Stop at Infeed Panel
+	xIn1005				AT 		%I*			: BOOL;		// 
+	xIn1006				AT 		%I*			: BOOL;		// 
+	xIn1007				AT 		%I*			: BOOL;		// 
+	xIn1008				AT 		%I*			: BOOL;		// 
+	xIn1009				AT 		%I*			: BOOL;		// 
+	xIn1010				AT 		%I*			: BOOL;		// 
+	xIn1011				AT 		%I*			: BOOL;		// 
+	xIn1012				AT 		%I*			: BOOL;		// 
+	xIn1013				AT 		%I*			: BOOL;		// 
+	xIn1014				AT 		%I*			: BOOL;		// 
+	xIn1015				AT 		%I*			: BOOL;		// Pressure Switch for Main Panel
+
+	//Digital Input 16 Point EL1809
+	xIn1200				AT 		%I*			: BOOL;		// Feedback Box Picking roller Conveyor is Running
+	xIn1201				AT 		%I*			: BOOL;		// 
+	xIn1202				AT 		%I*			: BOOL;		// Feedback Box Placing at Pallet Roller Conveyor 1 is Running
+	xIn1203				AT 		%I*			: BOOL;		// Feedback Box Placing at Pallet Roller Conveyor 2 is Running
+	xIn1204				AT 		%I*			: BOOL;		// Feedback Box Placing at Pallet Roller Conveyor 3 is Running
+	xIn1205				AT 		%I*			: BOOL;		// Feedback Box Placing at Pallet Roller Conveyor 4  isRunning
+	xIn1206				AT 		%I*			: BOOL;		// 
+	xIn1207				AT 		%I*			: BOOL;		// 
+	xIn1208				AT 		%I*			: BOOL;		// 
+	xIn1209				AT 		%I*			: BOOL;		// 
+	xIn1210				AT 		%I*			: BOOL;		// 
+	xIn1211				AT 		%I*			: BOOL;		// RSW Pneumatic Box Centering When Rtc
+	xIn1212				AT 		%I*			: BOOL;		// RSW Pneumatic Gap Maker When Adv
+	xIn1213				AT 		%I*			: BOOL;		// RSW Pneumatic Gap Maker When Rtc
+	xIn1214				AT 		%I*			: BOOL;		// RSW Pneumatic Stopper  Transfer When Rtc
+	xIn1215				AT 		%I*			: BOOL;		// 
+	//Digital Input 16 Point EL1809
+	xIn1400				AT 		%I*			: BOOL;		// PSR 4 to Detect Box at Picking Conv.  (GTE6-P4212)
+	xIn1401				AT 		%I*			: BOOL;		// PSR to Detect Box at Barcoder Reading 2 Conv (GL6-P4212) (Not Used)
+	xIn1402				AT 		%I*			: BOOL;		// PSR to Detect Box at Barcoder Reading 3 Conv (GL6-P4212) (Not Used)
+	xIn1403				AT 		%I*			: BOOL;		// PSR to Detect Box at Barcoder Reading 4 Conv (GL6-P4212) (Not Used)
+	xIn1404				AT 		%I*			: BOOL;		// PSR to Detect Centering Box. (GL6-P4212) (Not Used)
+	xIn1405				AT 		%I*			: BOOL;		// PSR 1 to Detect Box at Picking Conv.  (GTE6-P4212)
+	xIn1406				AT 		%I*			: BOOL;		// PSR 2 to Detect Box at Picking Conv. (GTE6-P4212)
+	xIn1407				AT 		%I*			: BOOL;		// PSR 3 to Detect Box at Picking Conv.  (GTE6-P4212)
+	xIn1408				AT 		%I*			: BOOL;		// PSR Front to Detect for Empty Transfer Infeed Roller. (GL6-P4212)
+	xIn1409				AT 		%I*			: BOOL;		// PSR Middle to Detect for Empty Transfer Infeed Roller. (GL6-P4212)
+	xIn1410				AT 		%I*			: BOOL;		// PSR Back to Detect for Empty Transfer Infeed Roller. (GL6-P4212)
+	xIn1411				AT 		%I*			: BOOL;		// 
+	xIn1412				AT 		%I*			: BOOL;		// 
+	xIn1413				AT 		%I*			: BOOL;		// 
+	xIn1414				AT 		%I*			: BOOL;		// Request Release Solenoid Door Robot
+	xIn1415				AT 		%I*			: BOOL;		// Feedback Relay Solenoid Door Robot
+	//Digital Input 16 Point EL1809
+	xIn1500				AT 		%I*			: BOOL;		// PSR Back at Placing Conv 1 (GL6-P4212)
+	xIn1501				AT 		%I*			: BOOL;		// PSR Middle at Placing Conv 1 (GL6-P4212)
+	xIn1502				AT 		%I*			: BOOL;		// PSR Front at Placing Conv 1 (GL6-P4212)
+	xIn1503				AT 		%I*			: BOOL;		// PSR Back at Placing Conv 2 (GL6-P4212)
+	xIn1504				AT 		%I*			: BOOL;		// PSR Front at Placing Conv 2 (GL6-P4212)
+	xIn1505				AT 		%I*			: BOOL;		// PSR Back at Placing Conv 3 (GL6-P4212)
+	xIn1506				AT 		%I*			: BOOL;		// PSR Front at Placing Conv 3 (GL6-P4212)
+	xIn1507				AT 		%I*			: BOOL;		// PSR Back at Placing Conv 4 (GL6-P4212)
+	xIn1508				AT 		%I*			: BOOL;		// PSR Middle at Placing Conv 4 (GL6-P4212)
+	xIn1509				AT 		%I*			: BOOL;		// PSR Front at Placing Conv 4 (GL6-P4212)
+	xIn1510				AT 		%I*			: BOOL;		// 
+	xIn1511				AT 		%I*			: BOOL;		// 
+	xIn1512				AT 		%I*			: BOOL;		// 
+	xIn1513				AT 		%I*			: BOOL;		// 
+	xIn1514				AT 		%I*			: BOOL;		// 
+	xIn1515				AT 		%I*			: BOOL;		// 
+	
+	
+	//Main Panel (P1)
+	//Digital Output 16 Point EL2809
+	xOut2000			AT 		%Q*			: BOOL;		// Indicator Machine Running at Main Panel
+	xOut2001			AT 		%Q*			: BOOL;		// Indicator Machine Error at Main Panel
+	xOut2002			AT 		%Q*			: BOOL;		// Indicator Tower Lamp Red
+	xOut2003			AT 		%Q*			: BOOL;		// Indicator Tower Lamp Yellow
+	xOut2004			AT 		%Q*			: BOOL;		// Indicator Tower lamp Green
+	xOut2005			AT 		%Q*			: BOOL;		// Indicator Tower lamp Blue
+	xOut2006			AT 		%Q*			: BOOL;		// Indicator Buzzer
+	xOut2007			AT 		%Q*			: BOOL;		// Indicator Acknowledge at Main Panel
+	xOut2008			AT 		%Q*			: BOOL;		// Indicator Auto Mode Main Panel
+	xOut2009			AT 		%Q*			: BOOL;		// Indicator Manual Mode Main Panel
+	xOut2010			AT 		%Q*			: BOOL;		// 
+	xOut2011			AT 		%Q*			: BOOL;		// 
+	xOut2012			AT 		%Q*			: BOOL;		// 
+	xOut2013			AT 		%Q*			: BOOL;		// 
+	xOut2014			AT 		%Q*			: BOOL;		// 
+	xOut2015			AT 		%Q*			: BOOL;		// 
+	//Digital Output 16 Point EL2809
+	xOut2200			AT 		%Q*			: BOOL;		// Move Forward for Picking Roller Conveyor
+	xOut2201			AT 		%Q*			: BOOL;		// 
+	xOut2202			AT 		%Q*			: BOOL;		// Move Forward for Placing At Pallet Roller Conveyor  1
+	xOut2203			AT 		%Q*			: BOOL;		// Move Forward for Placing At Pallet Roller Conveyor  2
+	xOut2204			AT 		%Q*			: BOOL;		// Move Forward for Placing At Pallet Roller Conveyor  3
+	xOut2205			AT 		%Q*			: BOOL;		// Move Forward for Placing At Pallet Roller Conveyor  4
+	xOut2206			AT 		%Q*			: BOOL;		// 
+	xOut2207			AT 		%Q*			: BOOL;		// Move Reverse for Placing At Pallet Roller Conveyor  1
+	xOut2208			AT 		%Q*			: BOOL;		// Move Reverse for Placing At Pallet Roller Conveyor  2
+	xOut2209			AT 		%Q*			: BOOL;		// Move Reverse for Placing At Pallet Roller Conveyor  3
+	xOut2210			AT 		%Q*			: BOOL;		// Move Reverse for Placing At Pallet Roller Conveyor  4
+	xOut2211			AT 		%Q*			: BOOL;		// 
+	xOut2212			AT 		%Q*			: BOOL;		// 
+	xOut2213			AT 		%Q*			: BOOL;		// 
+	xOut2214			AT 		%Q*			: BOOL;		// 
+	xOut2215			AT 		%Q*			: BOOL;		// Reset Error for All Inverter at P1, Relay
+	//Digital Output 16 Point EL2809
+	xOut2300			AT 		%Q*			: BOOL;		// Pneumatic Box Centering
+	xOut2301			AT 		%Q*			: BOOL;		// Pneumatic Gap Maker Box Adv
+	xOut2302			AT 		%Q*			: BOOL;		// Pneumatic Gap Maker Box Rtc
+	xOut2303			AT 		%Q*			: BOOL;		// 
+	xOut2304			AT 		%Q*			: BOOL;		// 
+	xOut2305			AT 		%Q*			: BOOL;		// 
+	xOut2306			AT 		%Q*			: BOOL;		// 
+	xOut2307			AT 		%Q*			: BOOL;		// 
+	xOut2308			AT 		%Q*			: BOOL;		// 
+	xOut2309			AT 		%Q*			: BOOL;		// Pneumatic Stopper Transfer
+	xOut2310			AT 		%Q*			: BOOL;		// 
+	xOut2311			AT 		%Q*			: BOOL;		// 
+	xOut2312			AT 		%Q*			: BOOL;		// 
+	xOut2313			AT 		%Q*			: BOOL;		// 
+	xOut2314			AT 		%Q*			: BOOL;		// Status Solenoid Door Robot
+	xOut2315			AT 		%Q*			: BOOL;		// Release Solenoid Door Robot
+	
+END_VAR]]></Declaration>
+  </GVL>
+</TcPlcObject>

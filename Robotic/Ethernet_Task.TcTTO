@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <Task Name="Ethernet_Task" Id="{8281bdd6-26d5-4120-ab4d-66b040bc2868}">
+    <!--CycleTime in micro seconds.-->
+    <CycleTime>100000</CycleTime>
+    <Priority>3</Priority>
+    <TaskFBGuid>{965e5638-7c51-4d67-ae15-81159c2719ee}</TaskFBGuid>
+    <Fb_init>{e0fa5391-082b-4023-a4e1-f0c293d94ab0}</Fb_init>
+    <Fb_exit>{968d9fbf-1d20-4e58-b8d2-037e6178791d}</Fb_exit>
+    <CycleUpdate>{a350f4d1-89e7-4dea-a2e0-d9921787c1ed}</CycleUpdate>
+    <PostCycleUpdate>{d28aa537-d663-4365-8dbb-08d2db81b652}</PostCycleUpdate>
+  </Task>
+</TcPlcObject>

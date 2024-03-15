@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="ConvertMilliSecTimeData" Id="{ef477df3-7d1c-4c33-9db5-386773a09fa8}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION ConvertMilliSecTimeData : TIME
+VAR_INPUT
+	DataInput	: UINT;
+END_VAR
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[ConvertMilliSecTimeData:=LINT_TO_TIME(UINT_TO_LINT(DataInput));]]></ST>
+    </Implementation>
+    <LineIds Name="ConvertMilliSecTimeData">
+      <LineId Id="10" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

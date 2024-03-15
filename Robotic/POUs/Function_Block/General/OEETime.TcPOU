@@ -1,0 +1,304 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="OEETime" Id="{beadfc8e-62d0-4bfb-b41c-9c0fa8237088}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK OEETime
+VAR_INPUT
+	ENI					: BOOL;
+	CurrentTime			: DT;
+	dt_State			: stMachineState;
+	stsMachine			: STRING(31);
+END_VAR
+VAR_OUTPUT 
+	UpTime				: TIME;
+END_VAR
+VAR_IN_OUT PERSISTENT
+	dt_OEE				: sOEETime;
+END_VAR
+VAR PERSISTENT
+	StartedDate			: DATE;
+	StartedShift		: UINT;
+	dt_TimeCal			: ShiftTime;
+	Sts_DailyShiftEnd	: BOOL;
+	SaveData			: BOOL;
+	bGetData			: BOOL;
+	i					: INT;
+	j					: INT;
+	k					: INT;
+	l					: INT;
+	m					: INT;
+	SeqCal				: INT;
+	TimeCal				: TON;
+	bTrig				: R_TRIG;
+	ShiftDuration		: ARRAY [0..2] OF REAL;
+	tUpTime				: TIME;
+	Duration			: REAL;
+	Time1				: TOD;
+	Time2				: TOD;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[//Get Time & Parsing
+dt_OEE.DateCurrent := DT_TO_DATE(CurrentTime);
+dt_OEE.TimeCurrent := DT_TO_TOD(CurrentTime);
+
+dt_OEE.TimeShift[1].StartShift	:= TOD#06:00:00;
+dt_OEE.TimeShift[2].StartShift	:= TOD#14:00:00;
+dt_OEE.TimeShift[3].StartShift	:= TOD#22:00:00;
+
+dt_OEE.TimeShift[1].EndShift	:= TOD#14:00:00;
+dt_OEE.TimeShift[2].EndShift	:= TOD#22:00:00;
+dt_OEE.TimeShift[3].EndShift	:= TOD#06:00:00;
+
+//Accumulating Time
+CASE SeqCal OF
+	0:
+			TimeCal(IN:=TRUE, PT:=T#990MS);
+			IF TimeCal.Q THEN
+				tUpTime	:= tUpTime + T#1S;
+				IF  dt_State.Running OR stsMachine = 'Running' THEN
+					dt_TimeCal.Running	:= dt_TimeCal.Running + T#1S;
+			      	SeqCal							:= 1;
+			    ELSIF  dt_State.Error OR dt_State.Aborted OR stsMachine = 'Error' OR stsMachine = 'Aborted' THEN
+			        dt_TimeCal.Error	:= dt_TimeCal.Error + T#1S;
+			      	SeqCal							:= 1;
+			    ELSE //IF NOT  dt_State.Running OR NOT  dt_State.Error OR  dt_State.CheckSafety OR  dt_State.Aborted THEN
+			        dt_TimeCal.Stopped	:= dt_TimeCal.Stopped + T#1S;
+			      	SeqCal							:= 1;
+			    END_IF;
+			END_IF;
+	1:
+			TimeCal(IN:=FALSE);
+			SeqCal		:= 0;
+	
+END_CASE;
+
+Uptime		:= tUpTime;
+
+
+// Reset Variable Ketika Pergantian Shift
+ bTrig(CLK :=  bGetData);
+IF  bTrig.Q OR dt_OEE.Reset THEN
+     dt_TimeCal.Running		:= T#0s;
+	 dt_TimeCal.Error		:= T#0S;
+	 dt_TimeCal.Stopped		:= T#0s;
+END_IF;
+
+
+
+IF (( dt_OEE.TimeCurrent >  dt_OEE.TimeShift[1].EndShift) AND ( dt_OEE.TimeCurrent < dt_OEE.TimeShift[1].EndShift + T#3S)) 
+    OR (( dt_OEE.TimeCurrent >  dt_OEE.TimeShift[2].EndShift) AND ( dt_OEE.TimeCurrent < dt_OEE.TimeShift[2].EndShift + T#3S)) 
+    OR (( dt_OEE.TimeCurrent >  dt_OEE.TimeShift[3].EndShift) AND ( dt_OEE.TimeCurrent < dt_OEE.TimeShift[3].EndShift + T#3S))  THEN
+    IF NOT  bGetData THEN
+         bGetData := TRUE;
+         StartedDate	:=  dt_OEE.DateCurrent;
+         StartedShift	:=  dt_OEE.CurrentShift;
+    END_IF;
+ELSE
+     bGetData := FALSE;
+END_IF;
+
+(**Shift Checking**)
+IF NOT  SaveData THEN
+    IF ( dt_OEE.TimeCurrent >  dt_OEE.TimeShift[1].StartShift) AND ( dt_OEE.TimeCurrent <  dt_OEE.TimeShift[1].EndShift) THEN
+         dt_OEE.CurrentShift := 1;
+    ELSIF ( dt_OEE.TimeCurrent >  dt_OEE.TimeShift[2].StartShift) AND ( dt_OEE.TimeCurrent <  dt_OEE.TimeShift[2].EndShift) THEN
+         dt_OEE.CurrentShift := 2;
+    ELSIF ( dt_OEE.TimeCurrent >  dt_OEE.TimeShift[3].StartShift) OR ( dt_OEE.TimeCurrent <  dt_OEE.TimeShift[3].EndShift) THEN
+         dt_OEE.CurrentShift := 3;
+    END_IF;
+END_IF;
+
+(** Function to Clear Data Record **)
+(*IF  dt_OEE.Reset THEN
+     StartedDate :=  dt_OEE.DateCurrent;
+    FOR  l := 1 TO 6 BY 1 DO
+        FOR  m := 0 TO 2 BY 1 DO
+             dt_OEE.RecordDate[ l] :=  StartedDate;
+             dt_OEE.RecordTime[ l,  m].Running   	:= T#0s;
+			 dt_OEE.RecordTime[ l,  m].Stopped   	:= T#0s;
+			 dt_OEE.RecordTime[ l,  m].Error   		:= T#0s;
+             
+        END_FOR;
+    END_FOR;
+        
+END_IF;*)
+
+(** Function to copy daily information to history AND Reset Timer**)
+IF (( dt_OEE.TimeCurrent >  dt_OEE.TimeShift[3].EndShift) AND ( dt_OEE.TimeCurrent < ( dt_OEE.TimeShift[3].EndShift+T#3S))) AND NOT Sts_DailyShiftEnd THEN
+     SaveData := TRUE;
+    FOR  i := 5 TO 0 BY -1 DO
+        FOR  j := 0 TO 2 BY 1 DO
+             dt_OEE.RecordDate[ i + 1]              		:=  dt_OEE.RecordDate[ i];
+             dt_OEE.RecordTime[ i + 1,  j].Running 			:=  dt_OEE.RecordTime[ i,  j].Running;
+             dt_OEE.RecordTime[ i + 1,  j].Stopped  		:=  dt_OEE.RecordTime[ i,  j].Stopped;
+             dt_OEE.RecordTime[ i + 1,  j].Error    		:=  dt_OEE.RecordTime[ i,  j].Error;
+        END_FOR;
+    END_FOR;
+    
+    FOR  k := 0 TO 2 BY 1 DO
+        dt_OEE.RecordTime[0,  k].Running     	:= T#0S;
+        dt_OEE.RecordTime[0,  k].Stopped     	:= T#0S;
+		dt_OEE.RecordTime[0,  k].Error     		:= T#0S;
+         
+        
+         dt_OEE.RecordDate[0]	:=  StartedDate;
+         Sts_DailyShiftEnd		:= TRUE;
+    END_FOR;
+ELSE
+     SaveData := FALSE;
+END_IF;
+
+IF  dt_OEE.CurrentShift <> 1 THEN
+     Sts_DailyShiftEnd := FALSE;
+END_IF;
+
+(**Writting Data to Current Shift**)
+CASE  dt_OEE.CurrentShift OF
+    1:
+         dt_OEE.RecordDate[0] :=  StartedDate;
+         dt_OEE.RecordTime[0, 0].Running	:=  dt_TimeCal.Running;
+         dt_OEE.RecordTime[0, 0].Stopped 	:=  dt_TimeCal.Stopped;
+         dt_OEE.RecordTime[0, 0].Error      :=  dt_TimeCal.Error;
+    2:
+         dt_OEE.RecordDate[0] :=  StartedDate;
+         dt_OEE.RecordTime[0, 1].Running 	:=  dt_TimeCal.Running;
+         dt_OEE.RecordTime[0, 1].Stopped 	:=  dt_TimeCal.Stopped;
+         dt_OEE.RecordTime[0, 1].Error     	:=  dt_TimeCal.Error;
+    3:
+         dt_OEE.RecordDate[0] :=  StartedDate;
+         dt_OEE.RecordTime[0, 2].Running	:=  dt_TimeCal.Running;
+         dt_OEE.RecordTime[0, 2].Stopped 	:=  dt_TimeCal.Stopped;
+         dt_OEE.RecordTime[0, 2].Error     	:=  dt_TimeCal.Error;
+END_CASE;
+
+ dt_OEE.HMI_Date		:=  dt_OEE.RecordDate[ dt_OEE.HMI_NumberPrev];
+ dt_OEE.HMI_Time[0] 	:=  dt_OEE.RecordTime[ dt_OEE.HMI_NumberPrev, 0];
+ dt_OEE.HMI_Time[1] 	:=  dt_OEE.RecordTime[ dt_OEE.HMI_NumberPrev, 1];
+ dt_OEE.HMI_Time[2] 	:=  dt_OEE.RecordTime[ dt_OEE.HMI_NumberPrev, 2];
+ 
+ 
+ 
+ dt_OEE.TotalTime.Running		:= dt_OEE.HMI_Time[0].Running + dt_OEE.HMI_Time[1].Running + dt_OEE.HMI_Time[2].Running; 
+ dt_OEE.TotalTime.Stopped		:= dt_OEE.HMI_Time[0].Stopped + dt_OEE.HMI_Time[1].Stopped + dt_OEE.HMI_Time[2].Stopped; 
+ dt_OEE.TotalTime.Error			:= dt_OEE.HMI_Time[0].Error + dt_OEE.HMI_Time[1].Error + dt_OEE.HMI_Time[2].Error; 
+
+ 
+ //Elapsed Duration
+ IF dt_OEE.CurrentShift = 1 AND dt_OEE.HMI_NumberPrev = 0 THEN
+	ShiftDuration[0]			:= TIME_TO_REAL(dt_OEE.TimeCurrent - dt_OEE.TimeShift[1].StartShift);
+ ELSE
+	ShiftDuration[0]			:= TIME_TO_REAL(T#8H);
+ END_IF
+ 
+ IF dt_OEE.CurrentShift = 2 AND dt_OEE.HMI_NumberPrev = 0 THEN
+	ShiftDuration[1]			:= TIME_TO_REAL(dt_OEE.TimeCurrent - dt_OEE.TimeShift[2].StartShift);
+ ELSE
+	ShiftDuration[1]			:= TIME_TO_REAL(T#8H);
+ END_IF
+ 	
+ IF dt_OEE.CurrentShift = 3 AND dt_OEE.HMI_NumberPrev = 0 THEN
+	 IF dt_OEE.TimeCurrent < dt_OEE.TimeShift[3].EndShift THEN
+ 		ShiftDuration[2]		:= TOD_TO_REAL(dt_OEE.TimeCurrent + T#2H);
+	 ELSE
+		ShiftDuration[2]		:= TIME_TO_REAL(dt_OEE.TimeCurrent - dt_OEE.TimeShift[3].StartShift);
+	 END_IF
+ ELSE
+	ShiftDuration[2]			:= TIME_TO_REAL(T#8H);
+ END_IF
+ 
+ //Precentage Shift 1
+ dt_OEE.Precentage[0].Running		:= (TIME_TO_REAL(dt_OEE.HMI_Time[0].Running)/ShiftDuration[0]) * 100 ;
+ dt_OEE.Precentage[0].Stopped		:= (TIME_TO_REAL(dt_OEE.HMI_Time[0].Stopped)/ShiftDuration[0]) * 100 ;
+ dt_OEE.Precentage[0].Error			:= (TIME_TO_REAL(dt_OEE.HMI_Time[0].Error)/ShiftDuration[0]) * 100 ;
+ //dt_OEE.Precentage[0].Unstated		:= 100 - dt_OEE.Precentage[0].Running - dt_OEE.Precentage[0].Stopped - dt_OEE.Precentage[0].Error;
+ 
+ //Precentage Shift 2
+ dt_OEE.Precentage[1].Running		:= (TIME_TO_REAL(dt_OEE.HMI_Time[1].Running)/ShiftDuration[1]) * 100 ;
+ dt_OEE.Precentage[1].Stopped		:= (TIME_TO_REAL(dt_OEE.HMI_Time[1].Stopped)/ShiftDuration[1]) * 100 ;
+ dt_OEE.Precentage[1].Error			:= (TIME_TO_REAL(dt_OEE.HMI_Time[1].Error)/ShiftDuration[1]) * 100 ;
+ //dt_OEE.Precentage[1].Unstated		:= 100 - dt_OEE.Precentage[1].Running - dt_OEE.Precentage[1].Stopped - dt_OEE.Precentage[1].Error;
+ 
+ //Precentage Shift 3
+ dt_OEE.Precentage[2].Running		:= (TIME_TO_REAL(dt_OEE.HMI_Time[2].Running)/ShiftDuration[2]) * 100 ;
+ dt_OEE.Precentage[2].Stopped		:= (TIME_TO_REAL(dt_OEE.HMI_Time[2].Stopped)/ShiftDuration[2]) * 100 ;
+ dt_OEE.Precentage[2].Error			:= (TIME_TO_REAL(dt_OEE.HMI_Time[2].Error)/ShiftDuration[2]) * 100 ;
+ //dt_OEE.Precentage[2].Unstated		:= 100 - dt_OEE.Precentage[2].Running - dt_OEE.Precentage[2].Stopped - dt_OEE.Precentage[2].Error;
+
+
+ //Convert Time To String
+ dt_OEE.HMI_Time[0].sRunning	:= ConvertTimeToString(dt_OEE.HMI_Time[0].Running);
+ dt_OEE.HMI_Time[0].sStopped	:= ConvertTimeToString(dt_OEE.HMI_Time[0].Stopped);
+ dt_OEE.HMI_Time[0].sError		:= ConvertTimeToString(dt_OEE.HMI_Time[0].Error);
+ 
+ dt_OEE.HMI_Time[1].sRunning	:= ConvertTimeToString(dt_OEE.HMI_Time[1].Running);
+ dt_OEE.HMI_Time[1].sStopped	:= ConvertTimeToString(dt_OEE.HMI_Time[1].Stopped);
+ dt_OEE.HMI_Time[1].sError		:= ConvertTimeToString(dt_OEE.HMI_Time[1].Error);
+ 
+ dt_OEE.HMI_Time[2].sRunning	:= ConvertTimeToString(dt_OEE.HMI_Time[2].Running);
+ dt_OEE.HMI_Time[2].sStopped	:= ConvertTimeToString(dt_OEE.HMI_Time[2].Stopped);
+ dt_OEE.HMI_Time[2].sError		:= ConvertTimeToString(dt_OEE.HMI_Time[2].Error);
+ 
+IF dt_OEE.HMI_NumberPrev < 0 THEN
+	dt_OEE.HMI_NumberPrev := 6;
+ELSIF dt_OEE.HMI_NumberPrev > 6  THEN
+	dt_OEE.HMI_NumberPrev := 0;
+END_IF;]]></ST>
+    </Implementation>
+    <LineIds Name="OEETime">
+      <LineId Id="9" Count="0" />
+      <LineId Id="37" Count="0" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="211" Count="0" />
+      <LineId Id="213" Count="1" />
+      <LineId Id="212" Count="0" />
+      <LineId Id="208" Count="2" />
+      <LineId Id="39" Count="2" />
+      <LineId Id="62" Count="3" />
+      <LineId Id="83" Count="0" />
+      <LineId Id="66" Count="14" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="231" Count="0" />
+      <LineId Id="230" Count="0" />
+      <LineId Id="86" Count="7" />
+      <LineId Id="85" Count="0" />
+      <LineId Id="95" Count="92" />
+      <LineId Id="294" Count="1" />
+      <LineId Id="188" Count="3" />
+      <LineId Id="297" Count="0" />
+      <LineId Id="271" Count="0" />
+      <LineId Id="298" Count="0" />
+      <LineId Id="274" Count="0" />
+      <LineId Id="277" Count="1" />
+      <LineId Id="275" Count="1" />
+      <LineId Id="279" Count="0" />
+      <LineId Id="281" Count="3" />
+      <LineId Id="280" Count="0" />
+      <LineId Id="270" Count="0" />
+      <LineId Id="286" Count="0" />
+      <LineId Id="290" Count="3" />
+      <LineId Id="287" Count="2" />
+      <LineId Id="285" Count="0" />
+      <LineId Id="195" Count="0" />
+      <LineId Id="215" Count="0" />
+      <LineId Id="196" Count="3" />
+      <LineId Id="216" Count="0" />
+      <LineId Id="218" Count="3" />
+      <LineId Id="217" Count="0" />
+      <LineId Id="222" Count="0" />
+      <LineId Id="224" Count="3" />
+      <LineId Id="223" Count="0" />
+      <LineId Id="200" Count="0" />
+      <LineId Id="299" Count="0" />
+      <LineId Id="201" Count="0" />
+      <LineId Id="301" Count="3" />
+      <LineId Id="306" Count="1" />
+      <LineId Id="305" Count="0" />
+      <LineId Id="308" Count="0" />
+      <LineId Id="310" Count="1" />
+      <LineId Id="309" Count="0" />
+      <LineId Id="300" Count="0" />
+      <LineId Id="202" Count="3" />
+      <LineId Id="94" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

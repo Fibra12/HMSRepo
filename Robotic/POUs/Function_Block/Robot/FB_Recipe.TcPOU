@@ -1,0 +1,137 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Recipe" Id="{513bf035-e431-4037-bdf8-231ba11212d9}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Recipe
+VAR_INPUT
+	ENI						: BOOL;
+	bEdit					: BOOL;
+	bUpload					: BOOL;
+	bDownload				: BOOL;
+	bSave					: BOOL;
+	bCancel					: BOOL;
+END_VAR
+VAR_OUTPUT
+	ENO						: BOOL;
+	bStsEditMode			: BOOL;
+	iSelectedRecipeNumber	: USINT;
+	Robot_ProductLength		: UINT;
+	Robot_ProductWidth		: UINT;
+	Robot_ProductHeight		: UINT;
+	Robot_ProductPattern	: USINT;
+END_VAR
+
+VAR
+	Temp_Data1				: stProductInfo;
+	DataTimer				: TON;
+	TempRecipeNumber		: USINT;
+END_VAR
+
+VAR_IN_OUT
+	iRecipeNumber			: USINT;
+	stDataHMI				: stProductInfo;
+	stPLCRecipe				: ARRAY[1..40] OF stProductInfo;
+	stDataToRobot			: stProductInfo;
+	stOffsetPattern			: ARRAY[1..40] OF stCustomPattern;
+	HMI_OffsetPattern		: stCustomPattern;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[//=======FB_Recipe v1.0=======
+//Used UDTs: sProductInfo - v3.0
+//
+
+//Changelog
+//v1.0 Add bStsEditMode & bStsCopyMode
+//v2.0 Without Barcode
+//v3.0 Add In/Out Offset Pattern
+
+//==================================
+
+IF ENI THEN
+	ENO:=TRUE;
+END_IF;
+
+
+IF iRecipeNumber < 1  THEN
+	iRecipeNumber:=40;
+END_IF;
+IF iRecipeNumber > 40 THEN
+	iRecipeNumber:=1;
+END_IF;
+
+
+
+IF bStsEditMode THEN
+	Temp_Data1				:= stDataHMI;
+	//Temp_Data1.ProductName	:= sProductName;
+	IF bUpload THEN
+		stDataHMI			:= stDataToRobot;
+	ELSIF bSave THEN
+		stPLCRecipe[iRecipeNumber]		:= stDataHMI;
+		stOffsetPattern[iRecipeNumber]	:= stDataHMI.OffsetPattern;
+		bStsEditMode					:= FALSE;
+	END_IF;
+ELSE
+	stDataHMI				:= stPLCRecipe[iRecipeNumber];
+	stDataHMI.OffsetPattern := stOffsetPattern[iRecipeNumber];
+	//sProductName			:= stPLCRecipe[iRecipeNumber].ProductName;
+	
+	IF bDownload THEN
+		//stDataToRobot.ProductName:='                                 ';
+		//IF stDataToRobot.ProductName='                                 ' THEN
+			//stDataToRobot				:= stPLCRecipe[iRecipeNumber];
+			stDataToRobot.ProductName	:= stPLCRecipe[iRecipeNumber].ProductName;
+			stDataToRobot.ProductLength	:= stPLCRecipe[iRecipeNumber].ProductLength;
+			stDataToRobot.ProductWidth	:= stPLCRecipe[iRecipeNumber].ProductWidth;
+			stDataToRobot.ProductHeight	:= stPLCRecipe[iRecipeNumber].ProductHeight;
+			stDataToRobot.ProductPattern:= stPLCRecipe[iRecipeNumber].ProductPattern;
+			stDataToRobot.Stacking		:= stPLCRecipe[iRecipeNumber].Stacking;
+			stDataToRobot.LinkUpSource	:= stPLCRecipe[iRecipeNumber].LinkUpSource;
+			stDataToRobot.OffsetPattern := stOffsetPattern[iRecipeNumber];
+			iSelectedRecipeNumber		:= iRecipeNumber;
+		//END_IF;
+	END_IF;
+END_IF;
+
+IF iRecipeNumber<> TempRecipeNumber THEN
+	//sProductName:='                                 ';
+	TempRecipeNumber := iRecipeNumber;
+END_IF;
+
+IF bEdit THEN
+	bStsEditMode := TRUE;
+END_IF;
+
+IF bCancel THEN
+	bStsEditMode := FALSE;
+END_IF;
+
+
+Robot_ProductLength		:= stDataToRobot.ProductLength;
+Robot_ProductWidth		:= stDataToRobot.ProductWidth;
+Robot_ProductHeight		:= stDataToRobot.ProductHeight;
+Robot_ProductPattern	:= stDataToRobot.ProductPattern;
+
+
+]]></ST>
+    </Implementation>
+    <LineIds Name="FB_Recipe">
+      <LineId Id="426" Count="13" />
+      <LineId Id="582" Count="0" />
+      <LineId Id="440" Count="0" />
+      <LineId Id="577" Count="4" />
+      <LineId Id="446" Count="0" />
+      <LineId Id="449" Count="0" />
+      <LineId Id="452" Count="20" />
+      <LineId Id="619" Count="0" />
+      <LineId Id="615" Count="2" />
+      <LineId Id="620" Count="2" />
+      <LineId Id="473" Count="0" />
+      <LineId Id="475" Count="16" />
+      <LineId Id="540" Count="4" />
+      <LineId Id="539" Count="0" />
+      <LineId Id="492" Count="0" />
+      <LineId Id="506" Count="0" />
+      <LineId Id="352" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

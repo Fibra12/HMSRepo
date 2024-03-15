@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="stCustomPattern" Id="{12302e6b-253d-4b1c-954f-b0e2054ffad3}">
+    <Declaration><![CDATA[TYPE stCustomPattern :
+STRUCT
+	Offset_X		: ARRAY [1..24] OF INT;
+	Offset_Y		: ARRAY [1..24] OF INT;
+	Offset_Z		: ARRAY [1..24] OF INT;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

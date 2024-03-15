@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Layer" Id="{86b57d41-769b-4bec-91e4-e7adb564f4cb}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Layer
+VAR_INPUT
+	ENI				: BOOL;
+	CounterCycle	: UINT;
+	PatternNumber	: UINT;
+END_VAR
+VAR_OUTPUT
+	ENO				: BOOL;
+	CurrentLayer	: UINT;
+	QtyCyclePerLayer: UINT;
+	CycleAtLayer	: UINT;
+END_VAR
+
+VAR
+	
+END_VAR
+
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF ENI THEN
+	ENO 	:= TRUE;
+	
+	//Quantity Cycle Per Layer
+	CASE PatternNumber OF
+		1:	QtyCyclePerLayer	:= 9;	//Japan Box
+		2:	QtyCyclePerLayer	:= 10;	//Standard 
+		3:	QtyCyclePerLayer	:= 12;	//Small LU18
+		4:	QtyCyclePerLayer	:= 7;	//Small LU26
+		0:	QtyCyclePerLayer	:= 1;
+	END_CASE 
+	
+	//Current Layer
+	CurrentLayer	:= ((CounterCycle - 1)/QtyCyclePerLayer)+1;
+
+	//Cycle at Current Layer
+	CycleAtLayer := CounterCycle MOD (2*QtyCyclePerLayer);
+	IF CycleAtLayer = 0 AND CounterCycle <> 0 THEN
+		CycleAtLayer := 2*QtyCyclePerLayer;
+	END_IF;
+	
+END_IF;]]></ST>
+    </Implementation>
+    <LineIds Name="FB_Layer">
+      <LineId Id="626" Count="0" />
+      <LineId Id="641" Count="0" />
+      <LineId Id="734" Count="0" />
+      <LineId Id="737" Count="6" />
+      <LineId Id="735" Count="1" />
+      <LineId Id="689" Count="0" />
+      <LineId Id="691" Count="0" />
+      <LineId Id="766" Count="0" />
+      <LineId Id="693" Count="0" />
+      <LineId Id="763" Count="2" />
+      <LineId Id="695" Count="0" />
+      <LineId Id="690" Count="0" />
+      <LineId Id="352" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="sOEECounter" Id="{5d1807b5-48c2-408c-a49a-33efc523880c}">
+    <Declaration><![CDATA[TYPE sOEECounter :	
+STRUCT
+	CounterRecord		: ARRAY[0..6,0..2] OF ShiftCounter;
+	DateRecord			: ARRAY[0..6] OF DATE;
+	HMI_Counter			: ARRAY[0..2] OF ShiftCounter;
+	TimeShift			: ARRAY[1..3] OF StartShift_EndShift;				
+	HMI_Date			: DATE;
+	HMI_NumberLine		: UINT;
+	HMI_NumberPrev		: UINT;
+	CurrentShift		: UINT;
+	DateCurrent			: DATE;
+	TimeCurrent			: TIME_OF_DAY;
+	Reset				: BOOL;
+	ChangeShift			: BOOL;
+	TotalCounter		: ShiftCounter;							
+END_STRUCT
+END_TYPE]]></Declaration>
+  </DUT>
+</TcPlcObject>

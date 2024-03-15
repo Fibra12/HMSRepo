@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <Task Name="Monitoring_Task" Id="{55498c1a-e48a-42b0-bebd-993e7632b191}">
+    <!--CycleTime in micro seconds.-->
+    <CycleTime>10000</CycleTime>
+    <Priority>10</Priority>
+    <PouCall>
+      <Name>Module_Status</Name>
+    </PouCall>
+    <TaskFBGuid>{7d6bbe68-3aa9-435e-a38d-4750972b08ba}</TaskFBGuid>
+    <Fb_init>{24e800d0-2c87-4994-9d30-b063641e2e0f}</Fb_init>
+    <Fb_exit>{02a8ad9c-b76d-469b-816c-d66c5586d753}</Fb_exit>
+    <CycleUpdate>{f1dd89a5-c9e6-4111-9d87-bcfbe20c8c34}</CycleUpdate>
+    <PostCycleUpdate>{e903dd04-5ef4-4ad4-a4fe-6d281a1b5741}</PostCycleUpdate>
+  </Task>
+</TcPlcObject>

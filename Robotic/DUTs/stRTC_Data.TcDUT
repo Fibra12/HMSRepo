@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="stRTC_Data" Id="{a581eb0b-9766-4c81-b85c-cd2a4d43d298}">
+    <Declaration><![CDATA[TYPE stRTC_Data :
+STRUCT
+	
+	iDT_Year: INT;
+	iDT_Month: INT;
+	iDT_day: INT;
+	iDT_Date: INT;
+	iDT_Hour: INT;
+	iDT_Minute: INT;
+	iDT_Second: INT;
+	iDT_MilliSecond: INT;
+	
+	strDT_Year: STRING;
+	strDT_Month: STRING;
+	strDT_Day: STRING;
+	strDT_Date: STRING;
+	strDT_Hour: STRING;
+	strDT_Minute: STRING;
+	strDT_Second: STRING;
+	strDT_MilliSecond: STRING;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

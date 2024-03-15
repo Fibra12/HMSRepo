@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <GVL Name="Data_GVL" Id="{75959f68-8a03-4a85-9f88-09ec2fd61649}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+VAR_GLOBAL
+	RTC_DATA						: stRTC_Data;
+	AmsNetId_PLC					: T_AmsNetId;
+	EthernetMaster 					: Tc2_System.T_AmsNetID := '';
+	EtherCatMaster_D1  				: Tc2_System.T_AmsNetID := '192.168.0.119.2.1';
+	stEcSlave 						: ARRAY [1..10] OF stEcSlaveState;
+	
+	//Init Robot
+	stStateMachineRobot				: stMachineState;
+	bFL_AckRobot					: BOOL;
+	bFL_ResetRobot					: BOOL;
+	bFL_StartRobot					: BOOL;
+	bFL_StopRobot					: BOOL;
+	bFL_MachineErrorRobot			: BOOL;
+	bFL_AutoManuaModeRobot			: BOOL;
+	StateMachineRobot_Error			: BOOL;
+	StateMachineRobot_ErrorMsg		: STRING;
+	StateMachineRobot_stsMachine	: STRING;
+	
+	//Init Picking
+	stStateMachinePicking			: stMachineState;
+	bFL_AckPicking					: BOOL;
+	bFL_ResetPicking				: BOOL;
+	bFL_StartPicking				: BOOL;
+	bFL_StopPicking					: BOOL;
+	bFL_MachineErrorPicking			: BOOL;
+	bFL_AutoManuaModePicking		: BOOL;
+	StateMachinePicking_Error		: BOOL;
+	StateMachinePicking_ErrorMsg	: STRING;
+	StateMachinePicking_stsMachine	: STRING;
+	
+	//Init Placing1
+	stStateMachinePlacing1			: stMachineState;
+	bFL_AckPlacing1					: BOOL;
+	bFL_ResetPlacing1				: BOOL;
+	bFL_StartPlacing1				: BOOL;
+	bFL_StopPlacing1				: BOOL;
+	bFL_MachineErrorPlacing1		: BOOL;
+	bFL_AutoManuaModePlacing1		: BOOL;
+	StateMachinePlacing1_Error		: BOOL;
+	StateMachinePlacing1_ErrorMsg	: STRING;
+	StateMachinePlacing1_stsMachine	: STRING;
+	
+	//Init Placing2
+	stStateMachinePlacing2			: stMachineState;
+	bFL_AckPlacing2					: BOOL;
+	bFL_ResetPlacing2				: BOOL;
+	bFL_StartPlacing2				: BOOL;
+	bFL_StopPlacing2				: BOOL;
+	bFL_MachineErrorPlacing2		: BOOL;
+	bFL_AutoManuaModePlacing2		: BOOL;
+	StateMachinePlacing2_Error		: BOOL;
+	StateMachinePlacing2_ErrorMsg	: STRING;
+	StateMachinePlacing2_stsMachine	: STRING;
+	
+	//Init Placing3
+	stStateMachinePlacing3			: stMachineState;
+	bFL_AckPlacing3					: BOOL;
+	bFL_ResetPlacing3				: BOOL;
+	bFL_StartPlacing3				: BOOL;
+	bFL_StopPlacing3				: BOOL;
+	bFL_MachineErrorPlacing3		: BOOL;
+	bFL_AutoManuaModePlacing3		: BOOL;
+	StateMachinePlacing3_Error		: BOOL;
+	StateMachinePlacing3_ErrorMsg	: STRING;
+	StateMachinePlacing3_stsMachine	: STRING;
+	
+	//Init Placing4
+	stStateMachinePlacing4			: stMachineState;
+	bFL_AckPlacing4					: BOOL;
+	bFL_ResetPlacing4				: BOOL;
+	bFL_StartPlacing4				: BOOL;
+	bFL_StopPlacing4				: BOOL;
+	bFL_MachineErrorPlacing4		: BOOL;
+	bFL_AutoManuaModePlacing4		: BOOL;
+	StateMachinePlacing4_Error		: BOOL;
+	StateMachinePlacing4_ErrorMsg	: STRING;
+	StateMachinePlacing4_stsMachine	: STRING;
+	
+	stStateMachineOutfeed			: stMachineState;
+	bGetData						: ARRAY [1..4] OF BOOL;
+	(*===============Request==================*)
+	
+	
+	(*===============Feedback==================*)
+	
+	
+	
+END_VAR
+
+VAR_GLOBAL PERSISTENT
+	(**============= Timer ================*)
+	Tmr_Picking		: TIME;
+	Tmr_Centering	: TIME;
+	Tmr_Placing1	: TIME;
+	Tmr_Placing2	: TIME;
+	Tmr_Placing3	: TIME;
+	Tmr_Placing4	: TIME;
+	
+	dt_OEETime		: sOEETime;
+	dt_OEEOutfeed	: sOEETime;
+	dt_OEECounter	: ARRAY [1..4] OF sOEECounter;
+	dt_Production	: ARRAY [1..4] OF ShiftCounter;
+	UpTime			: TIME;
+	UpTimeOutfeed	: TIME;
+	
+END_VAR]]></Declaration>
+  </GVL>
+</TcPlcObject>

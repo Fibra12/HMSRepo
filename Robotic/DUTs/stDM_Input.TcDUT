@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="stDM_Input" Id="{d8b30aa5-c244-4dc9-befa-772c0470c022}">
+    <Declaration><![CDATA[TYPE stDM_Input :
+	
+STRUCT
+	TriggerReady			: BOOL;
+	TriggerAck				: BOOL;
+	Acquiring				: BOOL;
+	MissedAcq				: BOOL;
+	Decoding				: BOOL;
+	DecodeComplete			: BOOL;
+	ResultsBufferOverrun	: BOOL;
+	ResultsAvailable		: BOOL;
+	GeneralFault			: BOOL;
+	TriggerID				: UINT;
+	ResultID				: UINT;
+	ResultCode				: UINT;
+	ResultExtended			: UINT;
+	ResultDataLength		: UINT;
+	ResultData				: ARRAY [0..479] OF BYTE;
+END_STRUCT
+
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

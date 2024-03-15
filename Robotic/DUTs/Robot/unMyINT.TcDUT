@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="unMyINT" Id="{ca7b7b2f-9601-4c9b-be4e-5ca2502736c8}">
+    <Declaration><![CDATA[TYPE unMyINT :
+UNION
+	nINT	: INT;
+	nSINT	: ARRAY[1..2] OF SINT;
+END_UNION
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

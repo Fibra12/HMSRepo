@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="ConvertTimeToString" Id="{ca112b8e-0b4a-423d-b40e-c9c8300e4ecf}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION ConvertTimeToString : STRING
+VAR_INPUT
+	DataInput	: TIME;
+END_VAR
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[ConvertTimeToString:=DELETE(TOD_TO_STRING(TIME_TO_TOD(DataInput)),5,0);]]></ST>
+    </Implementation>
+    <LineIds Name="ConvertTimeToString">
+      <LineId Id="10" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

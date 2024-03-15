@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="stDataPallet" Id="{87602b72-7e0d-47cb-b4fb-646809cca7d2}">
+    <Declaration><![CDATA[TYPE stDataPallet :
+STRUCT
+	BarcodePallet 					: STRING; 
+	BarcodePalletTime 				: DT;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

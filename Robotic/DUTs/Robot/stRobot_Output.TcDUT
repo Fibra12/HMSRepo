@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="stRobot_Output" Id="{d1663645-e663-4648-9912-cf0ad5ced1f6}">
+    <Declaration><![CDATA[TYPE stRobot_Output :
+STRUCT
+	TrigMotorOn				: BOOL;
+	TrigMotorOff			: BOOL;
+	TrigStartProgram		: BOOL;
+	TrigStartProgramAtMain	: BOOL;
+	TrigStopProgram			: BOOL;
+	TrigSysRestart			: BOOL;
+	ResetEmergencyStop		: BOOL;
+	ResetExecutionError		: BOOL;
+	TrigHoming				: BOOL;
+	TrigRunning				: BOOL;
+	Pick					: BOOL;
+	Place1					: BOOL;
+	Place2					: BOOL;
+	Place3					: BOOL;
+	Place4					: BOOL;
+	RejectBox				: BOOL;
+	TestMainVacuum			: BOOL;
+	TestClampOpen			: BOOL;
+	TestClampClose			: BOOL;
+	TestClampMid			: BOOL;
+	TestSideVacuum			: BOOL;
+	TestTopPneuUp			: BOOL;
+	TestTopPneuDown			: BOOL;
+	Spare1					: BOOL;
+	BypassCheckBox			: BOOL;
+	RotatePick				: BOOL;
+	CheckBigBox				: BOOL;
+	DoneScan1				: BOOL;
+	DoneScan2				: BOOL;
+	DoneScan3				: BOOL;
+	DoneScan4				: BOOL;
+	CheckSmallBox			: BOOL;
+	GotoLine				: USINT;
+	CounterL1				: USINT;
+	CounterL2				: USINT;
+	CounterL3				: USINT;
+	CounterL4				: USINT;
+	LengthL1				: unMyUINT;
+	WidthL1					: unMyUINT;
+	HeightL1				: unMyUINT;
+	LengthL2				: unMyUINT;
+	WidthL2					: unMyUINT;
+	HeightL2				: unMyUINT;
+	LengthL3				: unMyUINT;
+	WidthL3					: unMyUINT;
+	HeightL3				: unMyUINT;
+	LengthL4				: unMyUINT;
+	WidthL4					: unMyUINT;
+	HeightL4				: unMyUINT;
+	PatternL1				: USINT;
+	PatternL2				: USINT;
+	PatternL3				: USINT;
+	PatternL4				: USINT;
+	CustomX1				: unMyUINT;
+	CustomY1				: unMyUINT;
+	CustomX2				: unMyUINT;
+	CustomY2				: unMyUINT;
+	CustomX3				: unMyUINT;
+	CustomY3				: unMyUINT;
+	CustomX4				: unMyUINT;
+	CustomY4				: unMyUINT;
+	TimerClampClose			: unMyUINT;
+	RotatePickInt			: USINT;
+	BoxType					: USINT;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <Task Name="Main_Task" Id="{7aae4c19-a2a9-4e18-844b-8ccdd20fb71f}">
+    <!--CycleTime in micro seconds.-->
+    <CycleTime>4000</CycleTime>
+    <Priority>2</Priority>
+    <PouCall>
+      <Name>Backbone</Name>
+    </PouCall>
+    <PouCall>
+      <Name>EM01_Robot</Name>
+    </PouCall>
+    <PouCall>
+      <Name>EM02_Placing1</Name>
+    </PouCall>
+    <PouCall>
+      <Name>EM03_Placing2</Name>
+    </PouCall>
+    <PouCall>
+      <Name>EM04_Placing3</Name>
+    </PouCall>
+    <PouCall>
+      <Name>EM05_Placing4</Name>
+    </PouCall>
+    <PouCall>
+      <Name>EM06_Picking</Name>
+    </PouCall>
+    <TaskFBGuid>{409fe0f2-4ea2-4145-b0b0-9809d3d5dc94}</TaskFBGuid>
+    <Fb_init>{10fe30c3-ca28-463a-9dcd-3d42eace96d8}</Fb_init>
+    <Fb_exit>{ea30b05c-865b-429e-81be-28b31c977beb}</Fb_exit>
+    <CycleUpdate>{de521a51-0ba3-4f8f-8394-1a2e19d8c232}</CycleUpdate>
+    <PostCycleUpdate>{5d7f3aea-bdaf-49a3-a252-b01374840594}</PostCycleUpdate>
+  </Task>
+</TcPlcObject>

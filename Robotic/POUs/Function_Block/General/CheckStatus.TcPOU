@@ -1,0 +1,122 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
+  <POU Name="CheckStatus" Id="{5fe12cb5-a914-4bcc-971d-fff763150b3c}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK CheckStatus
+VAR_INPUT
+	F_Reset: BOOL;
+	Data: ARRAY [1..100] OF BOOL;
+END_VAR
+VAR_OUTPUT
+	Status: BOOL;
+	Reset : R_TRIG;
+END_VAR
+VAR
+	i: UINT;
+	j: UINT;
+	
+	a: UINT;
+	
+	SeqCheck: ARRAY [1..300] OF UINT;
+	CheckReset: BOOL;
+	SeqIndex: INT;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[(* new Management Error *)
+CASE SeqIndex OF 
+	0: 
+		FOR i:=1 TO 100 BY 1 DO //program for ini bertujuan untuk mengiterasi i dari 1 sampai 100
+			IF Data[i] THEN		//jika pada iterasi Data terdapat nilai ke-i = true
+				Status:=TRUE;   //maka output status menjadi true
+				j := 0;         //dan index j = 0
+				i := 100;       //dan index i = 100
+				seqIndex := 10; //SeqIndex berpindah ke 10
+			END_IF
+			
+		END_FOR
+	10: 
+		Reset( CLK := F_Reset);               //Raising Trigger/Trigger Positif didapat oleh F_Reset, maka reset akan aktif
+		IF Reset.Q AND NOT CheckReset THEN    //jika reset bernilai TRUE dan CheckReset bernilai FALSE, maka:
+			i := 0;                           //index = 0
+			CheckReset:=TRUE;                 //CheckReset = TRUE
+			seqIndex := 20;                   //SeqIndex berpindah ke sequence 20
+		END_IF
+	20: 
+		IF CheckReset THEN 
+			FOR j:=1 TO 100 BY 1 DO           //iterasikan j dari 1 sampai dengan 100
+				IF NOT Data[j] THEN		      //jika dalam array data J terdapoat nilai TRUE
+					Status:=FALSE;            //Status jadi False
+					CheckReset:=FALSE;        //CheckReset jadi False
+					j := 100 ;                //J berubah index ke 100
+					seqIndex := 0;            //SeqIndex berubah ke keadaan awal
+				END_IF
+			END_FOR
+		END_IF 
+END_CASE
+(* old management error *problem Delay Respons
+IF CheckReset THEN
+	CASE SeqCheck[a] OF
+		0:
+			IF NOT Data[a] THEN
+				SeqCheck[a]:=10;
+			ELSE
+				CheckReset:=FALSE;
+			END_IF
+		10:
+			IF a = 300 THEN
+				Status:=FALSE;
+				CheckReset:=FALSE;
+			ELSE
+				a := a + 1;
+			END_IF
+	END_CASE
+ELSE
+	FOR j:=1 TO 300 BY 1 DO
+		SeqCheck[j]:=0;
+	END_FOR
+	a:=1;
+END_IF
+
+*)
+]]></ST>
+    </Implementation>
+    <LineIds Name="CheckStatus">
+      <LineId Id="163" Count="0" />
+      <LineId Id="162" Count="0" />
+      <LineId Id="167" Count="0" />
+      <LineId Id="169" Count="2" />
+      <LineId Id="212" Count="0" />
+      <LineId Id="210" Count="0" />
+      <LineId Id="189" Count="0" />
+      <LineId Id="172" Count="1" />
+      <LineId Id="168" Count="0" />
+      <LineId Id="164" Count="0" />
+      <LineId Id="209" Count="0" />
+      <LineId Id="175" Count="0" />
+      <LineId Id="211" Count="0" />
+      <LineId Id="176" Count="1" />
+      <LineId Id="174" Count="0" />
+      <LineId Id="178" Count="0" />
+      <LineId Id="180" Count="4" />
+      <LineId Id="187" Count="1" />
+      <LineId Id="185" Count="1" />
+      <LineId Id="179" Count="0" />
+      <LineId Id="165" Count="0" />
+      <LineId Id="161" Count="0" />
+      <LineId Id="103" Count="0" />
+      <LineId Id="105" Count="0" />
+      <LineId Id="109" Count="0" />
+      <LineId Id="113" Count="1" />
+      <LineId Id="123" Count="1" />
+      <LineId Id="115" Count="3" />
+      <LineId Id="122" Count="0" />
+      <LineId Id="120" Count="1" />
+      <LineId Id="119" Count="0" />
+      <LineId Id="110" Count="0" />
+      <LineId Id="125" Count="4" />
+      <LineId Id="106" Count="0" />
+      <LineId Id="148" Count="1" />
+      <LineId Id="147" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

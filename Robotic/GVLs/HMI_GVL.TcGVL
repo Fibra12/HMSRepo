@@ -1,0 +1,244 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <GVL Name="HMI_GVL" Id="{a89fd01f-6537-4fd8-b693-30d3028a1c7d}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+VAR_GLOBAL
+	//HMI Button Robot
+	bStartButtonRobot			: BOOL;
+	bStopButtonRobot			: BOOL;
+	bResetButtonRobot			: BOOL;
+	bTestModeEnableRobot		: BOOL;
+	bAcknowledgeButtonRobot		: BOOL;
+	
+	//HMI Button Picking
+	bStartButtonPicking			: BOOL;
+	bStopButtonPicking			: BOOL;
+	bResetButtonPicking			: BOOL;
+	bTestModeEnablePicking		: BOOL;
+	bAcknowledgeButtonPicking	: BOOL;
+	bAutoStartPicking			: BOOL;
+	bAutoResetPicking			: BOOL;
+	bAutoAcknowledgePicking		: BOOL;
+	
+	//HMI Button Placing 1
+	bStartButtonPlacing1		: BOOL;
+	bStopButtonPlacing1			: BOOL;
+	bResetButtonPlacing1		: BOOL;
+	bTestModeEnablePlacing1		: BOOL;
+	bAcknowledgeButtonPlacing1	: BOOL;
+	
+	//HMI Button Placing 2
+	bStartButtonPlacing2		: BOOL;
+	bStopButtonPlacing2			: BOOL;
+	bResetButtonPlacing2		: BOOL;
+	bTestModeEnablePlacing2		: BOOL;
+	bAcknowledgeButtonPlacing2	: BOOL;
+	
+	//HMI Button Placing 3
+	bStartButtonPlacing3		: BOOL;
+	bStopButtonPlacing3			: BOOL;
+	bResetButtonPlacing3		: BOOL;
+	bTestModeEnablePlacing3		: BOOL;
+	bAcknowledgeButtonPlacing3	: BOOL;
+	
+	//HMI Button Placing 4
+	bStartButtonPlacing4		: BOOL;
+	bStopButtonPlacing4			: BOOL;
+	bResetButtonPlacing4		: BOOL;
+	bTestModeEnablePlacing4		: BOOL;
+	bAcknowledgeButtonPlacing4	: BOOL;
+	
+	//HMI Button Outfeed
+	bStartButtonOutfeed			: BOOL;
+	bStopButtonOutfeed			: BOOL;
+	bResetButtonOutfeed			: BOOL;
+	bTestModeEnableOutfeed		: BOOL;
+	bAcknowledgeButtonOutfeed	: BOOL;
+	
+	//HMI Button Shuttle
+	bStartButtonShuttle			: BOOL;
+	bStopButtonShuttle			: BOOL;
+	bResetButtonShuttle			: BOOL;
+	bTestModeEnableShuttle		: BOOL;
+	bAcknowledgeButtonShuttle	: BOOL;
+	
+	//HMI Button Dispenser
+	bStartButtonDispenser		: BOOL;
+	bStopButtonDispenser		: BOOL;
+	bResetButtonDispenser		: BOOL;
+	bTestModeEnableDispenser	: BOOL;
+	bAcknowledgeButtonDispenser	: BOOL;
+	
+	//HMI Button Infeed
+	bStartButtonInfeed			: BOOL;
+	bStopButtonInfeed			: BOOL;
+	bResetButtonInfeed			: BOOL;
+	bTestModeEnableInfeed		: BOOL;
+	bAcknowledgeButtonInfeed	: BOOL;
+	
+	bMuteBuzzer					: BOOL;
+	bMachineError				: BOOL;
+	sMessageError				: STRING;
+	sWiringNo					: STRING;
+	sCurrentJob					: STRING;
+	iSeqIndex					: INT;
+	xOut_HMI_Status_EcSlave 	: ARRAY [1..10] OF BOOL;
+	Reset_LinkUp				: ARRAY [1..4] OF BOOL;
+	
+	
+	(**============= Flushing ================*)
+	Flush_Placing1				: BOOL;
+	Flush_Placing2				: BOOL;
+	Flush_Placing3				: BOOL;
+	Flush_Placing4				: BOOL;
+	
+	(**============= Alarm Location ================*)
+	AlarmRobot_Location			: ARRAY [1..20] OF BOOL;
+	AlarmPicking_Location		: ARRAY [1..20] OF BOOL;
+	AlarmPlacing1_Location		: ARRAY [1..20] OF BOOL;
+	AlarmPlacing2_Location		: ARRAY [1..20] OF BOOL;
+	AlarmPlacing3_Location		: ARRAY [1..20] OF BOOL;
+	AlarmPlacing4_Location		: ARRAY [1..20] OF BOOL;
+	AlarmOutfeed_Location		: ARRAY [1..100] OF BOOL;
+	
+	
+	(**============= Current Job ================*)
+	//Infeed
+	CJ_Picking					: STRING;
+	
+	//Placing
+	CJ_Placing1					: STRING;
+	CJ_Placing2					: STRING;
+	CJ_Placing3					: STRING;
+	CJ_Placing4					: STRING;
+	
+	//Shuttle
+	CJ_ShuttleLoad				: STRING;
+	CJ_ShuttleEmpty				: STRING;
+	CJ_ShuttleManagement		: STRING;
+	
+	//Dispenser
+	CJ_Dispenser				: STRING;
+	
+	
+	(**============= Sequence Index ================*)
+	//Infeed
+	SI_Picking					: INT;
+	
+	//Placing
+	SI_Placing1					: INT;
+	SI_Placing2					: INT;
+	SI_Placing3					: INT;
+	SI_Placing4					: INT;
+	
+	(**============= Test Mode Outfeed ================*)
+	//Outfeed
+	Test_PalletBuffer2_Fwd		: BOOL;
+	Test_PalletBuffer1_Fwd		: BOOL;
+	Test_PalletOutfeed1_Fwd		: BOOL;
+	Test_PalletOutfeed2_Fwd		: BOOL;
+	Test_PalletOutfeed3_Fwd		: BOOL;
+	Test_PalletOutfeed4_Fwd		: BOOL;
+	Test_PalletOutfeed5_Fwd		: BOOL;
+	Test_PalletRALifter			: BOOL;
+	Test_PalletRATransfer		: BOOL;
+	
+	//Shuttle
+	Test_ShuttleDrive_Fwd		: BOOL;
+	Test_ShuttleDrive_Rev		: BOOL;
+	Test_ShuttleLoad_Fwd		: BOOL;
+	Test_ShuttleLoad_Rev		: BOOL;
+	Test_ShuttleEmpty_Fwd		: BOOL;
+	
+	//Infeed
+	Test_BoxInfeed_Fwd			: BOOL;
+	Test_BoxStopGo_Fwd			: BOOL;
+	Test_BoxBuffer1_Fwd			: BOOL;
+	Test_BoxBuffer2_Fwd			: BOOL;
+	Test_BoxModullar1_Fwd		: BOOL;
+	Test_BoxModullar2_Fwd		: BOOL;
+	Test_BoxModullar3_Fwd		: BOOL;
+	Test_BoxModullar4_Fwd		: BOOL;
+	Test_Stopper1				: BOOL;
+	Test_Stopper2				: BOOL;
+	Test_Pusher_StopGo_Adv		: BOOL;
+	Test_Pusher_StopGo_Rtc		: BOOL;
+	Test_Pusher_Buffer1_Adv		: BOOL;
+	Test_Pusher_Buffer1_Rtc		: BOOL;
+	Test_Pusher_Buffer2_Adv		: BOOL;
+	Test_Pusher_Buffer2_Rtc		: BOOL;
+	Test_StopperModullar_Adv	: BOOL;
+	Test_StopperModullar_Rtc	: BOOL;
+	
+END_VAR
+
+VAR_GLOBAL PERSISTENT
+	BypassWrapper				: BOOL;
+	BypassWrapperExisting		: BOOL;
+	BypassFGHS					: BOOL;	
+	Disable_Overflow			: BOOL;
+	LockModullarToRun			: BOOL;
+	PickLine					: INT;
+	(**============= Timer Conveyor ================*)
+	//Timer
+	Tmr_Picking					: UINT;
+	Tmr_Centering				: UINT;
+	Tmr_Placing1				: UINT;
+	Tmr_Placing2				: UINT;
+	Tmr_Placing3				: UINT;
+	Tmr_Placing4				: UINT;
+	
+	(**============= Data Counter ================*)
+	arCountPlace				: ARRAY [1..4] OF USINT;
+	arCountReal					: ARRAY [1..4] OF USINT;
+	arCountTotal				: ARRAY [1..4] OF UINT;
+	arPalletIncomplete			: ARRAY [1..4] OF UINT;
+	arPalletTotal				: ARRAY [1..4] OF UINT;
+	
+	arRecipeHMI					: ARRAY [1..4] OF stProductInfo;
+	OffsetPattern1				: stCustomPattern;
+	OffsetPattern2				: stCustomPattern;
+	OffsetPattern3				: stCustomPattern;
+	OffsetPattern4				: stCustomPattern;
+	
+	
+	(**============= Parameter Outfeed================*)
+	//Timer
+	Tmr_PalletBuffer1			: UINT;
+	Tmr_PalletBuffer2			: UINT;
+	Tmr_PalletBuffer3			: UINT;
+	Tmr_PalletOutfeed1			: UINT;
+	Tmr_PalletOutfeed2			: UINT;
+	Tmr_PalletOutfeed3			: UINT;
+	Tmr_PalletOutfeed4			: UINT;
+	Tmr_PalletOutfeed5			: UINT;
+	Tmr_PalletRA				: UINT;
+	TmrDelay_PalletRA			: UINT;
+	Tmr_BrakeShuttle			: UINT;
+	Tmr_EmptyShuttle			: UINT;
+	Tmr_LoadedShuttle			: UINT;
+	Tmr_Dispenser				: UINT;
+	
+	//Infeed
+	Tmr_Infeed					: UINT;
+	Tmr_Buffer1					: UINT;
+	Tmr_Buffer2					: UINT;
+	Tmr_StopGo					: UINT;
+	Tmr_Stopper1				: UINT;
+	Tmr_Stopper2				: UINT;
+	Tmr_ModullarOn				: UINT;
+	Tmr_ModullarOff				: UINT;
+	
+	(**============= Parameter Shuttle ================*)
+	Shuttle_JogSpeed			: REAL;
+	Shuttle_MinSpeed			: REAL;
+	Shuttle_MaxSpeed			: REAL;
+	Shuttle_Offset				: DINT;
+	Shuttle_Speed				: REAL;
+	stShuttleSequence			: ARRAY [0..4] OF stShuttle;
+	LinkUp_1					: INT;
+END_VAR
+
+]]></Declaration>
+  </GVL>
+</TcPlcObject>

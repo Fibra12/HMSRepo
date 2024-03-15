@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
+  <POU Name="BLINK" Id="{a6119a46-6efe-4c7d-b7be-d057f4004bd0}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK BLINK
+VAR_INPUT
+	F_Enable: BOOL;
+	TimeHigh: TIME:=T#1S;
+	TimeLow	: TIME:=T#1S;
+	Delay	: TIME:=T#1S;
+	Loop	: INT;
+END_VAR
+VAR_OUTPUT
+	Output	: BOOL;
+END_VAR
+VAR
+	SeqIndex	: INT;
+	Timer		: TON;
+	Beep		: INT;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF F_Enable THEN
+    // Jika sinyal F_Enable diaktifkan, program akan dijalankan
+    CASE SeqIndex OF
+        0:
+            // Langkah 0: Menunggu hingga Beep mencapai jumlah siklus Loop
+            // Jika sudah mencapai, pindah ke langkah 30, jika belum, lanjut ke langkah 10
+            IF Beep >= Loop THEN
+                SeqIndex:=30;   // Pindah ke langkah 30
+            ELSE
+                Beep    := Beep + 1;    // Tambah jumlah siklus yang sudah dilakukan
+                SeqIndex:=10;   // Pindah ke langkah 10
+            END_IF
+
+        10:
+            // Langkah 10: Mengatur output menjadi TRUE dan menghitung durasi TimeHigh
+            Output:=TRUE;   // Set output menjadi TRUE (berkedip)
+            Timer(IN:=TRUE, PT:=TimeHigh); // Aktifkan timer dengan durasi TimeHigh
+            IF Timer.Q THEN    // Jika timer selesai
+                Timer(IN:=FALSE);   // Matikan timer
+                SeqIndex:=20;   // Pindah ke langkah 20
+            END_IF
+
+        20:
+            // Langkah 20: Mengatur output menjadi FALSE dan menghitung durasi TimeLow
+            Output:=FALSE;  // Set output menjadi FALSE (tidak berkedip)
+            Timer(IN:=TRUE, PT:=TimeLow);  // Aktifkan timer dengan durasi TimeLow
+            IF Timer.Q THEN    // Jika timer selesai
+                Timer(IN:=FALSE);   // Matikan timer
+                SeqIndex:=0;    // Kembali ke langkah 0 untuk memulai siklus baru
+            END_IF
+        
+        30:
+            // Langkah 30: Mengatur ulang Beep dan menghitung durasi Delay sebelum memulai siklus baru
+            Beep    := 0;    // Reset jumlah siklus yang sudah dilakukan
+            Timer(IN:=TRUE, PT:=Delay); // Aktifkan timer dengan durasi Delay
+            IF Timer.Q THEN    // Jika timer selesai
+                Timer(IN:=FALSE);   // Matikan timer
+                SeqIndex:=0;    // Kembali ke langkah 0 untuk memulai siklus baru
+            END_IF
+    END_CASE
+ELSE
+    // Jika F_Enable tidak aktif, program akan mereset variabel dan output ke nilai awal
+    SeqIndex    := 0;    // Reset SeqIndex ke langkah awal
+    Beep        := 0;    // Reset jumlah siklus yang sudah dilakukan
+    Timer(IN:=FALSE);   // Matikan timer
+    Output:=FALSE;  // Set output menjadi FALSE (tidak berkedip)
+END_IF
+]]></ST>
+    </Implementation>
+    <LineIds Name="BLINK">
+      <LineId Id="101" Count="46" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

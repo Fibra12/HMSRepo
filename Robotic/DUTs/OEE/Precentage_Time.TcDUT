@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="Precentage_Time" Id="{e6c48422-12d9-444d-9e7a-0ed026cf5cb6}">
+    <Declaration><![CDATA[TYPE Precentage_Time :	
+STRUCT
+	Running		: REAL;
+	Stopped		: REAL;
+	Error		: REAL;
+	Unstated	: REAL;
+END_STRUCT
+END_TYPE]]></Declaration>
+  </DUT>
+</TcPlcObject>

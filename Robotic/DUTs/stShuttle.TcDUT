@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="stShuttle" Id="{1c850c34-d022-4df5-9c3a-b3e1f4279b15}">
+    <Declaration><![CDATA[TYPE stShuttle :
+STRUCT
+	RequestEmptyPallet	: BOOL;
+	RequestLoadPallet	: BOOL;
+	FB_Request			: BOOL;
+	PositionEmpty		: UINT;
+	PositionLoaded		: UINT;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

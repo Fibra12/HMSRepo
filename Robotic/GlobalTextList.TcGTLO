@@ -1,0 +1,3638 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <GlobalTextList Name="GlobalTextList" Id="{14151883-fe4e-4d9a-9464-5ddbe1a1d279}">
+    <XmlArchive>
+      <Data>
+        <o xml:space="preserve" t="GlobalTextListObject">
+          <l n="TextList" t="ArrayList" cet="TextListRow">
+            <o>
+              <v n="TextID">"1836"</v>
+              <v n="TextDefault">" "</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"4414"</v>
+              <v n="TextDefault">"%3.1f"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"100"</v>
+              <v n="TextDefault">"%3.1f %"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2062"</v>
+              <v n="TextDefault">"%3.3f"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"4760"</v>
+              <v n="TextDefault">"%3.3f %"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"950"</v>
+              <v n="TextDefault">"%3.5f"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2819"</v>
+              <v n="TextDefault">"%3.5f %"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"989"</v>
+              <v n="TextDefault">"%5.1f hour"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2126"</v>
+              <v n="TextDefault">"%5.2f"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1746"</v>
+              <v n="TextDefault">"%5.2f %"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"314"</v>
+              <v n="TextDefault">"%5.2f%"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"430"</v>
+              <v n="TextDefault">"%5.3f H"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"4455"</v>
+              <v n="TextDefault">"%5.3f hour"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2043"</v>
+              <v n="TextDefault">"%5.3f hours"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"0"</v>
+              <v n="TextDefault">"%5.3f our"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1761"</v>
+              <v n="TextDefault">"%5.4 ms"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1143"</v>
+              <v n="TextDefault">"%5.4f H"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3371"</v>
+              <v n="TextDefault">"%i"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1125"</v>
+              <v n="TextDefault">"%I"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2829"</v>
+              <v n="TextDefault">"%i  ms"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"169"</v>
+              <v n="TextDefault">"%i %"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"818"</v>
+              <v n="TextDefault">"%i ms"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1785"</v>
+              <v n="TextDefault">"%s"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1019"</v>
+              <v n="TextDefault">"%S"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"9"</v>
+              <v n="TextDefault">"1"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1280"</v>
+              <v n="TextDefault">"10"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"4636"</v>
+              <v n="TextDefault">"1000"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1709"</v>
+              <v n="TextDefault">"1000	Push Button Run at P2
+1001	Push Button Stop at P2
+1002	Push Button Alarm Reset at P2
+1003	Push Button Acknowledge at P2
+1004	Auto/Manual Switch (0=Running Mode, 1=Test Mode)
+1005	Emergency Stop at P2
+1006	
+1007	PSR Back at Loaded Pallet Outfeed Roller Conveyor 5
+1008	PSR Front at Loaded Pallet Outfeed Roller Conveyor 5
+1009	Safety Light Curtain
+1010	
+1011	
+1012	
+1013	PSR Back at Detect Loaded Pallet Buffer Roller Conv 2 
+1014	PSR Front at Detect Loaded Pallet Buffer Roller Conv 2 
+1015	Feedback Loaded Pallet Outfeed Roller Conveyor 5 is Running"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3712"</v>
+              <v n="TextDefault">"1000	Push Button Run at P2
+1001	Push Button Stop at P2
+1002	Push Button Alarm Reset at P2
+1003	Push Button Acknowledge at P2
+1004	Auto/Manual Switch (0=Running Mode, 1=Test Mode)
+1005	Emergency Stop at P2
+1006	
+1007	PSR Back at Loaded Pallet Outfeed Roller Conveyor 5 (GL6-P4212)
+1008	PSR Front at Loaded Pallet Outfeed Roller Conveyor 5 (GL6-P4212)
+1009	Safety Light Curtain
+1010	
+1011	
+1012	
+1013	PSR Back at Detect Loaded Pallet Buffer Roller Conv 2 (GL6-P4212)
+1014	PSR Front at Detect Loaded Pallet Buffer Roller Conv 2 (GL6-P4212)
+1015	Feedback Loaded Pallet Outfeed Roller Conveyor 5 is Running"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"5284"</v>
+              <v n="TextDefault">"1000	Push Button Run at Main Panel
+1001	Push Button Stop at Main Panel
+1002	Push Button Alarm Reset at Main Panel
+1003	Push Button Acknowledge at Main Panel
+1004	Emergency Stop at Infeed Panel
+1005	Auto/Manual Switch (0=Running Mode, 1=Test Mode)
+1006	
+1007	
+1008	
+1009	
+1010	
+1011	
+1012	
+1013	
+1014	
+1015	Pressure Switch for Main Panel
+"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"759"</v>
+              <v n="TextDefault">"1000 - Push Button Run at P2"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"428"</v>
+              <v n="TextDefault">"1001 - Push Button Stop at P2
+"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"429"</v>
+              <v n="TextDefault">"1002 - Push Button Alarm Reset at P2
+"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"181"</v>
+              <v n="TextDefault">"1003 - Push Button Acknowledge at P2"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"739"</v>
+              <v n="TextDefault">"1004 - Auto/Manual Switch"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"348"</v>
+              <v n="TextDefault">"1005 - Emergency Stop at P2"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"910"</v>
+              <v n="TextDefault">"1006
+"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"720"</v>
+              <v n="TextDefault">"1007 - Feedback Buffer Roller 2  Conveyor is Running"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"371"</v>
+              <v n="TextDefault">"1007 - PSR Back at Detect Loaded Pallet Buffer Roller Conv 2 (GL6-P4212)"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"19"</v>
+              <v n="TextDefault">"1008 - Feedback Loaded Pallet Buffer Conveyor 1 is Running"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1082"</v>
+              <v n="TextDefault">"1008 - PSR Front at Detect Loaded Pallet Buffer Roller Conv 2 (GL6-P4212)"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"879"</v>
+              <v n="TextDefault">"1009 - Safety Light Curtain
+"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1148"</v>
+              <v n="TextDefault">"1010 - Safety Door Solenoid Channel 1"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"877"</v>
+              <v n="TextDefault">"1011 - Safety Door Solenoid Channel 2"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1006"</v>
+              <v n="TextDefault">"1012 "</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"486"</v>
+              <v n="TextDefault">"1013 - PSR Back at Loaded Pallet Outfeed Roller Conveyor 5 (GL6-P4212)"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"426"</v>
+              <v n="TextDefault">"1014 - PSR Front at Loaded Pallet Outfeed Roller Conveyor 5 (GL6-P4212)"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"889"</v>
+              <v n="TextDefault">"1015 - Feedback Loaded Pallet Outfeed Roller Conveyor 5 is Running"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1164"</v>
+              <v n="TextDefault">"10xx"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1517"</v>
+              <v n="TextDefault">"11"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3803"</v>
+              <v n="TextDefault">"1100	Feedback Box Transfer Modullar Conveyor 1 is Running
+1101	Feedback Box Transfer Modullar Conveyor 2 is Running
+1102	Feedback Box Transfer Modullar Conveyor 3 is Running
+1103	Feedback Box Transfer Modullar Conveyor 4 is Running
+1104	Feedback Box Infeed Roller Conveyor is Running
+1105	Feedback Box Stop &amp; Go Conveyor is Running
+1106	Feedback Buffer Roller 1  Conveyor is Running
+1107	Feedback Buffer Roller 2  Conveyor is Running
+1108	Feedback Loaded Pallet Buffer Conveyor 1 is Running
+1109	Feedback Loaded Pallet Outfeed Roller Conveyor 1 is Running
+1110	Feedback Right Angel is Running
+1111	Feedback Right Angel Lifter is Running
+1112	Feedback Loaded Pallet Outfeed Roller Conveyor 2 is Running
+1113	Feedback Loaded Pallet Outfeed Roller Conveyor 3 is Running
+1114	Feedback Loaded Pallet Outfeed Roller Conveyor 4 is Running
+1115	Feedback Loaded Pallet Buffer 2 is Running"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1220"</v>
+              <v n="TextDefault">"1100	Feedback Box Transfer Modullar Conveyor 1 is Running
+1101	Feedback Box Transfer Modullar Conveyor 2 is Running
+1102	Feedback Box Transfer Modullar Conveyor 3 is Running
+1103	Feedback Box Transfer Modullar Conveyor 4 is Running
+1104	Feedback Box Infeed Roller Conveyor is Running
+1105	Feedback Box Stop &amp; Go Conveyor is Running
+1106	Feedback Buffer Roller 1  Conveyor is Running
+1107	Feedback Buffer Roller 2  Conveyor is Running
+1108	Feedback Loaded Pallet Buffer Conveyor 1 is Running
+1109	Feedback Loaded Pallet Outfeed Roller Conveyor 1 is Running
+1110	Feedback Right Angel is Running
+1111	Feedback Right Angel Lifter is Running
+1112	Feedback Loaded Pallet Outfeed Roller Conveyor 2 is Running
+1113	Feedback Loaded Pallet Outfeed Roller Conveyor 3 is Running
+1114	Feedback Loaded Pallet Outfeed Roller Conveyor 4 is Running
+1115	Feedback Loaded Pallet Buffer 2 is Running (Take Over Motor Lama)"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"235"</v>
+              <v n="TextDefault">"1100 - Feedback Box Transfer Modullar Conveyor 1 is Running"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1130"</v>
+              <v n="TextDefault">"1101 - Feedback Box Transfer Modullar Conveyor 2 is Running
+"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"266"</v>
+              <v n="TextDefault">"1102 - Feedback Box Transfer Modullar Conveyor 3 is Running"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"523"</v>
+              <v n="TextDefault">"1103 - Feedback Box Transfer Modullar Conveyor 4 is Running"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"310"</v>
+              <v n="TextDefault">"1104 - Feedback Box Infeed Roller Conveyor is Running"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"352"</v>
+              <v n="TextDefault">"1105 - Feedback Box Stop &amp; Go Conveyor is Running"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"885"</v>
+              <v n="TextDefault">"1106 - Feedback Buffer Roller 1  Conveyor is Running"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"295"</v>
+              <v n="TextDefault">"1109 - Feedback Loaded Pallet Outfeed Roller Conveyor 1 is Running"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"857"</v>
+              <v n="TextDefault">"1110 - Feedback Right Angel is Running"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"142"</v>
+              <v n="TextDefault">"1111 - Feedback Right Angel Lifter is Running"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"477"</v>
+              <v n="TextDefault">"1112 - Feedback Loaded Pallet Outfeed Roller Conveyor 2 is Running"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"856"</v>
+              <v n="TextDefault">"1113 - Feedback Loaded Pallet Outfeed Roller Conveyor 3 is Running"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"17"</v>
+              <v n="TextDefault">"1114 - Feedback Loaded Pallet Outfeed Roller Conveyor 4 is Running"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1256"</v>
+              <v n="TextDefault">"1115 - Feedback Loaded Pallet Buffer 2 is Running"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"701"</v>
+              <v n="TextDefault">"11xx"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"653"</v>
+              <v n="TextDefault">"12"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"728"</v>
+              <v n="TextDefault">"1200"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3570"</v>
+              <v n="TextDefault">"1200	
+1201	
+1202	
+1203	
+1204	PSR Back at Detect Loaded Pallet Buffer Roller Conv 1
+1205	PSR Front at Detect Loaded Pallet Buffer Roller Conv 1
+1206	PSR Back at Loaded Pallet Outfeed Roller Conveyor 1
+1207	PSR Front at Loaded Pallet Outfeed Roller Conveyor 1
+1208	PSR Back at Loaded Pallet Outfeed Roller Conveyor 2
+1209	PSR Front at Loaded Pallet Outfeed Roller Conveyor 2
+1210	Proximity Sensor at Bottom Position Pallet RA Lifter 
+1211	Proximity Sensor at Top Position Pallet RA Lifter
+1212	PSR Back at Loaded Pallet Outfeed Roller Conveyor 3 
+1213	PSR Front at Loaded Pallet Outfeed Roller Conveyor 3 
+1214	PSR Back at Loaded Pallet Outfeed Roller Conveyor 4 
+1215	PSR Front at Loaded Pallet Outfeed Roller Conveyor 4"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"5027"</v>
+              <v n="TextDefault">"1200	
+1201	
+1202	
+1203	
+1204	PSR Back at Detect Loaded Pallet Buffer Roller Conv 1 (GL6-P4212)
+1205	PSR Front at Detect Loaded Pallet Buffer Roller Conv 1 (GL6-P4212)
+1206	PSR Back at Loaded Pallet Outfeed Roller Conveyor 1 (GL6-P4212)
+1207	PSR Front at Loaded Pallet Outfeed Roller Conveyor 1 (GL6-P4212)
+1208	PSR Back at Loaded Pallet Outfeed Roller Conveyor 2 (GL6-P4212)
+1209	PSR Front at Loaded Pallet Outfeed Roller Conveyor 2 (GL6-P4212)
+1210	Proximity Sensor at Bottom Position Pallet RA Lifter  (E2B-M12KN08-M1-B1)
+1211	Proximity Sensor at Top Position Pallet RA Lifter (E2B-M12KN08-M1-B1)
+1212	PSR Back at Loaded Pallet Outfeed Roller Conveyor 3 (GL6-P4212)
+1213	PSR Front at Loaded Pallet Outfeed Roller Conveyor 3 (GL6-P4212)
+1214	PSR Back at Loaded Pallet Outfeed Roller Conveyor 4 (GL6-P4212)
+1215	PSR Front at Loaded Pallet Outfeed Roller Conveyor 4 (GL6-P4212)"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"4020"</v>
+              <v n="TextDefault">"1200	
+1201	
+1202	
+1203	PSR to Check Box at Loaded Pallet Buffer Roller Conv 1
+1204	PSR Back at Detect Loaded Pallet Buffer Roller Conv 1
+1205	PSR Front at Detect Loaded Pallet Buffer Roller Conv 1
+1206	PSR Back at Loaded Pallet Outfeed Roller Conveyor 1
+1207	PSR Front at Loaded Pallet Outfeed Roller Conveyor 1
+1208	PSR Back at Loaded Pallet Outfeed Roller Conveyor 2
+1209	PSR Front at Loaded Pallet Outfeed Roller Conveyor 2
+1210	Proximity Sensor at Bottom Position Pallet RA Lifter 
+1211	Proximity Sensor at Top Position Pallet RA Lifter
+1212	PSR Back at Loaded Pallet Outfeed Roller Conveyor 3 
+1213	PSR Front at Loaded Pallet Outfeed Roller Conveyor 3 
+1214	PSR Back at Loaded Pallet Outfeed Roller Conveyor 4 
+1215	PSR Front at Loaded Pallet Outfeed Roller Conveyor 4"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"5286"</v>
+              <v n="TextDefault">"1200	Feedback Box Picking roller Conveyor is Running
+1201	
+1202	Feedback Box Placing at Pallet Roller Conveyor 1 is Running
+1203	Feedback Box Placing at Pallet Roller Conveyor 2 is Running
+1204	Feedback Box Placing at Pallet Roller Conveyor 3 is Running
+1205	Feedback Box Placing at Pallet Roller Conveyor 4  isRunning
+1206	
+1207	
+1208	
+1209	
+1210	
+1211	RSW Pneumatic Box Centring When Rtc
+1212	RSW Pneumatic Gap Maker When Adv
+1213	RSW Pneumatic Gap Maker When Rtc
+1214	RSW Pneumatic Stopper  Transfer When Rtc
+1215	
+"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1003"</v>
+              <v n="TextDefault">"1201 - Feedback Loaded Pallet Buffer 3 is Running"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"633"</v>
+              <v n="TextDefault">"1202 - PSR Back at Detect Loaded Pallet Buffer Roller Conv (GL6-P4212)"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3"</v>
+              <v n="TextDefault">"1203 - PSR Front at Detect Loaded Pallet Buffer Roller Conv (GL6-P4212)"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"677"</v>
+              <v n="TextDefault">"1204 - PSR Front at Detect Loaded Pallet Buffer Roller Conv (GL6-P4212)"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1371"</v>
+              <v n="TextDefault">"1205 - PSR Front at Loaded Pallet Outfeed Roller Conveyor 1 (GL6-P4212)"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1144"</v>
+              <v n="TextDefault">"1206 - PSR Back to Check Pallet RA Transfer Chain (GL6-P4212)"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"129"</v>
+              <v n="TextDefault">"1207 - PSR Front to Check Pallet RA Transfer Chain (GL6-P4212)"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2194"</v>
+              <v n="TextDefault">"1208 - PSR Back at Loaded Pallet Outfeed Roller Conveyor 2 (GL6-P4212)"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1414"</v>
+              <v n="TextDefault">"1209 - PSR Front at Loaded Pallet Outfeed Roller Conveyor 2 (GL6-P4212)"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2074"</v>
+              <v n="TextDefault">"1210 - Proximity Sensor at Bottom Position Pallet RA Lifter  (E2B-M12KN08-M1-B1)"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1277"</v>
+              <v n="TextDefault">"1211 - Proximity Sensor at Top Position Pallet RA Lifter (E2B-M12KN08-M1-B1)"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1556"</v>
+              <v n="TextDefault">"1212 - PSR Back at Loaded Pallet Outfeed Roller Conveyor 3 (GL6-P4212)"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1416"</v>
+              <v n="TextDefault">"1213 - PSR Front at Loaded Pallet Outfeed Roller Conveyor 3 (GL6-P4212)"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"151"</v>
+              <v n="TextDefault">"1214 - PSR Back at Loaded Pallet Outfeed Roller Conveyor 4 (GL6-P4212)"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"320"</v>
+              <v n="TextDefault">"1215 - PSR Front at Loaded Pallet Outfeed Roller Conveyor 4 (GL6-P4212)"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2569"</v>
+              <v n="TextDefault">"12xx"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"318"</v>
+              <v n="TextDefault">"13"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"4082"</v>
+              <v n="TextDefault">"1300	Feedback Automatic Pallet Dispenser is Running
+1301	PSR Back to Check Pallet at Automatic Pallet Dispenser 
+1302	PSR Front to Check Pallet at Automatic Pallet Dispenser
+1303	PSR to Check Stock Pallet at Automatic Pallet Dispenser
+1304	RSW for Check Position Right Pneumatic Horizontal when Retract
+1305	RSW for Check Position Right Pneumatic Horizontal when Advanced
+1306	RSW for Check Position Left Pneumatic Horizontal when Retract
+1307	RSW for Check Position Left Pneumatic Horizontal when Advanced
+1308	PSR Transfer to Check Pallet at Automatic Pallet Dispenser 
+1309	Proximity Sensor at Retract Position Right Pneumatic Vertical
+1310	Proximity Sensor at Middle Position Right Pneumatic Vertical
+1311	Proximity Sensor at Advanced Position Right Pneumatic Vertical
+1312	Proximity Sensor at  Retract Position Left Pneumatic Vertical
+1313	Proximity Sensor at Middle Position Left Pneumatic Vertical
+1314	Proximity Sensor at Advanced Position Left Pneumatic Vertical
+1315	Request Release Solenoid Door Outfeed"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2849"</v>
+              <v n="TextDefault">"1300	Feedback Automatic Pallet Dispenser is Running
+1301	PSR Back to Check Pallet at Automatic Pallet Dispenser (GL6-P4212)
+1302	PSR Front to Check Pallet at Automatic Pallet Dispenser (GL6-P4212)
+1303	PSR to Check Stock Pallet at Automatic Pallet Dispenser (GL6-P4212)
+1304	RSW for Check Position Right Pneumatic Horizontal when Retract
+1305	RSW for Check Position Right Pneumatic Horizontal when Advanced
+1306	RSW for Check Position Left Pneumatic Horizontal when Retract
+1307	RSW for Check Position Left Pneumatic Horizontal when Advanced
+1308	PSR Transfer to Check Pallet at Automatic Pallet Dispenser (GL6-P4212)
+1309	Proximity Sensor at Retract Position Right Pneumatic Vertical
+1310	Proximity Sensor at Middle Position Right Pneumatic Vertical
+1311	Proximity Sensor at Advanced Position Right Pneumatic Vertical
+1312	Proximity Sensor at  Retract Position Left Pneumatic Vertical
+1313	Proximity Sensor at Middle Position Left Pneumatic Vertical
+1314	Proximity Sensor at Advanced Position Left Pneumatic Vertical
+1315	Request Release Solenoid Door Outfeed"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"4248"</v>
+              <v n="TextDefault">"1300	Feedback Automatic Pallet Dispenser is Running
+1301	PSR Back to Check Pallet at Automatic Pallet Dispenser (GL6-P4212)
+1302	PSR Front to Check Pallet at Automatic Pallet Dispenser (GL6-P4212)
+1303	PSR to Check Stock Pallet at Automatic Pallet Dispenser (GL6-P4212)
+1304	RSW for Check Position Right Pneumatic Horizontal when Retract
+1305	RSW for Check Position Right Pneumatic Horizontal when Advanced
+1306	RSW for Check Position Left Pneumatic Horizontal when Retract
+1307	RSW for Check Position Left Pneumatic Horizontal when Advanced
+1308	PSR Transfer to Check Pallet at Automatic Pallet Dispenser (GL6-P4212)
+1309	Proximity Sensor at Retract Position Right Pneumatic Vertical
+1310	Proximity Sensor at Middle Position Right Pneumatic Vertical
+1311	Proximity Sensor at Advanced Position Right Pneumatic Vertical (E2B-M12KN08-M1-B1)
+1312	Proximity Sensor at  Retract Position Left Pneumatic Vertical (E2B-M12KN08-M1-B1)
+1313	Proximity Sensor at Middle Position Left Pneumatic Vertical (E2B-M12KN08-M1-B1)
+1314	Proximity Sensor at Advanced Position Left Pneumatic Vertical (E2B-M12KN08-M1-B1)
+1315	Request Release Solenoid Door Outfeed"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"760"</v>
+              <v n="TextDefault">"1300	Feedback Automatic Pallet Dispenser is Running
+1301	PSR Back to Check Pallet at Automatic Pallet Dispenser (GL6-P4212)
+1302	PSR Front to Check Pallet at Automatic Pallet Dispenser (GL6-P4212)
+1303	PSR to Check Stock Pallet at Automatic Pallet Dispenser (GL6-P4212)
+1304	RSW for Check Position Right Pneumatic Horizontal when Retract
+1305	RSW for Check Position Right Pneumatic Horizontal when Advanced
+1306	RSW for Check Position Left Pneumatic Horizontal when Retract
+1307	RSW for Check Position Left Pneumatic Horizontal when Advanced
+1308	PSR Transfer to Check Pallet at Automatic Pallet Dispenser (GL6-P4212)
+1309	Proximity Sensor at Retract Position Right Pneumatic Vertical
+1310	Proximity Sensor at Middle Position Right Pneumatic Vertical (E2B-M12KN08-M1-B1)
+1311	Proximity Sensor at Advanced Position Right Pneumatic Vertical (E2B-M12KN08-M1-B1)
+1312	Proximity Sensor at  Retract Position Left Pneumatic Vertical (E2B-M12KN08-M1-B1)
+1313	Proximity Sensor at Middle Position Left Pneumatic Vertical (E2B-M12KN08-M1-B1)
+1314	Proximity Sensor at Advanced Position Left Pneumatic Vertical (E2B-M12KN08-M1-B1)
+1315	Request Release Solenoid Door Outfeed"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"4383"</v>
+              <v n="TextDefault">"1300	Feedback Automatic Pallet Dispenser is Running
+1301	PSR Back to Check Pallet at Automatic Pallet Dispenser (GL6-P4212)
+1302	PSR Front to Check Pallet at Automatic Pallet Dispenser (GL6-P4212)
+1303	PSR to Check Stock Pallet at Automatic Pallet Dispenser (GL6-P4212)
+1304	RSW for Check Position Right Pneumatic Horizontal when Retract
+1305	RSW for Check Position Right Pneumatic Horizontal when Advanced
+1306	RSW for Check Position Left Pneumatic Horizontal when Retract
+1307	RSW for Check Position Left Pneumatic Horizontal when Advanced
+1308	PSR Transfer to Check Pallet at Automatic Pallet Dispenser (GL6-P4212)
+1309	Proximity Sensor at Retract Position Right Pneumatic Vertical (E2B-M12KN08-M1-B1)
+1310	Proximity Sensor at Middle Position Right Pneumatic Vertical (E2B-M12KN08-M1-B1)
+1311	Proximity Sensor at Advanced Position Right Pneumatic Vertical (E2B-M12KN08-M1-B1)
+1312	Proximity Sensor at  Retract Position Left Pneumatic Vertical (E2B-M12KN08-M1-B1)
+1313	Proximity Sensor at Middle Position Left Pneumatic Vertical (E2B-M12KN08-M1-B1)
+1314	Proximity Sensor at Advanced Position Left Pneumatic Vertical (E2B-M12KN08-M1-B1)
+1315	Request Release Solenoid Door Outfeed"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1140"</v>
+              <v n="TextDefault">"1300 - PSR to Detect Infeed Box Roller Conv. (GTE6-P4212)"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"312"</v>
+              <v n="TextDefault">"1301 - PSR Back to Detect Box at Stop &amp; Go Conv. (GL6-P4212)"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"73"</v>
+              <v n="TextDefault">"1302 - PSR Front to Detect Box at Stop &amp; Go Conv. (GTE6-P4212)
+"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"18"</v>
+              <v n="TextDefault">"1303 - PSR to Detect Stopper 1 Conv. (GL6-P4212)"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"268"</v>
+              <v n="TextDefault">"1304 - PSR to Detect Stopper 2 Conv. (GL6-P4212)"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1076"</v>
+              <v n="TextDefault">"1305"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"480"</v>
+              <v n="TextDefault">"1306 - PSR Front to Detect Puhser for Buffer Roller 1. (GTE6-P4212)"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1312"</v>
+              <v n="TextDefault">"1307 - PSR Back to Detect Puhser for Buffer Roller 1. (GTE6-P4212)"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"99"</v>
+              <v n="TextDefault">"1308 - PSR Front to Detect Puhser for Buffer Roller 2. (GTE6-P4212)"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1334"</v>
+              <v n="TextDefault">"1309 - PSR Middle to Detect for Buffer Roller 2. (GL6-P4212)"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1065"</v>
+              <v n="TextDefault">"1310 - PSR Back to Detect Puhser for Buffer Roller 2. (GTE6-P4212)"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"936"</v>
+              <v n="TextDefault">"1311"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"812"</v>
+              <v n="TextDefault">"1312 - PSR Front at Transfer Modular Conv 1 (GL6-P4212)"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1078"</v>
+              <v n="TextDefault">"1313 - PSR Front at Transfer Modular Conv 2 (GL6-P4212)"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1372"</v>
+              <v n="TextDefault">"1314 - PSR Back at Transfer Modular  Conv 2 (GL6-P4212)"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"926"</v>
+              <v n="TextDefault">"1315 - PSR Front at Transfer Modular Conv 3 (GL6-P4212)"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"4150"</v>
+              <v n="TextDefault">"13xx"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"333"</v>
+              <v n="TextDefault">"14"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"525"</v>
+              <v n="TextDefault">"1400"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"155"</v>
+              <v n="TextDefault">"1400	PSR 4 to Detect Box at Picking Conv.  (GTE6-P4212)
+1401	
+1402	
+1403	
+1404	
+1405	PSR 1 to Detect Box at Picking Conv.  (GTE6-P4212)
+1406	PSR 2 to Detect Box at Picking Conv. (GTE6-P4212)
+1407	PSR 3 to Detect Box at Picking Conv.  (GTE6-P4212)
+1408	PSR Front to Detect for Empty Transfer Infeed Roller. (GL6-P4212)
+1409	PSR Middle to Detect for Empty Transfer Infeed Roller. (GL6-P4212)
+1410	PSR Back to Detect for Empty Transfer Infeed Roller. (GL6-P4212)
+1411	
+1412	
+1413	
+1414	Request Release Solenoid Door Robot
+1415	Feedback Relay Solenoid Door Robot
+"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3412"</v>
+              <v n="TextDefault">"1400	Request Release Solenoid Door Wrapper
+1401	RSW Pneumatic Stopper 1 When Rtc
+1402	RSW Pneumatic Stopper 2 When Rtc
+1403	RSW Pneumatic Pusher Stop&amp;Go  Adv
+1404	RSW Pneumatic Pusher Stop&amp;Go  Rtc
+1405	RSW Pneumatic Pusher Buffer Roller 1 Adv
+1406	RSW Pneumatic Pusher Buffer Roller  1 Rtc
+1407	RSW Pneumatic Pusher Buffer Roller  2 Adv
+1408	RSW Pneumatic Pusher Buffer Roller  2 Rtc
+1409	Feedback Relay Solenoid Door 1 (Outfeed)
+1410	Feedback Relay Solenoid Door 2 (Wrapper)
+1411	
+1412	
+1413	
+1414	Interlock Feedback Pallet Ready at Infeed Dispenser
+1415	Interlock Feedback Pallet Ready at Unloading"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3015"</v>
+              <v n="TextDefault">"1400	Request Release Solenoid Door Wrapper
+1401	RSW Pneumatic Stopper 1 When Rtc
+1402	RSW Pneumatic Stopper 2 When Rtc
+1403	RSW Pneumatic Pusher Stop&amp;Go  Adv
+1404	RSW Pneumatic Pusher Stop&amp;Go  Rtc
+1405	RSW Pneumatic Pusher Buffer Roller 1 Adv
+1406	RSW Pneumatic Pusher Buffer Roller  1 Rtc
+1407	RSW Pneumatic Pusher Buffer Roller  2 Adv
+1408	RSW Pneumatic Pusher Buffer Roller  2 Rtc
+1409	Feedback Relay Solenoid Door 1 (Outfeed)
+1410	Feedback Relay Solenoid Door 2 (Wrapper)
+1411	RSW Pneumatic Stopper Modullar When Adv
+1412	RSW Pneumatic Stopper Modullar When Rtc
+1413	
+1414	Interlock Feedback Pallet Ready at Infeed Dispenser
+1415	Interlock Feedback Pallet Ready at Unloading"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1373"</v>
+              <v n="TextDefault">"1401 - RSW Pneumatic Stopper 1 When Rtc"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1546"</v>
+              <v n="TextDefault">"1402 - RSW Pneumatic Stopper 2 When Rtc
+"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1389"</v>
+              <v n="TextDefault">"1403 - RSW Pneumatic Pusher Stop&amp;Go  Adv"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"548"</v>
+              <v n="TextDefault">"1404 - RSW Pneumatic Pusher Stop&amp;Go  Rtc"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"749"</v>
+              <v n="TextDefault">"1405 - RSW Pneumatic Pusher Buffer Roller 1 Adv"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"413"</v>
+              <v n="TextDefault">"1406 - RSW Pneumatic Pusher Buffer Roller  1 Rtc"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"672"</v>
+              <v n="TextDefault">"1407 - RSW Pneumatic Pusher Buffer Roller  2 Adv"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1618"</v>
+              <v n="TextDefault">"1408 - RSW Pneumatic Pusher Buffer Roller  2 Rtc"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1811"</v>
+              <v n="TextDefault">"1409
+"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"128"</v>
+              <v n="TextDefault">"1410"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1613"</v>
+              <v n="TextDefault">"1411 - Feedback Relay Solenoid Door Coil Channel 1"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1087"</v>
+              <v n="TextDefault">"1412 - Feedback Relay Solenoid Door Coil Channel 2"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"786"</v>
+              <v n="TextDefault">"1413 - EDM for STO Solenoid Door Coil"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1752"</v>
+              <v n="TextDefault">"1414 - Interlock Status Running Outfeed Existing"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"51"</v>
+              <v n="TextDefault">"1415 - Interlock Feedback Pallet Ready Conveyor Existing"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1096"</v>
+              <v n="TextDefault">"14xx"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2435"</v>
+              <v n="TextDefault">"15"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1353"</v>
+              <v n="TextDefault">"1500	PSR Back at Placing Conv 1 (GL6-P4212)
+1501	PSR Middle at Placing Conv 1 (GL6-P4212)
+1502	PSR Front at Placing Conv 1 (GL6-P4212)
+1503	PSR Back at Placing Conv 2 (GL6-P4212)
+1504	PSR Front at Placing Conv 2 (GL6-P4212)
+1505	PSR Back at Placing Conv 3 (GL6-P4212)
+1506	PSR Front at Placing Conv 3 (GL6-P4212)
+1507	PSR Back at Placing Conv 4 (GL6-P4212)
+1508	PSR Middle at Placing Conv 4 (GL6-P4212)
+1509	PSR Front at Placing Conv 4 (GL6-P4212)
+1510	
+1511	
+1512	
+1513	
+1514	
+1515	"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"575"</v>
+              <v n="TextDefault">"1500	Push Button Run at Dispenser
+1501	Push Button Stop at Dispenser
+1502	Push Button Alarm Reset at Dispenser
+1503	Push Button Acknowledge at Dispenser
+1504	Auto/Manual Switch (0=Running Mode, 1=Test Mode) at Dispenser
+1505	Emergency Stop at Dispenser
+1506	Manual Switch for Test Pneumatic Vertical UP
+1507	Manual Switch for Test Pneumatic Vertical DOWN
+1508	Manual Switch for Test Pneumatic Horizontal
+1509	Manual Switch for Test Motor Automatic Pallet Roller Conv.
+1510	Wrapper Ready to Receive
+1511	End of Transfer Pallet in Infeed
+1512	Pallet Ready in Outfeed
+1513	Emergency Stop Wrapper is Active
+1514	Status Bypass Wrapper Existing
+1515	Pressure Switch for Pallet Dispenser"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"4440"</v>
+              <v n="TextDefault">"15xx"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"659"</v>
+              <v n="TextDefault">"16"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1394"</v>
+              <v n="TextDefault">"1600	PSR to Detect Infeed Box Roller Conv.
+1601	PSR Back to Detect Pusher for Stop &amp; Go Conv. 
+1602	PSR Front to Detect Box at Stop &amp; Go Conv. 
+1603	PSR to Detect Stopper 1 Conv. 
+1604	PSR to Detect Stopper 2 Conv.
+1605	
+1606	PSR Back to Detect Box at Buffer Roller 1.
+1607	PSR Front to Detect Pusher for Buffer Roller 1.
+1608	PSR Back to Detect Box at Buffer Roller 2. 
+1609	PSR Middle to Detect Box at Buffer Roller 2.
+1610	PSR Front to Detect Puhser for Buffer Roller 2. 
+1611	
+1612	PSR Front at Transfer Modular Conv 1
+1613	PSR Back at Transfer Modular Conv 1
+1614	PSR Front at Transfer Modular Conv 2
+1615	PSR Front at Transfer Modular Conv 3"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3893"</v>
+              <v n="TextDefault">"1600	PSR to Detect Infeed Box Roller Conv.
+1601	PSR Back to Detect Pusher for Stop &amp; Go Conv. 
+1602	PSR Front to Detect Box at Stop &amp; Go Conv. 
+1603	PSR to Detect Stopper 1 Conv. 
+1604	PSR to Detect Stopper 2 Conv.
+1605	
+1606	PSR Back to Detect Box at Buffer Roller 1.
+1607	PSR Front to Detect Pusher for Buffer Roller 1.
+1608	PSR Back to Detect Box at Buffer Roller 2. 
+1609	PSR Middle to Detect Box at Buffer Roller 2.
+1610	PSR Front to Detect Puhser for Buffer Roller 2. 
+1611	PSR Front at Transfer Modular Conv 4
+1612	PSR Front at Transfer Modular Conv 2
+1613	PSR Back at Transfer Modular Conv 3
+1614	PSR Front at Transfer Modular Conv 3
+1615	PSR Back at Transfer Modular Conv 4
+"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"5306"</v>
+              <v n="TextDefault">"1600	PSR to Detect Infeed Box Roller Conv. (GTE6-P4212)
+1601	PSR Back to Detect Pusher for Stop &amp; Go Conv. (GTE6-P4212)
+1602	PSR Front to Detect Box at Stop &amp; Go Conv. (GTE6-P4212)
+1603	PSR to Detect Stopper 1 Conv. (GL6-P4212)
+1604	PSR to Detect Stopper 2 Conv. (GL6-P4212)
+1605	
+1606	PSR Back to Detect Box at Buffer Roller 1. (GTE6-P4212)
+1607	PSR Front to Detect Pusher for Buffer Roller 1. (GTE6-P4212)
+1608	PSR Back to Detect Box at Buffer Roller 2. (GTE6-P4212)
+1609	PSR Middle to Detect Box at Buffer Roller 2. (GL6-P4212)
+1610	PSR Front to Detect Puhser for Buffer Roller 2. (GTE6-P4212)
+1611	
+1612	PSR Front at Transfer Modular Conv 1 (GL6-P4212)
+1613	PSR Back at Transfer Modular Conv 1 (GL6-P4212)
+1614	PSR Front at Transfer Modular Conv 2 (GL6-P4212)
+1615	PSR Front at Transfer Modular Conv 3 (GL6-P4212)"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"4409"</v>
+              <v n="TextDefault">"16xx"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1007"</v>
+              <v n="TextDefault">"17"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2068"</v>
+              <v n="TextDefault">"18"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"440"</v>
+              <v n="TextDefault">"19"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2344"</v>
+              <v n="TextDefault">"2"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2645"</v>
+              <v n="TextDefault">"20"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3495"</v>
+              <v n="TextDefault">"2000	Indicator Machine Running at Main Panel
+2001	Indicator Machine Error at Main Panel
+2002	Indicator Tower Lamp Red
+2003	Indicator Tower Lamp Yellow
+2004	Indicator Tower Lamp Green
+2005	Indicator Tower Lamp Blue
+2006	Indicator Buzzer
+2007	Indicator Acknowledge at Main Panel
+2008	Indicator Auto Mode Main Panel
+2009	Indicator Manual Mode Main Panel
+2010	
+2011	
+2012	
+2013	
+2014	
+2015	"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"119"</v>
+              <v n="TextDefault">"2000	Indicator Machine Running at P2
+2001	Indicator Machine Error at P2
+2002	Indicator Tower Lamp Red
+2003	Indicator Tower Lamp Yellow
+2004	Indicator Tower Lamp Green
+2005	Indicator Tower Lamp Blue
+2006	Indicator Buzzer
+2007	Indicator Acknowledge at P2
+2008	Indicator Auto Mode P2
+2009	Indicator Manual Mode P2
+2010	
+2011	
+2012	
+2013	
+2014	
+2015	Move Forward for Loaded Pallet Outfeed Roller Conveyor 5 "</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1326"</v>
+              <v n="TextDefault">"2000	Indicator Machine Running at P2
+2001	Indicator Machine Error at P2
+2002	Indicator Tower Lamp Red
+2003	Indicator Tower Lamp Yellow
+2004	Indicator Tower Lamp Green
+2005	Indicator Tower Lamp Blue
+2006	Indicator Buzzer
+2007	Indicator Acknowledge at P2
+2008	Indicator Auto Mode P2
+2009	Indicator Manual Mode P2
+2010	
+2011	
+2012	
+2013	
+2014	
+2015	Move Forward for Loaded Pallet Outfeed Roller Conveyor 5 is Running (FC51)"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1448"</v>
+              <v n="TextDefault">"2000	Indicator Machine Running at P2
+2001	Indicator Machine Error at P2
+2002	Indicator Tower Lamp Red
+2003	Indicator Tower Lamp Yellow
+2004	Indicator Tower Lamp Green
+2005	Indicator Tower Lamp Blue
+2006	Indicator Buzzer
+2007	Indicator Acknowledge at P2
+2008	Indicator Auto Mode P2
+2009	Indicator Manual Mode P2
+2010	Status Solenoid Door Outfeed
+2011	Status Solenoid Door Wrapper
+2012	
+2013	Pneumatic Stopper Modullar Adv
+2014	Pneumatic Stopper Modullar Rtc
+2015	Move Forward for Loaded Pallet Outfeed Roller Conveyor 5 "</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"313"</v>
+              <v n="TextDefault">"2000 - Indicator Machine Running at P2"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1338"</v>
+              <v n="TextDefault">"2001 - Indicator Machine Error at P2"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1470"</v>
+              <v n="TextDefault">"2002 - Indicator Tower Lamp Red"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1518"</v>
+              <v n="TextDefault">"2003 - Indicator Tower Lamp Yellow"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"354"</v>
+              <v n="TextDefault">"2004 - Indicator Tower Lamp Green"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"344"</v>
+              <v n="TextDefault">"2005 - Indicator Tower Lamp Blue"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"827"</v>
+              <v n="TextDefault">"2006 - Indicator Buzzer"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1516"</v>
+              <v n="TextDefault">"2007 - Indicator Acknowledge at P2"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"457"</v>
+              <v n="TextDefault">"2008 - Indicator Auto Mode P2"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"261"</v>
+              <v n="TextDefault">"2009 - Indicator Manual Mode P2"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1808"</v>
+              <v n="TextDefault">"2010"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"665"</v>
+              <v n="TextDefault">"2011"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"299"</v>
+              <v n="TextDefault">"2012"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1958"</v>
+              <v n="TextDefault">"2013"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2028"</v>
+              <v n="TextDefault">"2014"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"296"</v>
+              <v n="TextDefault">"2015 - Move Forward for Loaded Pallet Outfeed Roller Conveyor 5 is Running (FC51)"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1246"</v>
+              <v n="TextDefault">"20xx"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1383"</v>
+              <v n="TextDefault">"21"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"999"</v>
+              <v n="TextDefault">"2100	Move Forward for Transfer Modullar Conveyor  1
+2101	Move Forward for Transfer Modullar Conveyor  2
+2102	Move Forward for Transfer Modullar Conveyor  3
+2103	Move Forward for Transfer Modullar Conveyor  4 
+2104	Move Forward for Infeed Roller Conveyor
+2105	Move Forward for Stop &amp; Go Belt Conveyor
+2106	Move Forward For Buffer Roller  Conveyor 1
+2107	Move Forward For Buffer Roller  Conveyor 2
+2108	Move Forward for Loaded Pallet Buffer Conveyor 1 (FC51)
+2109	Move Forward for Loaded Pallet Outfeed Roller Conveyor 1 (FC51)
+2110	Move Forward for Right Angel  (FC51)
+2111	Move Forward for Right Angel Lifter (FC51)
+2112	Move Forward for Loaded Pallet Outfeed Roller Conveyor (FC51)
+2113	Move Forward for Loaded Pallet Outfeed Roller Conveyor (FC51)
+2114	Move Forward for Loaded Pallet Outfeed Roller Conveyor (FC51)
+2115	Reset Error for All Inverter at P2, Relay"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1554"</v>
+              <v n="TextDefault">"2100 - Move Forward for Transfer Modullar Conveyor  1"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"246"</v>
+              <v n="TextDefault">"2101 - Move Forward for Transfer Modullar Conveyor  2"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1720"</v>
+              <v n="TextDefault">"2102 - Move Forward for Transfer Modullar Conveyor  3"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2027"</v>
+              <v n="TextDefault">"2103 - Move Forward for Transfer Modullar Conveyor  4"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2144"</v>
+              <v n="TextDefault">"2104 - Move Forward for Infeed Roller Conveyor"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1780"</v>
+              <v n="TextDefault">"2105 - Move Forward for Stop &amp; Go Belt Conveyor"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"789"</v>
+              <v n="TextDefault">"2106 - Move Forward For Buffer Roller  Conveyor 1"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"845"</v>
+              <v n="TextDefault">"2107 - Move Forward For Buffer Roller  Conveyor 2"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"332"</v>
+              <v n="TextDefault">"2108 - Move Forward for Loaded Pallet Buffer Conveyor 1 is Running (FC51)"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1413"</v>
+              <v n="TextDefault">"2109 - Move Forward for Loaded Pallet Outfeed Roller Conveyor 1 is Running (FC51)"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2114"</v>
+              <v n="TextDefault">"2110 - Move Forward for Right Angel is Running (FC51)"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1786"</v>
+              <v n="TextDefault">"2111 - Move Forward for Right Angel Lifter is Running  (FC51)"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"599"</v>
+              <v n="TextDefault">"2112 - Move Forward for Loaded Pallet Outfeed Roller Conveyor 2 is Running (FC51)"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1417"</v>
+              <v n="TextDefault">"2113 - Move Forward for Loaded Pallet Outfeed Roller Conveyor 3 is Running (FC51)"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1934"</v>
+              <v n="TextDefault">"2114 - Move Forward for Loaded Pallet Outfeed Roller Conveyor 4 is Running (FC51)"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1914"</v>
+              <v n="TextDefault">"2115 - Reset Error for All Inverter at P2, Relay"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"5141"</v>
+              <v n="TextDefault">"21xx"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"4073"</v>
+              <v n="TextDefault">"22"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"5246"</v>
+              <v n="TextDefault">"2200	Move Forward For Loaded Pallet Buffer Conveyor 2 
+2201	
+2202	Pneumatic Box Stopper 1
+2203	Pneumatic Box Stopper 2
+2204	
+2205	Pneumatic Pusher Stop &amp; Go  Adv
+2206	Pneumatic Pusher Stop &amp; Go  Rtc
+2207	Pneumatic Pusher Buffer Roller 1 Adv
+2208	Pneumatic Pusher Buffer Roller 1 Rtc
+2209	Pneumatic Pusher Buffer Roller 2 Adv
+2210	Pneumatic Pusher Buffer Roller 2 Rtc
+2211	
+2212	
+2213	Release Brake Motor Right Angle Lifter
+2214	Interlock Request Pallet to Infeed Dispenser
+2215	Interlock Request Pallet to Conveyor Outfeed Existing"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"4704"</v>
+              <v n="TextDefault">"2200	Move Forward For Loaded Pallet Buffer Conveyor 2 
+2201	
+2202	Pneumatic Box Stopper 1
+2203	Pneumatic Box Stopper 2
+2204	
+2205	Pneumatic Pusher Stop &amp; Go  Adv
+2206	Pneumatic Pusher Stop &amp; Go  Rtc
+2207	Pneumatic Pusher Buffer Roller 1 Adv
+2208	Pneumatic Pusher Buffer Roller 1 Rtc
+2209	Pneumatic Pusher Buffer Roller 2 Adv
+2210	Pneumatic Pusher Buffer Roller 2 Rtc
+2211	
+2212	Interlock Status Infeed Modullar Busy
+2213	Release Brake Motor Right Angle Lifter
+2214	Interlock Request Pallet to Infeed Dispenser
+2215	Interlock Request Pallet to Conveyor Outfeed Existing"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"4448"</v>
+              <v n="TextDefault">"2200	Move Forward for Picking Roller Conveyor
+2201	
+2202	Move Forward for Placing At Pallet Roller Conveyor  1
+2203	Move Forward for Placing At Pallet Roller Conveyor  2
+2204	Move Forward for Placing At Pallet Roller Conveyor  3
+2205	Move Forward for Placing At Pallet Roller Conveyor  4
+2206	
+2207	Move Reverse for Placing At Pallet Roller Conveyor  1
+2208	Move Reverse for Placing At Pallet Roller Conveyor  2
+2209	Move Reverse for Placing At Pallet Roller Conveyor  3
+2210	Move Reverse for Placing At Pallet Roller Conveyor  4
+2211	
+2212	
+2213	
+2214	
+2215	Reset Error for All Inverter at P1, Relay"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1097"</v>
+              <v n="TextDefault">"2200 - Move Forward For Loaded Pallet Buffer Conveyor 2 is running"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1996"</v>
+              <v n="TextDefault">"2201 - Move Forward For Loaded Pallet Buffer Conveyor 3 is running"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2234"</v>
+              <v n="TextDefault">"2202 - Pneumatic Box Stopper 1"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1077"</v>
+              <v n="TextDefault">"2203 - Pneumatic Box Stopper 2"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1574"</v>
+              <v n="TextDefault">"2204"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2000"</v>
+              <v n="TextDefault">"2205 - Pneumatic Pusher Stop &amp; Go  Adv"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2273"</v>
+              <v n="TextDefault">"2206 - Pneumatic Pusher Stop &amp; Go  Rtc"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1355"</v>
+              <v n="TextDefault">"2207 - Pneumatic Pusher Buffer Roller 1 Adv"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"649"</v>
+              <v n="TextDefault">"2208 - Pneumatic Pusher Buffer Roller 1 Rtc"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1124"</v>
+              <v n="TextDefault">"2209 - Pneumatic Pusher Buffer Roller 2 Adv"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1549"</v>
+              <v n="TextDefault">"2210 - Pneumatic Pusher Buffer Roller 2 Rtc"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1686"</v>
+              <v n="TextDefault">"2211"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"521"</v>
+              <v n="TextDefault">"2212"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"731"</v>
+              <v n="TextDefault">"2213 - Release Brake Motor Right AngleLifter"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1420"</v>
+              <v n="TextDefault">"2214 - Interlock Request Pallet to Inffed Dispenser Exisiting"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"892"</v>
+              <v n="TextDefault">"2215 - Interlock Request Pallet to Conveyor Outfeed Existing"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2522"</v>
+              <v n="TextDefault">"2222"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3251"</v>
+              <v n="TextDefault">"22xx"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1871"</v>
+              <v n="TextDefault">"23"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2730"</v>
+              <v n="TextDefault">"2300	Indicator Machine Running at Dispenser
+2301	Indicator Machine Error at Dispenser
+2302	Indicator Acknowledge at Dispenser
+2303	Indicator Auto at Dispenser
+2304	Indicator Manual at Dispenser
+2305	Pallet In Before Wrapper Ready
+2306	After Wrapper Ready to Receive
+2307	End of Transfer Pallet in Outfeed
+2308	Bypass Wrapping
+2309	Release Solenoid Door 1 (Outfeed)
+2310	Release Solenoid Door 2 (Wrapper)
+2311	Move Forward for Automatic Pallet Dispenser
+2312	Pneumatic Vertical Up
+2313	Pneumatic Vertical Down
+2314	Pneumatic Horizontal Rectract
+2315	Pneumatic Horizontal Advanced"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2886"</v>
+              <v n="TextDefault">"2300	Pneumatic Box Centering
+2301	Pneumatic Gap Maker Box Adv
+2302	Pneumatic Gap Maker Box Rtc
+2303	
+2304	
+2305	
+2306	
+2307	
+2308	
+2309	Pneumatic Stopper Transfer
+2310	
+2311	
+2312	
+2313	
+2314	Status Solenoid Door Robot
+2315	Release Solenoid Door Robot"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1960"</v>
+              <v n="TextDefault">"23xx"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2858"</v>
+              <v n="TextDefault">"24"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2657"</v>
+              <v n="TextDefault">"2420"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"716"</v>
+              <v n="TextDefault">"2424"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2290"</v>
+              <v n="TextDefault">"24xx"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"267"</v>
+              <v n="TextDefault">"3"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"234"</v>
+              <v n="TextDefault">"4"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2507"</v>
+              <v n="TextDefault">"5"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1978"</v>
+              <v n="TextDefault">"5000	Feedback Empty pallet shuttle is Running
+5001	Feedback Load pallet shuttle is Running
+5002	Feedback Drive Shuttle is Running
+5003	Feedback Relay Enable STO Conveyor Channel 1
+5004	PSR To Detect Front Pallet at Empty Pallet Shuttle
+5005	PSR To Detect Back Pallet at Empty Pallet Shuttle
+5006	PSR To Detect End Of Front Pallet at Empty Pallet Shuttle
+5007	
+5008	PSR To Detect Front Pallet at Load Pallet Shuttle 
+5009	PSR To Detect Back Pallet at Load Pallet Shuttle
+5010	PSR To Detect End Of Front Pallet at Load Pallet Shuttle 
+5011	PSR To Detect End Of Back Pallet at Load Pallet Shuttle
+5012	Limit Switch To Detect Left Limit Area
+5013	Limit Switch To Detect Right Limit Area
+5014	PRX to Detect Left Limit Area
+5015	PRX to Detect Right Limit Area"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2755"</v>
+              <v n="TextDefault">"5000	Feedback Empty pallet shuttle is Running (FC51-0.75kW)
+5001	Feedback Load pallet shuttle is Running (FC51-1.5kW)
+5002	Feedback Drive Shuttle is Running (FC302-2kW)
+5003	Feedback Relay Enable STO Conveyor Channel 1
+5004	PSR To Detect Front Pallet at Empty Pallet Shuttle (GL6-P4212)
+5005	PSR To Detect Back Pallet at Empty Pallet Shuttle (GL6-P4212)
+5006	PSR To Detect End Of Front Pallet at Empty Pallet Shuttle (GTE6-P4212)
+5007	
+5008	PSR To Detect Front Pallet at Load Pallet Shuttle (GL6-P4212)
+5009	PSR To Detect Back Pallet at Load Pallet Shuttle (GL6-P4212)
+5010	PSR To Detect End Of Front Pallet at Load Pallet Shuttle (GTE6-P4212)
+5011	PSR To Detect End Of Back Pallet at Load Pallet Shuttle (GTE6-P4212)
+5012	Limit Switch To Detect Left Limit Area
+5013	Limit Switch To Detect Right Limit Area
+5014	PRX to Detect Left Limit Area (E2B-M30LN30-M1-B2)
+5015	PRX to Detect Right Limit Area (E2B-M30LN30-M1-B2)"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"4279"</v>
+              <v n="TextDefault">"50xx"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1699"</v>
+              <v n="TextDefault">"6"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2740"</v>
+              <v n="TextDefault">"6000	Move Forward for Empty pallet shuttle
+6001	Move Forward for Load pallet shuttle
+6002	Move Reverse for Load pallet shuttle
+6003	Move Forward for Drive Shuttle
+6004	Move Reverse for Drive Shuttle
+6005	
+6006	
+6007	Reset Error for All Inverter at P2, Relay
+6008	Relay for Brake Forward
+6009	Relay for Brake Reverse
+6010	
+6011	
+6012	
+6013	
+6014	
+6015	"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"4443"</v>
+              <v n="TextDefault">"60xx"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2772"</v>
+              <v n="TextDefault">"7"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"793"</v>
+              <v n="TextDefault">"8"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1963"</v>
+              <v n="TextDefault">"9"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"443"</v>
+              <v n="TextDefault">"Acknowladge"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1278"</v>
+              <v n="TextDefault">"Active"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3551"</v>
+              <v n="TextDefault">"Actual Pos"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"218"</v>
+              <v n="TextDefault">"Admin"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"4559"</v>
+              <v n="TextDefault">"ALARM"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1025"</v>
+              <v n="TextDefault">"Alarm"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1909"</v>
+              <v n="TextDefault">"alarm"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1685"</v>
+              <v n="TextDefault">"Alarm Active"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"822"</v>
+              <v n="TextDefault">"Alarm History"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"102"</v>
+              <v n="TextDefault">"B1"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1624"</v>
+              <v n="TextDefault">"B2"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2041"</v>
+              <v n="TextDefault">"Barcode"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1696"</v>
+              <v n="TextDefault">"barcode"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2156"</v>
+              <v n="TextDefault">"Barcode 1 : %i"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1844"</v>
+              <v n="TextDefault">"Barcode 1: %i"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"5201"</v>
+              <v n="TextDefault">"Barcode 2 : %i"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3147"</v>
+              <v n="TextDefault">"Barcode 3 : %i"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1793"</v>
+              <v n="TextDefault">"Barcode 4 : %i"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2969"</v>
+              <v n="TextDefault">"Barcode Bac : %i"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3336"</v>
+              <v n="TextDefault">"Barcode Back Right : %i"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"4029"</v>
+              <v n="TextDefault">"Barcode Front : %i"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"117"</v>
+              <v n="TextDefault">"Barcode Front Right : %i"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2091"</v>
+              <v n="TextDefault">"Barcode Line "</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"698"</v>
+              <v n="TextDefault">"Barcode Line 1"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2261"</v>
+              <v n="TextDefault">"Barcode Line 2"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2453"</v>
+              <v n="TextDefault">"Barcode Line 3"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2195"</v>
+              <v n="TextDefault">"Barcode Line 4"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1592"</v>
+              <v n="TextDefault">"Barcode Product"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"4820"</v>
+              <v n="TextDefault">"Barcode Result"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"5815"</v>
+              <v n="TextDefault">"Barcode State"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2506"</v>
+              <v n="TextDefault">"Big"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1054"</v>
+              <v n="TextDefault">"Buffer 1"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1788"</v>
+              <v n="TextDefault">"Buffer 2"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1550"</v>
+              <v n="TextDefault">"Bypass"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"916"</v>
+              <v n="TextDefault">"Bypass FGHS"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1060"</v>
+              <v n="TextDefault">"Bypass Wrapper"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"98"</v>
+              <v n="TextDefault">"Bypass Wrapper Existing"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"740"</v>
+              <v n="TextDefault">"Cancel"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"4223"</v>
+              <v n="TextDefault">"Centering"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1810"</v>
+              <v n="TextDefault">"Centering Adv"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2399"</v>
+              <v n="TextDefault">"Check Buffer 1"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"347"</v>
+              <v n="TextDefault">"Check Buffer 2"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1949"</v>
+              <v n="TextDefault">"Check Dispenser"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2219"</v>
+              <v n="TextDefault">"Check Empty"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2594"</v>
+              <v n="TextDefault">"Check Infeed"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1293"</v>
+              <v n="TextDefault">"Check Load"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1015"</v>
+              <v n="TextDefault">"Check Outfee 4"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3111"</v>
+              <v n="TextDefault">"Check Outfeed 1"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1919"</v>
+              <v n="TextDefault">"Check Outfeed 2"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"802"</v>
+              <v n="TextDefault">"Check Outfeed 3"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"4075"</v>
+              <v n="TextDefault">"Check Outfeed 4"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1895"</v>
+              <v n="TextDefault">"Check Outfeed 5"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3153"</v>
+              <v n="TextDefault">"Check Outfese 4"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2887"</v>
+              <v n="TextDefault">"Check Picking"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3465"</v>
+              <v n="TextDefault">"Check Placing 1"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"509"</v>
+              <v n="TextDefault">"Check Placing 2"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3539"</v>
+              <v n="TextDefault">"Check Placing 3"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2157"</v>
+              <v n="TextDefault">"Check Placing 4"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3596"</v>
+              <v n="TextDefault">"Check Stop &amp; Go"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3957"</v>
+              <v n="TextDefault">"Check Stopper 1"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"120"</v>
+              <v n="TextDefault">"Check Stopper 2"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1645"</v>
+              <v n="TextDefault">"Code Variant"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"996"</v>
+              <v n="TextDefault">"Completed"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"787"</v>
+              <v n="TextDefault">"Control"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"293"</v>
+              <v n="TextDefault">"Conveyor Off"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"29"</v>
+              <v n="TextDefault">"Conveyor On"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1073"</v>
+              <v n="TextDefault">"Counter"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1017"</v>
+              <v n="TextDefault">"COUNTER LINE"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1285"</v>
+              <v n="TextDefault">"Counter Placing"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1257"</v>
+              <v n="TextDefault">"Current"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"4868"</v>
+              <v n="TextDefault">"Current Job :"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2140"</v>
+              <v n="TextDefault">"CURRENT OFFSET"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2714"</v>
+              <v n="TextDefault">"CURRENT USAGE OFFSET"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2098"</v>
+              <v n="TextDefault">"CURRENT USAGE PRODUCT"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1369"</v>
+              <v n="TextDefault">"CURRENT USAGE PRODUCT LINE A :"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"908"</v>
+              <v n="TextDefault">"Data Pallet"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2246"</v>
+              <v n="TextDefault">"Data Pallet 1"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1929"</v>
+              <v n="TextDefault">"Data Pallet 2"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1279"</v>
+              <v n="TextDefault">"Data Pallet 3"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1737"</v>
+              <v n="TextDefault">"Data Pallet 4"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"4164"</v>
+              <v n="TextDefault">"Data Production"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1564"</v>
+              <v n="TextDefault">"Data_GVL.dt_OEETime.Precentage[0].Running"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3001"</v>
+              <v n="TextDefault">"Date &amp; Time : %s"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1567"</v>
+              <v n="TextDefault">"Delay"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"297"</v>
+              <v n="TextDefault">"Delay
+Modullar Off"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1559"</v>
+              <v n="TextDefault">"Delay 
+Modullar On"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"363"</v>
+              <v n="TextDefault">"Delay Brake"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1968"</v>
+              <v n="TextDefault">"Delay Centering"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"4478"</v>
+              <v n="TextDefault">"Delay Modullar On"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"25"</v>
+              <v n="TextDefault">"Delay RA Lifter"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1796"</v>
+              <v n="TextDefault">"Delay RA Release"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"5620"</v>
+              <v n="TextDefault">"DI
+2"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3664"</v>
+              <v n="TextDefault">"DI
+3"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"6930"</v>
+              <v n="TextDefault">"DI 
+1"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1399"</v>
+              <v n="TextDefault">"DI 
+4"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1228"</v>
+              <v n="TextDefault">"DI 
+5"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3034"</v>
+              <v n="TextDefault">"Disable Overflow"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"600"</v>
+              <v n="TextDefault">"Dispenser"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1051"</v>
+              <v n="TextDefault">"Dispenser %s"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3292"</v>
+              <v n="TextDefault">"Dispenser Pos"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"8057"</v>
+              <v n="TextDefault">"DO
+1"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"6203"</v>
+              <v n="TextDefault">"DO
+2"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"5936"</v>
+              <v n="TextDefault">"DO 
+3"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"132"</v>
+              <v n="TextDefault">"Download"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1053"</v>
+              <v n="TextDefault">"Drive Fwd"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"616"</v>
+              <v n="TextDefault">"Drive Rev"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1184"</v>
+              <v n="TextDefault">"EAN"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"640"</v>
+              <v n="TextDefault">"EAN Variant"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1701"</v>
+              <v n="TextDefault">"Edit"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"153"</v>
+              <v n="TextDefault">"EDIT OFFSET"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1541"</v>
+              <v n="TextDefault">"Empty Fwd"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1959"</v>
+              <v n="TextDefault">"Enable Overflow"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1398"</v>
+              <v n="TextDefault">"Error"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"30"</v>
+              <v n="TextDefault">"Error Message"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1845"</v>
+              <v n="TextDefault">"FGHS"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"336"</v>
+              <v n="TextDefault">"Flsuhed"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3608"</v>
+              <v n="TextDefault">"Flushed"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1957"</v>
+              <v n="TextDefault">"Flushing"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2119"</v>
+              <v n="TextDefault">"Gap Maker Adv"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3605"</v>
+              <v n="TextDefault">"Gap Maker Rtc"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1301"</v>
+              <v n="TextDefault">"H - 1"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"729"</v>
+              <v n="TextDefault">"H - 2"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1725"</v>
+              <v n="TextDefault">"H - 3"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3378"</v>
+              <v n="TextDefault">"H - 4"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1131"</v>
+              <v n="TextDefault">"H - 5"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"984"</v>
+              <v n="TextDefault">"H - 6"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1620"</v>
+              <v n="TextDefault">"Height"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1179"</v>
+              <v n="TextDefault">"History"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"294"</v>
+              <v n="TextDefault">"Home"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"4586"</v>
+              <v n="TextDefault">"Horizontal Adv"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"212"</v>
+              <v n="TextDefault">"Horizontal Rtc"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"927"</v>
+              <v n="TextDefault">"I/O"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3976"</v>
+              <v n="TextDefault">"I/O Status"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2384"</v>
+              <v n="TextDefault">"Infeed"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"693"</v>
+              <v n="TextDefault">"Infeed %s"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"4819"</v>
+              <v n="TextDefault">"Input 1"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"788"</v>
+              <v n="TextDefault">"Input/Ouput"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3950"</v>
+              <v n="TextDefault">"Jog Speed"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1724"</v>
+              <v n="TextDefault">"Layer"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"810"</v>
+              <v n="TextDefault">"Length"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"938"</v>
+              <v n="TextDefault">"Line"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"345"</v>
+              <v n="TextDefault">"Line 1"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1646"</v>
+              <v n="TextDefault">"Line 2"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2103"</v>
+              <v n="TextDefault">"Line 3"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"949"</v>
+              <v n="TextDefault">"Line 4"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"754"</v>
+              <v n="TextDefault">"Line1"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1086"</v>
+              <v n="TextDefault">"Link Up"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2922"</v>
+              <v n="TextDefault">"Load"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1652"</v>
+              <v n="TextDefault">"Load Fwd"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"376"</v>
+              <v n="TextDefault">"Load Rev"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1249"</v>
+              <v n="TextDefault">"Lock Modullar"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3929"</v>
+              <v n="TextDefault">"Login"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"636"</v>
+              <v n="TextDefault">"Logout"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3068"</v>
+              <v n="TextDefault">"Machine"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"823"</v>
+              <v n="TextDefault">"MACHINE ERROR"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"311"</v>
+              <v n="TextDefault">"Machine Error "</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2545"</v>
+              <v n="TextDefault">"Machine Performance"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"214"</v>
+              <v n="TextDefault">"Machine Status"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"237"</v>
+              <v n="TextDefault">"Machine Status : "</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"264"</v>
+              <v n="TextDefault">"Manual / Auto"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"191"</v>
+              <v n="TextDefault">"Manual Mode"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2036"</v>
+              <v n="TextDefault">"Max Speed"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"4387"</v>
+              <v n="TextDefault">"Message"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3703"</v>
+              <v n="TextDefault">"Message :"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3801"</v>
+              <v n="TextDefault">"Min Speed"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"655"</v>
+              <v n="TextDefault">"Modullar Off"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3500"</v>
+              <v n="TextDefault">"Modullar On"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1916"</v>
+              <v n="TextDefault">"Motor"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2414"</v>
+              <v n="TextDefault">"Motor Buffer 1"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3580"</v>
+              <v n="TextDefault">"Motor Buffer 2"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1687"</v>
+              <v n="TextDefault">"Motor Dispenser"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3476"</v>
+              <v n="TextDefault">"Motor Drive"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1995"</v>
+              <v n="TextDefault">"Motor Empty"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1999"</v>
+              <v n="TextDefault">"Motor Infeed"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1009"</v>
+              <v n="TextDefault">"Motor Load"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1570"</v>
+              <v n="TextDefault">"Motor Modullar 1"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2461"</v>
+              <v n="TextDefault">"Motor Modullar 2"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3914"</v>
+              <v n="TextDefault">"Motor Modullar 3"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2266"</v>
+              <v n="TextDefault">"Motor Modullar 4"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1584"</v>
+              <v n="TextDefault">"Motor Outfeed 1"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1578"</v>
+              <v n="TextDefault">"Motor Outfeed 2"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"4128"</v>
+              <v n="TextDefault">"Motor Outfeed 3"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2996"</v>
+              <v n="TextDefault">"Motor Outfeed 4"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2213"</v>
+              <v n="TextDefault">"Motor Outfeed 5"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"806"</v>
+              <v n="TextDefault">"Motor Picking"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1308"</v>
+              <v n="TextDefault">"Motor Placing"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"4083"</v>
+              <v n="TextDefault">"Motor Placing 1"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3756"</v>
+              <v n="TextDefault">"Motor Placing 2"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1538"</v>
+              <v n="TextDefault">"Motor Placing 3"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3434"</v>
+              <v n="TextDefault">"Motor Placing 4"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2865"</v>
+              <v n="TextDefault">"Motor Stop &amp; Go"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3798"</v>
+              <v n="TextDefault">"MTBF"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"928"</v>
+              <v n="TextDefault">"MTBF Dispenser"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1673"</v>
+              <v n="TextDefault">"MTBF Infeed"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3582"</v>
+              <v n="TextDefault">"MTBF Outfeed"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2620"</v>
+              <v n="TextDefault">"MTBF Picking"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"4025"</v>
+              <v n="TextDefault">"MTBF Placing"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3737"</v>
+              <v n="TextDefault">"MTBF Shuttle"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"971"</v>
+              <v n="TextDefault">"Mute Buzzer"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1698"</v>
+              <v n="TextDefault">"Name"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2988"</v>
+              <v n="TextDefault">"None"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1931"</v>
+              <v n="TextDefault">"O1"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1900"</v>
+              <v n="TextDefault">"O2"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2151"</v>
+              <v n="TextDefault">"O3"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"248"</v>
+              <v n="TextDefault">"O4"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"427"</v>
+              <v n="TextDefault">"O5"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2089"</v>
+              <v n="TextDefault">"OEE"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"544"</v>
+              <v n="TextDefault">"oFFSET"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1531"</v>
+              <v n="TextDefault">"Offset"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1241"</v>
+              <v n="TextDefault">"Offset Pos"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1192"</v>
+              <v n="TextDefault">"Operator"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"765"</v>
+              <v n="TextDefault">"Outfeed"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1586"</v>
+              <v n="TextDefault">"Outfeed %s"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1157"</v>
+              <v n="TextDefault">"Outfeed 1"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2278"</v>
+              <v n="TextDefault">"Outfeed 2"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"353"</v>
+              <v n="TextDefault">"Outfeed 3"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1683"</v>
+              <v n="TextDefault">"Outfeed 4"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1234"</v>
+              <v n="TextDefault">"Outfeed 5"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3206"</v>
+              <v n="TextDefault">"Outfeed Pos"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"38"</v>
+              <v n="TextDefault">"Outfeed System"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1547"</v>
+              <v n="TextDefault">"Pallet"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"753"</v>
+              <v n="TextDefault">"Pallet 1"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"828"</v>
+              <v n="TextDefault">"Pallet 2"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"346"</v>
+              <v n="TextDefault">"Pallet 3"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"703"</v>
+              <v n="TextDefault">"Pallet 4"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"512"</v>
+              <v n="TextDefault">"Pallet ID"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"105"</v>
+              <v n="TextDefault">"Panel 2
+(Outfeed)"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3221"</v>
+              <v n="TextDefault">"Panel Outfeed"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1688"</v>
+              <v n="TextDefault">"Panel Robot"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"630"</v>
+              <v n="TextDefault">"Panel Shuttle"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1177"</v>
+              <v n="TextDefault">"PARAMETER"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"774"</v>
+              <v n="TextDefault">"Parameter"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2249"</v>
+              <v n="TextDefault">"Parameter Dispenser"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2946"</v>
+              <v n="TextDefault">"Parameter Infeed"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"868"</v>
+              <v n="TextDefault">"Parameter Outfeed"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3443"</v>
+              <v n="TextDefault">"Parameter Picking"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"4220"</v>
+              <v n="TextDefault">"Parameter Placing"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1857"</v>
+              <v n="TextDefault">"Parameter Shuttle"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2258"</v>
+              <v n="TextDefault">"Paramter Dispenser"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2362"</v>
+              <v n="TextDefault">"Paramter Infeed"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"847"</v>
+              <v n="TextDefault">"Paramter Shuttle"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2032"</v>
+              <v n="TextDefault">"Pattern"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1794"</v>
+              <v n="TextDefault">"Performance"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"5370"</v>
+              <v n="TextDefault">"Pick"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"623"</v>
+              <v n="TextDefault">"Picking"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1976"</v>
+              <v n="TextDefault">"Picking %s"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2848"</v>
+              <v n="TextDefault">"Pickint"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2685"</v>
+              <v n="TextDefault">"Place 1"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"871"</v>
+              <v n="TextDefault">"Place 1 %s"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3699"</v>
+              <v n="TextDefault">"Place 1 Empty"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2324"</v>
+              <v n="TextDefault">"Place 1 Fwd"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"915"</v>
+              <v n="TextDefault">"Place 1 Load"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2419"</v>
+              <v n="TextDefault">"Place 1 Rev"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3052"</v>
+              <v n="TextDefault">"Place 2"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1296"</v>
+              <v n="TextDefault">"Place 2 %s"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"513"</v>
+              <v n="TextDefault">"Place 2 Empty"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"594"</v>
+              <v n="TextDefault">"Place 2 Fwd"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2179"</v>
+              <v n="TextDefault">"Place 2 Load"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"798"</v>
+              <v n="TextDefault">"Place 2 Rev"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1170"</v>
+              <v n="TextDefault">"Place 3"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1456"</v>
+              <v n="TextDefault">"Place 3 %s"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1859"</v>
+              <v n="TextDefault">"Place 3 Empty"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1838"</v>
+              <v n="TextDefault">"Place 3 Fwd"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"805"</v>
+              <v n="TextDefault">"Place 3 Load"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1336"</v>
+              <v n="TextDefault">"Place 3 Rev"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"921"</v>
+              <v n="TextDefault">"Place 4"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1523"</v>
+              <v n="TextDefault">"Place 4 %s"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"284"</v>
+              <v n="TextDefault">"Place 4 Empty"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"846"</v>
+              <v n="TextDefault">"Place 4 Fwd"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2001"</v>
+              <v n="TextDefault">"Place 4 Load"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1466"</v>
+              <v n="TextDefault">"Place 4 Rev"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3435"</v>
+              <v n="TextDefault">"Place1 Load"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2921"</v>
+              <v n="TextDefault">"Place21 Load"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2975"</v>
+              <v n="TextDefault">"Placing"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2287"</v>
+              <v n="TextDefault">"Placing %s"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1374"</v>
+              <v n="TextDefault">"Placing 1"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2353"</v>
+              <v n="TextDefault">"Placing 1 %s"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2357"</v>
+              <v n="TextDefault">"Placing 2"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2319"</v>
+              <v n="TextDefault">"Placing 2 %s"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1987"</v>
+              <v n="TextDefault">"Placing 3"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2262"</v>
+              <v n="TextDefault">"Placing 3 %s"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1439"</v>
+              <v n="TextDefault">"Placing 4"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1795"</v>
+              <v n="TextDefault">"Placing 4 %s"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1588"</v>
+              <v n="TextDefault">"Planned"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"531"</v>
+              <v n="TextDefault">"PLC Status"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"717"</v>
+              <v n="TextDefault">"PLC STATUS "</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3853"</v>
+              <v n="TextDefault">"Pneumatic"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"941"</v>
+              <v n="TextDefault">"Product"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"41"</v>
+              <v n="TextDefault">"Product Info List"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1506"</v>
+              <v n="TextDefault">"PRODUCT INFO LIST"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"5401"</v>
+              <v n="TextDefault">"Production"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2337"</v>
+              <v n="TextDefault">"Pusher 
+Buffer 1 Adv"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1856"</v>
+              <v n="TextDefault">"Pusher 
+Buffer 1 Rtc"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3650"</v>
+              <v n="TextDefault">"Pusher 
+Buffer 2 Adv"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3533"</v>
+              <v n="TextDefault">"Pusher 
+Buffer 2 Rtc"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2872"</v>
+              <v n="TextDefault">"Pusher Buffer 1 Adv"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3220"</v>
+              <v n="TextDefault">"Pusher Buffer 1 Rtc"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3079"</v>
+              <v n="TextDefault">"Pusher Buffer 2 Adv"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3786"</v>
+              <v n="TextDefault">"Pusher Buffer 2 Rtc"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"482"</v>
+              <v n="TextDefault">"Pusher Infeed"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1983"</v>
+              <v n="TextDefault">"Pusher Stop 
+&amp; Go Adv"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1126"</v>
+              <v n="TextDefault">"Pusher Stop 
+&amp; Go Rtc"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"4673"</v>
+              <v n="TextDefault">"Pusher Stop &amp; Go"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3186"</v>
+              <v n="TextDefault">"Pusher Stop &amp; Go Adv"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2573"</v>
+              <v n="TextDefault">"Pusher Stop &amp; Go Rtc"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"824"</v>
+              <v n="TextDefault">"RA Delay"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"911"</v>
+              <v n="TextDefault">"RA Lifter"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"953"</v>
+              <v n="TextDefault">"RA Transfer"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2104"</v>
+              <v n="TextDefault">"Recipe"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1395"</v>
+              <v n="TextDefault">"Recipe Line 1"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"605"</v>
+              <v n="TextDefault">"Recipe Line 2"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1275"</v>
+              <v n="TextDefault">"Recipe Line 3"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"794"</v>
+              <v n="TextDefault">"Recipe Line 4"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3778"</v>
+              <v n="TextDefault">"Reject"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2040"</v>
+              <v n="TextDefault">"REJECT FULL"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"5185"</v>
+              <v n="TextDefault">"Reject History"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3156"</v>
+              <v n="TextDefault">"Reject ID"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"543"</v>
+              <v n="TextDefault">"Release Brake Right Angle"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2281"</v>
+              <v n="TextDefault">"Reset"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"597"</v>
+              <v n="TextDefault">"Reset Link Up"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2475"</v>
+              <v n="TextDefault">"Right Angle"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1702"</v>
+              <v n="TextDefault">"Robot"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"593"</v>
+              <v n="TextDefault">"Robot %s"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1008"</v>
+              <v n="TextDefault">"Robotic"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"15"</v>
+              <v n="TextDefault">"Rotate"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"485"</v>
+              <v n="TextDefault">"Run"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"441"</v>
+              <v n="TextDefault">"Running"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1614"</v>
+              <v n="TextDefault">"Save"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"45"</v>
+              <v n="TextDefault">"Seq Index   :"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"766"</v>
+              <v n="TextDefault">"Sequence Machine"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2004"</v>
+              <v n="TextDefault">"Service"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"825"</v>
+              <v n="TextDefault">"Shift - 1"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2122"</v>
+              <v n="TextDefault">"Shift - 2"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"492"</v>
+              <v n="TextDefault">"Shift - 3"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1492"</v>
+              <v n="TextDefault">"Shift1"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"259"</v>
+              <v n="TextDefault">"Shuttl e%s"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1982"</v>
+              <v n="TextDefault">"Shuttle"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"256"</v>
+              <v n="TextDefault">"Shuttle %s"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1055"</v>
+              <v n="TextDefault">"Shuttle Fwd"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1240"</v>
+              <v n="TextDefault">"Shuttle Pos : "</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"458"</v>
+              <v n="TextDefault">"Shuttle Pos : %i"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1911"</v>
+              <v n="TextDefault">"Shuttle Postion"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"628"</v>
+              <v n="TextDefault">"Shuttle Rev"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2253"</v>
+              <v n="TextDefault">"Shuttle Speed"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"4529"</v>
+              <v n="TextDefault">"Small"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"217"</v>
+              <v n="TextDefault">"Standby"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"538"</v>
+              <v n="TextDefault">"State Machine"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2943"</v>
+              <v n="TextDefault">"Statistic"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1757"</v>
+              <v n="TextDefault">"Statistic Outfeed"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"4484"</v>
+              <v n="TextDefault">"Statistic Production"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2443"</v>
+              <v n="TextDefault">"Statistic Robot"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"172"</v>
+              <v n="TextDefault">"Statistic RObot"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1760"</v>
+              <v n="TextDefault">"Status"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"542"</v>
+              <v n="TextDefault">"STATUS"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"340"</v>
+              <v n="TextDefault">"Stop"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2359"</v>
+              <v n="TextDefault">"Stop &amp; Go"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2447"</v>
+              <v n="TextDefault">"Stopped"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"395"</v>
+              <v n="TextDefault">"Stopper 1"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3325"</v>
+              <v n="TextDefault">"Stopper 1 Adv"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3749"</v>
+              <v n="TextDefault">"Stopper 2"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"370"</v>
+              <v n="TextDefault">"Stopper 2 Adv"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"464"</v>
+              <v n="TextDefault">"Test Infeed"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1147"</v>
+              <v n="TextDefault">"TEST MODE"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2350"</v>
+              <v n="TextDefault">"Test Outfeed"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3298"</v>
+              <v n="TextDefault">"Test Picking"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2118"</v>
+              <v n="TextDefault">"Test Place 1"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1889"</v>
+              <v n="TextDefault">"Test Place 2"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"2025"</v>
+              <v n="TextDefault">"Test Place 3"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"143"</v>
+              <v n="TextDefault">"Test Place 4"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1360"</v>
+              <v n="TextDefault">"Test Shuttle"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"187"</v>
+              <v n="TextDefault">"Time"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"31"</v>
+              <v n="TextDefault">"Time Stop"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"32"</v>
+              <v n="TextDefault">"Timer"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1619"</v>
+              <v n="TextDefault">"Today"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"379"</v>
+              <v n="TextDefault">"Upload"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"3233"</v>
+              <v n="TextDefault">"Username : %s"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"103"</v>
+              <v n="TextDefault">"Variant"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"317"</v>
+              <v n="TextDefault">"Vertical Rtc"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"4347"</v>
+              <v n="TextDefault">"Vertval Adv"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1444"</v>
+              <v n="TextDefault">"Width"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"4697"</v>
+              <v n="TextDefault">"Wiring No. :"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1276"</v>
+              <v n="TextDefault">"X"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"801"</v>
+              <v n="TextDefault">"Y"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+          </l>
+          <l n="Languages" t="ArrayList" />
+          <v n="GuidInit">{c82b463f-fbfb-43e0-b9ab-181f0f69516f}</v>
+          <v n="GuidReInit">{89923c8d-5349-45ff-9b5a-c6c936894ee7}</v>
+          <v n="GuidExitX">{2746d401-322b-44bf-a7a8-fe7c85f0d722}</v>
+        </o>
+      </Data>
+      <TypeList>
+        <Type n="ArrayList">System.Collections.ArrayList</Type>
+        <Type n="GlobalTextListObject">{63784cbb-9ba0-45e6-9d69-babf3f040511}</Type>
+        <Type n="Guid">System.Guid</Type>
+        <Type n="String">System.String</Type>
+        <Type n="TextListRow">{53da1be7-ad25-47c3-b0e8-e26286dad2e0}</Type>
+      </TypeList>
+    </XmlArchive>
+  </GlobalTextList>
+</TcPlcObject>

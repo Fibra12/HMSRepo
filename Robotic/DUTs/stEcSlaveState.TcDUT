@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="stEcSlaveState" Id="{c02ab940-f675-4b92-952a-150a754cb782}">
+    <Declaration><![CDATA[TYPE stEcSlaveState :
+STRUCT
+	ERROR		: BOOL;
+	Init 		: BOOL;
+	PROCESSING 	: BOOL;
+	OP          : BOOL;
+	
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

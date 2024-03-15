@@ -1,0 +1,222 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
+  <POU Name="Alarm_Event_Active" Id="{8cb977e2-f378-480e-bf07-ad8b5c521ef6}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK Alarm_Event_Active
+
+VAR_INPUT
+	bError			: BOOL;
+	bErrorID		: UINT;
+	strErrorMsg		: STRING;
+	TimeStop		: STRING;	
+	bResetBuffer	: BOOL;
+END_VAR
+VAR_OUTPUT
+	bEnable_Out		: BOOL;
+END_VAR
+VAR
+	EmptyArray 		: INT ;
+	temp 			: INT ;
+	leght 			: INT := 100;
+	rTrig_Error 	: R_TRIG;
+	fTrig_Error 	: F_TRIG;
+	i				: INT;
+	Seq				: INT;
+	IndexReset		: INT;
+	Cycle			: INT;
+	EmptyBuffer		: ARRAY [0..100] OF stErrorData;
+	bReset			: BOOL;
+END_VAR
+VAR_IN_OUT
+	dtError			: ARRAY [0..100] OF stErrorData;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[(*
+	=============FB Error History V0.1===========
+*)
+(*IF bReset THEN
+	dtError		:= EmptyBuffer;
+END_IF
+
+rTrig_Error(clk:= bError);
+bEnable_Out := NOT bError;
+	IF  rTrig_Error.Q AND dtError[1].ErrorID <> bErrorID THEN 
+		
+		dtError[0].Status	:= 1;
+		dtError[0].ErrorID	:= bErrorID;
+		dtError[0].ErrorMsg	:= strErrorMsg;
+		dtError[0].TimeStop	:= TimeStop;
+		temp := leght;
+		FOR EmptyArray := 1 TO leght BY 1 DO 
+			dtError[temp].Status	:= dtError[temp-1].Status ;
+			dtError[temp].ErrorID	:= dtError[temp-1].ErrorID ;
+			dtError[temp].ErrorMsg	:= dtError[temp-1].ErrorMsg ;
+			dtError[temp].TimeStop	:= dtError[temp-1].TimeStop ;
+			temp := temp-1;
+		END_FOR
+		dtError[0].Status	:= 0;
+		dtError[0].ErrorID	:= 0;
+		dtError[0].ErrorMsg	:= '';
+		dtError[0].TimeStop	:= '';
+ 	END_IF 
+	
+fTrig_Error(clk:= bError);
+CASE Seq OF
+	0:
+		IF (NOT bError AND bResetBuffer) THEN //OR fTrig_Error.Q 
+			Seq	:= 1;
+		END_IF
+		
+	1:
+		i:=0;
+		FOR i := 1 TO leght BY 1 DO
+			IF dtError[i].ErrorID = bErrorID AND dtError[i].ErrorID <> 0 THEN
+				IndexReset	:= i;
+				Seq			:= 2;
+				EXIT;
+			END_IF
+		END_FOR 
+		IF i > leght THEN
+			Seq	:= 0;
+		END_IF
+		
+	
+	2:
+		i:=0;
+		FOR i := IndexReset TO leght BY 1 DO
+				dtError[i].Status		:= dtError[i+1].Status ;
+				dtError[i].ErrorID		:= dtError[i+1].ErrorID ;
+				dtError[i].ErrorMsg		:= dtError[i+1].ErrorMsg ;
+				dtError[i].TimeStop		:= dtError[i+1].TimeStop ;
+		END_FOR 
+		
+		IF i > leght THEN
+			Seq	:= 1;
+		END_IF
+		
+	
+		
+	3:
+		IF NOT fTrig_Error.Q AND NOT bResetBuffer THEN 
+			Seq	:= 0;
+		END_IF
+		
+END_CASE
+*)
+
+(*
+    =========================================================
+    FB Error History V0.1
+    =========================================================
+    Deskripsi:
+    Program ini bertanggung jawab untuk merekam, menyimpan, 
+    dan mengelola riwayat peristiwa kesalahan dalam sistem PLC.
+*)
+
+IF bReset THEN
+    // Jika sinyal reset diaktifkan, reset buffer kesalahan
+    dtError    := EmptyBuffer;
+END_IF
+
+// Pemicu yang diatur berdasarkan sinyal bError
+rTrig_Error(clk:= bError);
+// Output bEnable_Out merupakan negasi dari sinyal bError
+bEnable_Out := NOT bError;
+
+IF  rTrig_Error.Q AND dtError[1].ErrorID <> bErrorID THEN 
+    // Jika terjadi peristiwa kesalahan baru
+    // Simpan informasi kesalahan dalam entri pertama array
+    dtError[0].Status      := 1;            // Status aktif
+    dtError[0].ErrorID     := bErrorID;    // ID kesalahan
+    dtError[0].ErrorMsg    := strErrorMsg;    // Pesan kesalahan
+    dtError[0].TimeStop    := TimeStop;    // Waktu terjadinya kesalahan
+
+    // Geser data kesalahan lama ke posisi yang lebih tinggi dalam array
+    temp := leght;
+    FOR EmptyArray := 1 TO leght BY 1 DO 
+        dtError[temp].Status        := dtError[temp-1].Status ;
+        dtError[temp].ErrorID       := dtError[temp-1].ErrorID ;
+        dtError[temp].ErrorMsg      := dtError[temp-1].ErrorMsg ;
+        dtError[temp].TimeStop      := dtError[temp-1].TimeStop ;
+        temp := temp-1;
+    END_FOR
+
+    // Set nilai kosong untuk entri kesalahan terbaru
+    dtError[0].Status      := 0;
+    dtError[0].ErrorID     := 0;
+    dtError[0].ErrorMsg    := '';
+    dtError[0].TimeStop    := '';
+END_IF 
+
+// Pemicu lain yang diatur berdasarkan sinyal bError
+fTrig_Error(clk:= bError);
+
+// Pemrosesan berdasarkan langkah-langkah dalam urutan tertentu
+CASE Seq OF
+    0:
+        // Langkah 0: Menunggu hingga tidak ada kesalahan dan sinyal reset buffer diaktifkan
+        IF (NOT bError AND bResetBuffer) THEN 
+            Seq    := 1;    // Pindah ke langkah 1
+        END_IF
+        
+    1:
+        // Langkah 1: Mencari entri kesalahan yang sesuai dengan ID kesalahan yang baru
+        // Jika ditemukan, set langkah selanjutnya
+        i:=0;
+        FOR i := 1 TO leght BY 1 DO
+            IF dtError[i].ErrorID = bErrorID AND dtError[i].ErrorID <> 0 THEN
+                IndexReset     := i;    // Simpan indeks untuk langkah selanjutnya
+                Seq            := 2;    // Pindah ke langkah 2
+                EXIT;
+            END_IF
+        END_FOR 
+        // Jika tidak ditemukan, kembali ke langkah 0
+        IF i > leght THEN
+            Seq    := 0;
+        END_IF
+        
+    2:
+        // Langkah 2: Menghapus entri kesalahan yang sudah ditangani
+        i:=0;
+        FOR i := IndexReset TO leght BY 1 DO
+                // Geser entri kesalahan ke atas untuk menghapus entri yang sudah ditangani
+                dtError[i].Status         := dtError[i+1].Status ;
+                dtError[i].ErrorID        := dtError[i+1].ErrorID ;
+                dtError[i].ErrorMsg       := dtError[i+1].ErrorMsg ;
+                dtError[i].TimeStop       := dtError[i+1].TimeStop ;
+        END_FOR 
+        
+        // Jika semua entri kesalahan sudah diproses, kembali ke langkah 1
+        IF i > leght THEN
+            Seq    := 1;
+        END_IF
+        
+    3:
+        // Langkah 3: Menunggu hingga tidak ada kesalahan baru dan reset buffer tidak aktif
+        IF NOT fTrig_Error.Q AND NOT bResetBuffer THEN 
+            Seq    := 0;    // Kembali ke langkah 0
+        END_IF
+        
+END_CASE
+]]></ST>
+    </Implementation>
+    <LineIds Name="Alarm_Event_Active">
+      <LineId Id="358" Count="2" />
+      <LineId Id="503" Count="0" />
+      <LineId Id="500" Count="0" />
+      <LineId Id="504" Count="0" />
+      <LineId Id="499" Count="0" />
+      <LineId Id="361" Count="29" />
+      <LineId Id="418" Count="0" />
+      <LineId Id="391" Count="6" />
+      <LineId Id="446" Count="1" />
+      <LineId Id="444" Count="1" />
+      <LineId Id="532" Count="0" />
+      <LineId Id="399" Count="10" />
+      <LineId Id="533" Count="1" />
+      <LineId Id="410" Count="7" />
+      <LineId Id="145" Count="0" />
+      <LineId Id="536" Count="94" />
+      <LineId Id="535" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

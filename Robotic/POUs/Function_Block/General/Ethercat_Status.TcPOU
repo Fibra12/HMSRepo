@@ -1,0 +1,258 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
+  <POU Name="Ethercat_Status" Id="{46c789ff-7fd1-4dbd-886c-74a49ac656fd}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK Ethercat_Status
+VAR_IN_OUT 
+	stSlaveCurrentState			: stEcSlaveState;
+END_VAR
+VAR_INPUT
+   bEnable: BOOL;                                               (*Enabling FB on rising edge*)
+   sNetId: STRING;                                              (*Master's EtherCAT NetId*)
+   nSlaveAddr: UINT;                                            (*Slave's EtherCAT address*)
+END_VAR
+VAR_OUTPUT
+   bDone: BOOL;                                                 (*Successfully done*)
+   iMessage: STRING (10);                                       (*String message*)
+   bError: BOOL;                                                (*Error detected*)
+   nErrId: UDINT;                                               (*ADS error code*)
+   stActualState: ST_EcSlaveState;                              (*Actual slave status*)
+END_VAR
+VAR
+   iStep: INT;
+   fbTrigger: R_TRIG;
+   fbGetSlaveState: FB_EcGetSlaveState;
+   fbSetSlaveState: FB_EcSetSlaveState;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[CASE iStep OF
+   0:  (*Starting*)
+       fbTrigger(CLK := bEnable);                              // Memicu fungsi fbTrigger saat sinyal bEnable aktif
+          IF fbTrigger.Q THEN                                   // Jika sinyal keluaran fbTrigger aktif
+             iMessage 				   		:='PROCESSING';      // Pesan status diatur menjadi 'PROCESSING'
+			 stSlaveCurrentState.ERROR 		:= FALSE ;           // Status error diatur menjadi FALSE
+			 stSlaveCurrentState.PROCESSING := TRUE ;            // Status proses diatur menjadi TRUE
+			 stSlaveCurrentState.Init 		:= FALSE ;            // Status init diatur menjadi FALSE
+			 stSlaveCurrentState.OP    		:= FALSE ;            // Status operasi diatur menjadi FALSE
+             bError := FALSE;                                   // Mereset status kesalahan menjadi FALSE
+             iStep := 10;                                       // Melangkah ke langkah berikutnya
+          END_IF;
+
+   10:  (*Reading slave's EtherCAT status*)
+       fbGetSlaveState(                                        // Memanggil fungsi fbGetSlaveState untuk membaca status slave EtherCAT
+          sNetId := sNetId,                                    // Memasukkan NetId dari slave
+          nSlaveAddr := nSlaveAddr,                            // Memasukkan alamat slave
+          bExecute := TRUE);                                   // Menjalankan fungsi untuk eksekusi
+             IF fbGetSlaveState.bBusy THEN                     // Jika fungsi masih sibuk membaca
+                iStep := 20 ;                                   // Melangkah ke langkah berikutnya
+             END_IF;
+
+   20:  (*Still reading slave's EtherCAT status*)
+       fbGetSlaveState(bExecute := TRUE);                      // Melanjutkan membaca status slave EtherCAT
+          IF NOT(fbGetSlaveState.bBusy) THEN                   // Jika proses membaca telah selesai
+             (*Successful*)                                    // Jika berhasil
+             IF NOT(fbGetSlaveState.bError) THEN               // Jika tidak ada kesalahan
+                stActualState := fbGetSlaveState.state;        // Menyimpan status aktual slave yang dibaca
+                fbGetSlaveState(bExecute := FALSE);            // Me-reset fungsi fbGetSlaveState
+                iStep := 30;                                   // Melangkah ke langkah berikutnya
+             (*Error*)                                        // Jika terjadi kesalahan
+             ELSE
+                iMessage						:= 'ERROR';       // Pesan status diatur menjadi 'ERROR'
+				stSlaveCurrentState.ERROR 		:= TRUE;        // Status error diatur menjadi TRUE
+				stSlaveCurrentState.PROCESSING  := FALSE ;     // Status proses diatur menjadi FALSE
+				stSlaveCurrentState.Init 		:= FALSE ;      // Status init diatur menjadi FALSE
+				stSlaveCurrentState.OP    		:= FALSE ;      // Status operasi diatur menjadi FALSE
+                bError := TRUE;                                // Status kesalahan diatur menjadi TRUE
+                nErrId := fbGetSlaveState.nErrId;              // Menyimpan ID kesalahan
+                fbGetSlaveState(bExecute := FALSE);            // Me-reset fungsi fbGetSlaveState
+                iStep := 0;                                    // Kembali ke langkah awal
+             END_IF;
+          END_IF;
+
+   30:  (*Checking if slave's EtherCAT status equals 'OP'*)
+       IF stActualState.deviceState = EC_DEVICE_STATE_OP THEN  // Jika status slave adalah 'OP'
+          iMessage := 'OP';                                    // Pesan status diatur menjadi 'OP'
+		  stSlaveCurrentState.ERROR 		:= FALSE;             // Status error diatur menjadi FALSE
+		  stSlaveCurrentState.PROCESSING  	:= FALSE ;          // Status proses diatur menjadi FALSE
+		  stSlaveCurrentState.Init 			:= FALSE ;          // Status init diatur menjadi FALSE
+		  stSlaveCurrentState.OP    		:= TRUE ;            // Status operasi diatur menjadi TRUE
+          bDone := TRUE;                                       // Operasi selesai
+          iStep := 0;                                           // Kembali ke langkah awal
+       ELSE                                                    // Jika status slave bukan 'OP'
+          iStep := 40;                                          // Melangkah ke langkah berikutnya
+       END_IF;
+
+   
+   40:  (*Setting slave into 'INIT' status*)
+       fbSetSlaveState(                          // Memanggil fungsi fbSetSlaveState untuk mengatur status slave
+          sNetId := sNetId,                      // Menentukan ID jaringan EtherCAT
+          nSlaveAddr := nSlaveAddr,              // Menentukan alamat slave EtherCAT
+          bExecute := TRUE,                      
+          reqState := EC_DEVICE_STATE_INIT);     // Menentukan status yang diminta untuk diatur (INIT)
+             IF fbSetSlaveState.bBusy THEN      // Jika fungsi fbSetSlaveState sedang sibuk
+                iStep := 50;                    // Langkah berikutnya adalah 50
+             END_IF;                            // Akhir dari kondisi IF
+
+   50:  (*Still setting slave into 'INIT' status*)
+       fbSetSlaveState(bExecute := TRUE);
+          IF NOT(fbSetSlaveState.bBusy) THEN
+             (*Successful*)
+             IF NOT(fbSetSlaveState.bError) THEN
+                fbSetSlaveState(bExecute := FALSE);             // Me-reset fungsi fbSetSlaveState
+                iStep := 60;                                   // Melangkah ke langkah berikutnya
+             (*Error*)
+             ELSE
+                iMessage 						:= 'ERROR';        // Pesan status diatur menjadi 'ERROR'
+				stSlaveCurrentState.ERROR 		:= TRUE;         // Status error diatur menjadi TRUE
+				stSlaveCurrentState.PROCESSING  := FALSE ;      // Status proses diatur menjadi FALSE
+				stSlaveCurrentState.Init 		:= FALSE ;       // Status init diatur menjadi FALSE
+				stSlaveCurrentState.OP    		:= FALSE ;       // Status operasi diatur menjadi FALSE
+                bError := TRUE;                                // Status kesalahan diatur menjadi TRUE
+                nErrId := fbSetSlaveState.nErrId;              // Menyimpan ID kesalahan
+                fbSetSlaveState(bExecute := FALSE);            // Me-reset fungsi fbSetSlaveState
+                iStep := 0;                                    // Kembali ke langkah awal
+             END_IF;
+          END_IF;
+
+   60:  (*Reading slave's EtherCAT status*)
+       fbGetSlaveState(
+          sNetId := sNetId,
+          nSlaveAddr := nSlaveAddr,
+          bExecute := TRUE);
+             IF fbGetSlaveState.bBusy THEN
+                iStep := 70;
+             END_IF;
+
+   70:  (*Still reading slave's EtherCAT status*)
+       fbGetSlaveState(bExecute := TRUE);
+          IF NOT(fbGetSlaveState.bBusy) THEN
+             (*Successful*)
+             IF NOT(fbGetSlaveState.bError) THEN
+                stActualState := fbGetSlaveState.state;         // Menyimpan status aktual slave yang dibaca
+                fbGetSlaveState(bExecute := FALSE);            // Me-reset fungsi fbGetSlaveState
+                iStep := 80;                                   // Melangkah ke langkah berikutnya
+             (*Error*)
+             ELSE
+                iMessage 						:= 'ERROR';        // Pesan status diatur menjadi 'ERROR'
+				stSlaveCurrentState.ERROR 		:= TRUE;         // Status error diatur menjadi TRUE
+				stSlaveCurrentState.PROCESSING  := FALSE ;      // Status proses diatur menjadi FALSE
+				stSlaveCurrentState.Init 		:= FALSE ;       // Status init diatur menjadi FALSE
+				stSlaveCurrentState.OP    		:= FALSE ;       // Status operasi diatur menjadi FALSE
+                bError := TRUE;                                // Status kesalahan diatur menjadi TRUE
+                nErrId := fbGetSlaveState.nErrId;              // Menyimpan ID kesalahan
+                fbGetSlaveState(bExecute := FALSE);            // Me-reset fungsi fbGetSlaveState
+                iStep := 0;                                    // Kembali ke langkah awal
+             END_IF;
+          END_IF;
+
+   80:  (*Checking if slave's EtherCAT status equals 'INIT'*)
+       IF stActualState.deviceState = EC_DEVICE_STATE_INIT THEN // Jika status slave adalah 'INIT'
+          iMessage 							:= 'INIT';         // Pesan status diatur menjadi 'INIT'
+		  stSlaveCurrentState.ERROR 		:= FALSE;            // Status error diatur menjadi FALSE
+		  stSlaveCurrentState.PROCESSING    := FALSE ;         // Status proses diatur menjadi FALSE
+		  stSlaveCurrentState.Init 			:= TRUE ;           // Status init diatur menjadi TRUE
+		  stSlaveCurrentState.OP    		:= FALSE ;          // Status operasi diatur menjadi FALSE
+          iStep := 90;                                         // Melangkah ke langkah berikutnya
+       ELSE                                                     // Jika status slave bukan 'INIT'
+          iMessage 							:= 'ERROR';        // Pesan status diatur menjadi 'ERROR'
+		  stSlaveCurrentState.ERROR 		:= TRUE;             // Status error diatur menjadi TRUE
+		  stSlaveCurrentState.PROCESSING  	:= FALSE ;          // Status proses diatur menjadi FALSE
+		  stSlaveCurrentState.Init 			:= FALSE ;          // Status init diatur menjadi FALSE
+		  stSlaveCurrentState.OP    		:= FALSE ;          // Status operasi diatur menjadi FALSE
+          bError := TRUE;                                      // Status kesalahan diatur menjadi TRUE
+          iStep := 0;                                          // Kembali ke langkah awal
+       END_IF;
+
+   90:  (*Setting slave into 'OP' status*)
+       fbSetSlaveState(
+          sNetId := sNetId,
+          nSlaveAddr := nSlaveAddr,
+          bExecute := TRUE,
+          reqState := EC_DEVICE_STATE_OP);
+             IF fbSetSlaveState.bBusy THEN
+                iStep := 100;
+             END_IF;
+
+   100: (*Still setting slave into 'OP' status*)
+       fbSetSlaveState(bExecute := TRUE);
+          IF NOT(fbSetSlaveState.bBusy) THEN
+             (*Successful*)
+             IF NOT(fbSetSlaveState.bError) THEN
+                fbSetSlaveState(bExecute := FALSE);             // Me-reset fungsi fbSetSlaveState
+                iStep := 110;                                  // Melangkah ke langkah berikutnya
+             (*Error*)
+             ELSE
+                iMessage 						:= 'ERROR';        // Pesan status diatur menjadi 'ERROR'
+				stSlaveCurrentState.ERROR 		:= TRUE;         // Status error diatur menjadi TRUE
+				stSlaveCurrentState.PROCESSING  := FALSE ;      // Status proses diatur menjadi FALSE
+				stSlaveCurrentState.Init 		:= FALSE ;       // Status init diatur menjadi FALSE
+				stSlaveCurrentState.OP    		:= FALSE ;       // Status operasi diatur menjadi FALSE
+                bError := TRUE;                                // Status kesalahan diatur menjadi TRUE
+                nErrId := fbSetSlaveState.nErrId;              // Menyimpan ID kesalahan
+                fbSetSlaveState(bExecute := FALSE);            // Me-reset fungsi fbSetSlaveState
+                iStep := 0;                                    // Kembali ke langkah awal
+             END_IF;
+          END_IF;
+
+   110: (*Reading slave's EtherCAT status*)
+       fbGetSlaveState(
+          sNetId := sNetId,
+          nSlaveAddr := nSlaveAddr,
+          bExecute := TRUE);
+             IF fbGetSlaveState.bBusy THEN
+                iStep := 120;
+             END_IF;
+
+   120: (*Still reading slave's EtherCAT status*)
+       fbGetSlaveState(bExecute := TRUE);
+          IF NOT(fbGetSlaveState.bBusy) THEN
+             (*Successful*)
+             IF NOT(fbGetSlaveState.bError) THEN
+                stActualState := fbGetSlaveState.state;         // Menyimpan status aktual slave yang dibaca
+                fbGetSlaveState(bExecute := FALSE);            // Me-reset fungsi fbGetSlaveState
+                iStep := 130;                                  // Melangkah ke langkah berikutnya
+             (*Error*)
+             ELSE
+                iMessage 						:= 'ERROR';        // Pesan status diatur menjadi 'ERROR'
+				stSlaveCurrentState.ERROR 		:= TRUE;         // Status error diatur menjadi TRUE
+				stSlaveCurrentState.PROCESSING  := FALSE ;      // Status proses diatur menjadi FALSE
+				stSlaveCurrentState.Init 		:= FALSE ;       // Status init diatur menjadi FALSE
+				stSlaveCurrentState.OP    		:= FALSE ;       // Status operasi diatur menjadi FALSE
+                bError 							:= TRUE;        // Status kesalahan diatur menjadi TRUE
+                nErrId := fbGetSlaveState.nErrId;              // Menyimpan ID kesalahan
+                fbGetSlaveState(bExecute := FALSE);            // Me-reset fungsi fbGetSlaveState
+                iStep := 0;                                    // Kembali ke langkah awal
+             END_IF;
+          END_IF;
+
+   130: (*Checking if slave's EtherCAT status equals 'OP'*)
+       IF stActualState.deviceState = EC_DEVICE_STATE_OP THEN   // Jika status slave adalah 'OP'
+          iMessage 							:= 'OP';            // Pesan status diatur menjadi 'OP'
+		  stSlaveCurrentState.ERROR 		:= FALSE;             // Status error diatur menjadi FALSE
+		  stSlaveCurrentState.PROCESSING  	:= FALSE ;          // Status proses diatur menjadi FALSE
+		  stSlaveCurrentState.Init 			:= FALSE ;          // Status init diatur menjadi FALSE
+		  stSlaveCurrentState.OP    		:= TRUE ;            // Status operasi diatur menjadi TRUE
+          iStep := 140;                                        // Melangkah ke langkah berikutnya
+       ELSE                                                     // Jika status slave bukan 'OP'
+          iMessage := 'ERROR';                                 // Pesan status diatur menjadi 'ERROR'
+		  stSlaveCurrentState.ERROR 		:= TRUE;             // Status error diatur menjadi TRUE
+	      stSlaveCurrentState.PROCESSING 	:= FALSE ;          // Status proses diatur menjadi FALSE
+	      stSlaveCurrentState.Init 			:= FALSE ;          // Status init diatur menjadi FALSE
+		  stSlaveCurrentState.OP    		:= FALSE ;          // Status operasi diatur menjadi FALSE
+          bError := TRUE;                                      // Status kesalahan diatur menjadi TRUE
+          iStep := 0;                                          // Kembali ke langkah awal
+       END_IF;
+
+   140: (*Setting 'OP' status successfully done*)
+       bDone := TRUE;                                          // Operasi selesai
+       iStep := 0;                                             // Kembali ke langkah awal
+END_CASE;
+]]></ST>
+    </Implementation>
+    <LineIds Name="Ethercat_Status">
+      <LineId Id="282" Count="57" />
+      <LineId Id="504" Count="8" />
+      <LineId Id="349" Count="154" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

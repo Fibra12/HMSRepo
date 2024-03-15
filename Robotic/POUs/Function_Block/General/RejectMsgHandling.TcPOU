@@ -1,0 +1,134 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="RejectMsgHandling" Id="{f9eb4f63-f2c6-4b6e-bf8e-ae2cf46d26c9}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK RejectMsgHandling
+VAR_INPUT
+	bReject			: BOOL;
+	bRejectID		: INT;
+	RejectType		: STRING;
+	Counter			: UINT;
+	RejectMsg		: STRING;
+	Timestamp		: STRING;	
+	bResetBuffer	: BOOL;
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR_IN_OUT
+	dtRejectHistory	: ARRAY [1..20] OF stRejectData;
+END_VAR
+VAR
+	i				: UINT;
+	j				: UINT;
+	LastIndex		: UINT;
+	EmptyArray		: ARRAY [1..20] OF stRejectData;
+	SeqIndex		: UINT;
+	
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[
+	CASE SeqIndex OF
+		0:
+			IF bReject THEN
+				SeqIndex	:= 5;	
+			END_IF
+			
+		5:
+			FOR i := 1 TO 20 BY 1 DO
+			IF dtRejectHistory[i].Status = 0 THEN
+				LastIndex	:= i;
+				SeqIndex	:= 10;
+				EXIT;
+			END_IF
+			END_FOR
+				
+			IF i > 20 THEN
+				SeqIndex	:= 10;
+			END_IF
+			
+			
+		10:
+			IF LastIndex > 1 THEN
+				FOR j := LastIndex TO 2 BY -1 DO
+					dtRejectHistory[j].Status		:=	dtRejectHistory[j-1].Status;
+					dtRejectHistory[j].RejectID		:=	dtRejectHistory[j-1].RejectID;
+					dtRejectHistory[j].RejectType	:=	dtRejectHistory[j-1].RejectType;
+					dtRejectHistory[j].Counter		:=	dtRejectHistory[j-1].Counter;
+					dtRejectHistory[j].RejectMsg	:=	dtRejectHistory[j-1].RejectMsg;
+					dtRejectHistory[j].Timestamp	:=	dtRejectHistory[j-1].Timestamp;
+				END_FOR
+			END_IF
+			
+			//IF j >= LastIndex THEN
+				SeqIndex	:= 20;
+			//END_IF
+			
+		20:
+				dtRejectHistory[1].Status			:=	1;
+				dtRejectHistory[1].RejectID			:=	bRejectID;
+				dtRejectHistory[1].RejectType		:=	RejectType;
+				dtRejectHistory[1].Counter			:=	Counter+1;
+				dtRejectHistory[1].RejectMsg		:=	RejectMsg;
+				dtRejectHistory[1].Timestamp		:=	Timestamp;
+				IF NOT bReject THEN
+					i			:= 0;
+					j			:= 0;
+					SeqIndex	:= 0;
+				END_IF
+			
+	END_CASE
+	
+
+IF bResetBuffer	THEN //OR LastIndex >= 20
+	LastIndex		:= 0;
+	i				:= 0;
+	j				:= 0;
+	SeqIndex		:= 0;
+	dtRejectHistory	:= EmptyArray;
+END_IF]]></ST>
+    </Implementation>
+    <LineIds Name="RejectMsgHandling">
+      <LineId Id="9" Count="0" />
+      <LineId Id="93" Count="1" />
+      <LineId Id="247" Count="0" />
+      <LineId Id="261" Count="0" />
+      <LineId Id="250" Count="0" />
+      <LineId Id="262" Count="0" />
+      <LineId Id="248" Count="0" />
+      <LineId Id="129" Count="0" />
+      <LineId Id="162" Count="4" />
+      <LineId Id="96" Count="0" />
+      <LineId Id="177" Count="3" />
+      <LineId Id="130" Count="0" />
+      <LineId Id="120" Count="0" />
+      <LineId Id="115" Count="0" />
+      <LineId Id="201" Count="0" />
+      <LineId Id="146" Count="0" />
+      <LineId Id="117" Count="1" />
+      <LineId Id="263" Count="0" />
+      <LineId Id="268" Count="0" />
+      <LineId Id="119" Count="0" />
+      <LineId Id="116" Count="0" />
+      <LineId Id="124" Count="0" />
+      <LineId Id="202" Count="0" />
+      <LineId Id="171" Count="0" />
+      <LineId Id="168" Count="2" />
+      <LineId Id="150" Count="0" />
+      <LineId Id="152" Count="0" />
+      <LineId Id="154" Count="1" />
+      <LineId Id="266" Count="0" />
+      <LineId Id="269" Count="0" />
+      <LineId Id="156" Count="2" />
+      <LineId Id="172" Count="1" />
+      <LineId Id="159" Count="1" />
+      <LineId Id="122" Count="0" />
+      <LineId Id="95" Count="0" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="57" Count="0" />
+      <LineId Id="56" Count="0" />
+      <LineId Id="293" Count="0" />
+      <LineId Id="174" Count="2" />
+      <LineId Id="58" Count="1" />
+    </LineIds>
+  </POU>
+</TcPlcObject>
