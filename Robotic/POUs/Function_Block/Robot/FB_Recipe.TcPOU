@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
   <POU Name="FB_Recipe" Id="{513bf035-e431-4037-bdf8-231ba11212d9}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_Recipe
 VAR_INPUT
@@ -24,6 +24,7 @@ VAR
 	Temp_Data1				: stProductInfo;
 	DataTimer				: TON;
 	TempRecipeNumber		: USINT;
+	plaintext: INT;
 END_VAR
 
 VAR_IN_OUT
@@ -46,92 +47,71 @@ END_VAR]]></Declaration>
 
 //==================================
 
-IF ENI THEN
-	ENO:=TRUE;
+
+IF ENI THEN // Jika ENI aktif
+	ENO:=TRUE; // Set ENO ke TRUE
 END_IF;
 
 
-IF iRecipeNumber < 1  THEN
-	iRecipeNumber:=40;
+IF iRecipeNumber < 1  THEN // Jika nomor resep kurang dari 1
+	iRecipeNumber:=40; // Atur nomor resep ke 40
 END_IF;
-IF iRecipeNumber > 40 THEN
-	iRecipeNumber:=1;
+IF iRecipeNumber > 40 THEN // Jika nomor resep lebih dari 40
+	iRecipeNumber:=1; // Atur nomor resep ke 1
 END_IF;
 
 
 
-IF bStsEditMode THEN
-	Temp_Data1				:= stDataHMI;
-	//Temp_Data1.ProductName	:= sProductName;
-	IF bUpload THEN
-		stDataHMI			:= stDataToRobot;
-	ELSIF bSave THEN
-		stPLCRecipe[iRecipeNumber]		:= stDataHMI;
-		stOffsetPattern[iRecipeNumber]	:= stDataHMI.OffsetPattern;
-		bStsEditMode					:= FALSE;
+IF bStsEditMode THEN // Jika dalam mode edit
+	Temp_Data1				:= stDataHMI; // Simpan data sementara
+	//Temp_Data1.ProductName	:= sProductName; // Simpan nama produk sementara
+	IF bUpload THEN // Jika upload aktif
+		stDataHMI			:= stDataToRobot; // Salin data dari robot ke HMI
+	ELSIF bSave THEN // Jika simpan aktif
+		stPLCRecipe[iRecipeNumber]		:= stDataHMI; // Simpan data HMI ke resep PLC
+		stOffsetPattern[iRecipeNumber]	:= stDataHMI.OffsetPattern; // Simpan pola offset
+		bStsEditMode					:= FALSE; // Keluar dari mode edit
 	END_IF;
-ELSE
-	stDataHMI				:= stPLCRecipe[iRecipeNumber];
-	stDataHMI.OffsetPattern := stOffsetPattern[iRecipeNumber];
-	//sProductName			:= stPLCRecipe[iRecipeNumber].ProductName;
-	
-	IF bDownload THEN
+ELSE // Jika tidak dalam mode edit
+	stDataHMI				:= stPLCRecipe[iRecipeNumber]; // Salin data dari resep PLC ke HMI
+	stDataHMI.OffsetPattern := stOffsetPattern[iRecipeNumber]; // Salin pola offset
+	//sProductName			:= stPLCRecipe[iRecipeNumber].ProductName; // Salin nama produk
+	IF bDownload THEN // Jika download aktif
 		//stDataToRobot.ProductName:='                                 ';
 		//IF stDataToRobot.ProductName='                                 ' THEN
 			//stDataToRobot				:= stPLCRecipe[iRecipeNumber];
-			stDataToRobot.ProductName	:= stPLCRecipe[iRecipeNumber].ProductName;
-			stDataToRobot.ProductLength	:= stPLCRecipe[iRecipeNumber].ProductLength;
-			stDataToRobot.ProductWidth	:= stPLCRecipe[iRecipeNumber].ProductWidth;
-			stDataToRobot.ProductHeight	:= stPLCRecipe[iRecipeNumber].ProductHeight;
-			stDataToRobot.ProductPattern:= stPLCRecipe[iRecipeNumber].ProductPattern;
-			stDataToRobot.Stacking		:= stPLCRecipe[iRecipeNumber].Stacking;
-			stDataToRobot.LinkUpSource	:= stPLCRecipe[iRecipeNumber].LinkUpSource;
-			stDataToRobot.OffsetPattern := stOffsetPattern[iRecipeNumber];
-			iSelectedRecipeNumber		:= iRecipeNumber;
+			stDataToRobot.ProductName	:= stPLCRecipe[iRecipeNumber].ProductName; // Salin nama produk
+			stDataToRobot.ProductLength	:= stPLCRecipe[iRecipeNumber].ProductLength; // Salin panjang produk
+			stDataToRobot.ProductWidth	:= stPLCRecipe[iRecipeNumber].ProductWidth; // Salin lebar produk
+			stDataToRobot.ProductHeight	:= stPLCRecipe[iRecipeNumber].ProductHeight; // Salin tinggi produk
+			stDataToRobot.ProductPattern:= stPLCRecipe[iRecipeNumber].ProductPattern; // Salin pola produk
+			stDataToRobot.Stacking		:= stPLCRecipe[iRecipeNumber].Stacking; // Salin tumpukan
+			stDataToRobot.LinkUpSource	:= stPLCRecipe[iRecipeNumber].LinkUpSource; // Salin sumber tautan
+			stDataToRobot.OffsetPattern := stOffsetPattern[iRecipeNumber]; // Salin pola offset
+			iSelectedRecipeNumber		:= iRecipeNumber; // Atur nomor resep terpilih
 		//END_IF;
 	END_IF;
 END_IF;
 
-IF iRecipeNumber<> TempRecipeNumber THEN
+IF iRecipeNumber<> TempRecipeNumber THEN // Jika nomor resep berbeda dengan nomor resep sementara
 	//sProductName:='                                 ';
-	TempRecipeNumber := iRecipeNumber;
+	TempRecipeNumber := iRecipeNumber; // Atur nomor resep sementara
 END_IF;
 
-IF bEdit THEN
-	bStsEditMode := TRUE;
+IF bEdit THEN // Jika mode edit aktif
+	bStsEditMode := TRUE; // Set mode edit ke TRUE
 END_IF;
 
-IF bCancel THEN
-	bStsEditMode := FALSE;
+IF bCancel THEN // Jika pembatalan aktif
+	bStsEditMode := FALSE; // Keluar dari mode edit
 END_IF;
 
 
-Robot_ProductLength		:= stDataToRobot.ProductLength;
-Robot_ProductWidth		:= stDataToRobot.ProductWidth;
-Robot_ProductHeight		:= stDataToRobot.ProductHeight;
-Robot_ProductPattern	:= stDataToRobot.ProductPattern;
-
-
+Robot_ProductLength		:= stDataToRobot.ProductLength; // Salin panjang produk ke robot
+Robot_ProductWidth		:= stDataToRobot.ProductWidth; // Salin lebar produk ke robot
+Robot_ProductHeight		:= stDataToRobot.ProductHeight; // Salin tinggi produk ke robot
+Robot_ProductPattern	:= stDataToRobot.ProductPattern; // Salin pola produk ke robot
 ]]></ST>
     </Implementation>
-    <LineIds Name="FB_Recipe">
-      <LineId Id="426" Count="13" />
-      <LineId Id="582" Count="0" />
-      <LineId Id="440" Count="0" />
-      <LineId Id="577" Count="4" />
-      <LineId Id="446" Count="0" />
-      <LineId Id="449" Count="0" />
-      <LineId Id="452" Count="20" />
-      <LineId Id="619" Count="0" />
-      <LineId Id="615" Count="2" />
-      <LineId Id="620" Count="2" />
-      <LineId Id="473" Count="0" />
-      <LineId Id="475" Count="16" />
-      <LineId Id="540" Count="4" />
-      <LineId Id="539" Count="0" />
-      <LineId Id="492" Count="0" />
-      <LineId Id="506" Count="0" />
-      <LineId Id="352" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>

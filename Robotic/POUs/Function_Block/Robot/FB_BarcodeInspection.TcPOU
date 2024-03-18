@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
   <POU Name="FB_BarcodeInspection" Id="{30941f97-6106-4e76-9db7-8cb51e5c6809}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_BarcodeInspection
 VAR_INPUT
@@ -43,238 +43,151 @@ VAR
 	NotFound			: BOOL;
 	i					: INT;
 	Index				: INT;
+	plaintext: INT;
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[IF bResetCounter THEN
-	CountReject := 0;
-END_IF
+      <ST><![CDATA[
+IF bResetCounter THEN // Jika bResetCounter aktif
+	CountReject := 0; // Set ulang CountReject menjadi 0
+END_IF // Selesai kondisi IF
 
-IF bEnable THEN
+IF bEnable THEN // Jika bEnable aktif
 	
 	(*----Check Barcode -----*)
-	CASE Sequence OF
+	CASE Sequence OF // Pemilihan kasus berdasarkan nilai Sequence
 		0:	
-			IF bTrigger THEN
-				DoneCheck		:= FALSE;
-				bBarcodeChecked	:= FALSE;
-				bReject			:= FALSE;
-				iPlacingLine	:= 0;
-				RejectID		:= 0;
-				RejectMsg		:= '';
-				BarcodeResult	:= '';
-				BarcodeEAN		:= '';
-				CodeVariant		:= '';
-				BarcodeLinkUp	:= '';
-				Sequence		:= 10;
-			END_IF
+			IF bTrigger THEN // Jika bTrigger aktif
+				DoneCheck		:= FALSE; // Set DoneCheck menjadi tidak aktif
+				bBarcodeChecked	:= FALSE; // Set bBarcodeChecked menjadi tidak aktif
+				bReject			:= FALSE; // Set bReject menjadi tidak aktif
+				iPlacingLine	:= 0; // Set iPlacingLine menjadi 0
+				RejectID		:= 0; // Set RejectID menjadi 0
+				RejectMsg		:= ''; // Set RejectMsg menjadi string kosong
+				BarcodeResult	:= ''; // Set BarcodeResult menjadi string kosong
+				BarcodeEAN		:= ''; // Set BarcodeEAN menjadi string kosong
+				CodeVariant		:= ''; // Set CodeVariant menjadi string kosong
+				BarcodeLinkUp	:= ''; // Set BarcodeLinkUp menjadi string kosong
+				Sequence		:= 10; // Ganti nilai Sequence menjadi 10
+			END_IF // Selesai kondisi IF
 			
 		10:
-			TimeOut(IN:=TRUE, PT:=T#5S);
-			IF bBarcodeGood[1] AND bDoneRead[1] THEN
-				BarcodeResult 	:= BarcodeData1;
-				Sequence		:= 11;
-			ELSIF bBarcodeGood[2] AND bDoneRead[2] THEN
-				BarcodeResult 	:= BarcodeData2;
-				Sequence		:= 11;
-			ELSIF bBarcodeGood[3] AND bDoneRead[3] THEN
-				BarcodeResult 	:= BarcodeData3;
-				Sequence		:= 11;
-			ELSIF bBarcodeGood[4] AND bDoneRead[4] THEN
-				BarcodeResult 	:= BarcodeData4;
-				Sequence		:= 11;
-			ELSIF (bBarcodeBad[1] AND bBarcodeBad[2] AND bBarcodeBad[3] AND bBarcodeBad[4]) OR TimeOut.Q  THEN //
-				TimeOut(IN:=FALSE); 
-				RejectID		:= 1;
-				RejectMsg		:= 'Reject Bad Read Barcode';
-				Sequence		:= 999; 
-			END_IF
+			TimeOut(IN:=TRUE, PT:=T#5S); // Aktifkan TimeOut dengan periode 5 detik
+			IF bBarcodeGood[1] AND bDoneRead[1] THEN // Jika bBarcodeGood[1] aktif dan bDoneRead[1] aktif
+				BarcodeResult 	:= BarcodeData1; // Set BarcodeResult dari BarcodeData1
+				Sequence		:= 11; // Ganti nilai Sequence menjadi 11
+			ELSIF bBarcodeGood[2] AND bDoneRead[2] THEN // Jika bBarcodeGood[2] aktif dan bDoneRead[2] aktif
+				BarcodeResult 	:= BarcodeData2; // Set BarcodeResult dari BarcodeData2
+				Sequence		:= 11; // Ganti nilai Sequence menjadi 11
+			ELSIF bBarcodeGood[3] AND bDoneRead[3] THEN // Jika bBarcodeGood[3] aktif dan bDoneRead[3] aktif
+				BarcodeResult 	:= BarcodeData3; // Set BarcodeResult dari BarcodeData3
+				Sequence		:= 11; // Ganti nilai Sequence menjadi 11
+			ELSIF bBarcodeGood[4] AND bDoneRead[4] THEN // Jika bBarcodeGood[4] aktif dan bDoneRead[4] aktif
+				BarcodeResult 	:= BarcodeData4; // Set BarcodeResult dari BarcodeData4
+				Sequence		:= 11; // Ganti nilai Sequence menjadi 11
+			ELSIF (bBarcodeBad[1] AND bBarcodeBad[2] AND bBarcodeBad[3] AND bBarcodeBad[4]) OR TimeOut.Q THEN // Jika semua bBarcodeBad aktif atau TimeOut tercapai
+				TimeOut(IN:=FALSE); // Nonaktifkan TimeOut
+				RejectID		:= 1; // Set RejectID menjadi 1
+				RejectMsg		:= 'Reject Bad Read Barcode'; // Set RejectMsg
+				Sequence		:= 999; // Ganti nilai Sequence menjadi 999
+			END_IF // Selesai kondisi IF
 			
 		11:	(* Split Barcode *)
-			BarcodeEAN		:= DELETE(DELETE(BarcodeResult,3,0),24,15);
-			CodeVariant		:= DELETE(DELETE(BarcodeResult,19,0),20,3);
-			BarcodeLinkUp	:= DELETE(DELETE(BarcodeResult,33,0),6,3);
-			Sequence		:= 12;
+			BarcodeEAN		:= DELETE(DELETE(BarcodeResult,3,0),24,15); // Ambil bagian tertentu dari BarcodeResult sebagai BarcodeEAN
+			CodeVariant		:= DELETE(DELETE(BarcodeResult,19,0),20,3); // Ambil bagian tertentu dari BarcodeResult sebagai CodeVariant
+			BarcodeLinkUp	:= DELETE(DELETE(BarcodeResult,33,0),6,3); // Ambil bagian tertentu dari BarcodeResult sebagai BarcodeLinkUp
+			Sequence		:= 12; // Ganti nilai Sequence menjadi 12
 			
 		12: (* Check EAN *)
-			FOR i := 1 TO 4 BY 1 DO
-				IF PlannedEAN[i] <> '' AND BarcodeEAN = PlannedEAN[i] AND PlannedEAN[i] <> ar_ProductInfo[i].EANVariant THEN
-					ar_ProductInfo[i].EANVariant	:= PlannedEAN[i];
-					bProductFound[i]				:= TRUE;
-					Sequence						:= 20;
-					EXIT;
-				END_IF
-			END_FOR
+			FOR i := 1 TO 4 BY 1 DO // Loop untuk setiap elemen PlannedEAN
+				IF PlannedEAN[i] <> '' AND BarcodeEAN = PlannedEAN[i] AND PlannedEAN[i] <> ar_ProductInfo[i].EANVariant THEN // Jika PlannedEAN tidak kosong dan BarcodeEAN sama dengan PlannedEAN dan PlannedEAN tidak sama dengan ar_ProductInfo[i].EANVariant
+					ar_ProductInfo[i].EANVariant	:= PlannedEAN[i]; // Update nilai ar_ProductInfo[i].EANVariant
+					bProductFound[i]				:= TRUE; // Set bProductFound[i] menjadi TRUE
+					Sequence						:= 20; // Ganti nilai Sequence menjadi 20
+					EXIT; // Keluar dari loop FOR
+				END_IF // Selesai kondisi IF
+			END_FOR // Selesai loop FOR
 			
-			IF i > 4 THEN
-				i 				:= 0;
-				Sequence		:= 20;
-			END_IF
+			IF i > 4 THEN // Jika i melebihi 4
+				i 				:= 0; // Set i menjadi 0
+				Sequence		:= 20; // Ganti nilai Sequence menjadi 20
+			END_IF // Selesai kondisi IF
 			
 		20:	
-			FOR i := 1 TO 4 BY 1 DO
-				IF BarcodeLinkUp = ar_ProductInfo[i].LinkUpSource  AND BarcodeEAN = ar_ProductInfo[i].EANVariant THEN //AND CodeVariant = ar_ProductInfo[i].CodeVariant
-					iPlacingLine	 		:= i;
-					Sequence				:= 21;
-				EXIT;
-				END_IF;
-			END_FOR;	
-			IF i > 4 THEN
-				bBarcodeChecked	:= FALSE;
-				NotFound		:= TRUE;
-				RejectID		:= 2;
-				RejectMsg		:= 'Barcode Result Not Matched Any References';
-				Sequence		:= 999;
-			END_IF;
+			FOR i := 1 TO 4 BY 1 DO // Loop untuk setiap elemen ar_ProductInfo
+				IF BarcodeLinkUp = ar_ProductInfo[i].LinkUpSource  AND BarcodeEAN = ar_ProductInfo[i].EANVariant THEN // Jika BarcodeLinkUp sama dengan ar_ProductInfo[i].LinkUpSource dan BarcodeEAN sama dengan ar_ProductInfo[i].EANVariant
+					iPlacingLine	 		:= i; // Set iPlacingLine
+					Sequence				:= 21; // Ganti nilai Sequence menjadi 21
+					EXIT; // Keluar dari loop FOR
+				END_IF; // Selesai kondisi IF
+			END_FOR; // Selesai loop FOR	
+			IF i > 4 THEN // Jika i melebihi 4
+				bBarcodeChecked	:= FALSE; // Set bBarcodeChecked menjadi FALSE
+				NotFound		:= TRUE; // Set NotFound menjadi TRUE
+				RejectID		:= 2; // Set RejectID menjadi 2
+				RejectMsg		:= 'Barcode Result Not Matched Any References'; // Set RejectMsg
+				Sequence		:= 999; // Ganti nilai Sequence menjadi 999
+			END_IF; // Selesai kondisi IF
 			
 		21:
-			IF CodeVariant <> ar_ProductInfo[iPlacingLine].CodeVariant THEN
-				ar_ProductInfo[iPlacingLine].CodeVariant	:= CodeVariant;
-				bProductFound[iPlacingLine]					:= TRUE;
-				Sequence									:= 30;
+			IF CodeVariant <> ar_ProductInfo[iPlacingLine].CodeVariant THEN // Jika CodeVariant tidak sama dengan ar_ProductInfo[iPlacingLine].CodeVariant
+				ar_ProductInfo[iPlacingLine].CodeVariant	:= CodeVariant; // Update nilai ar_ProductInfo[iPlacingLine].CodeVariant
+				bProductFound[iPlacingLine
+
+]					:= TRUE; // Set bProductFound[iPlacingLine] menjadi TRUE
+				Sequence									:= 30; // Ganti nilai Sequence menjadi 30
 			ELSE
-				Sequence									:= 30;
+				Sequence									:= 30; // Ganti nilai Sequence menjadi 30
 			END_IF
 			
 		30:
-			IF bPalletReady[iPlacingLine] THEN
-				TimeOut(IN:=FALSE);
-				bBarcodeChecked	:=	TRUE;
-				Sequence		:=	1000;	
+			IF bPalletReady[iPlacingLine] THEN // Jika bPalletReady[iPlacingLine] aktif
+				TimeOut(IN:=FALSE); // Nonaktifkan TimeOut
+				bBarcodeChecked	:=	TRUE; // Set bBarcodeChecked menjadi TRUE
+				Sequence		:=	1000;	// Ganti nilai Sequence menjadi 1000	
 			ELSE
-				TimeOut(IN:=TRUE, PT:=T#30S);
-				IF TimeOut.Q THEN
-				TimeOut(IN:=FALSE);
-				RejectID		:= 3;
-				RejectMsg		:= 'Reject Placing Not Ready';
-				Sequence		:= 999;
+				TimeOut(IN:=TRUE, PT:=T#30S); // Aktifkan TimeOut dengan periode 30 detik
+				IF TimeOut.Q THEN // Jika TimeOut tercapai
+				TimeOut(IN:=FALSE); // Nonaktifkan TimeOut
+				RejectID		:= 3; // Set RejectID menjadi 3
+				RejectMsg		:= 'Reject Placing Not Ready'; // Set RejectMsg
+				Sequence		:= 999; // Ganti nilai Sequence menjadi 999
 				END_IF
 			END_IF
 			
 		999:
-			TimeOut(IN:=FALSE);
-			iPlacingLine	:= 0;
-			bBarcodeChecked	:=	TRUE;
-			bReject 		:=	TRUE;
-			CountReject		:= 	CountReject + 1;
-			Sequence		:=	1000;	
+			TimeOut(IN:=FALSE); // Nonaktifkan TimeOut
+			iPlacingLine	:= 0; // Set iPlacingLine menjadi 0
+			bBarcodeChecked	:=	TRUE; // Set bBarcodeChecked menjadi TRUE
+			bReject 		:=	TRUE; // Set bReject menjadi TRUE
+			CountReject		:= 	CountReject + 1; // Tambahkan 1 pada CountReject
+			Sequence		:=	1000;	// Ganti nilai Sequence menjadi 1000	
 	
 		1000:
-			DoneCheck	:= TRUE;
-			IF NOT bTrigger THEN
-				bProductFound[1]	:= FALSE;	
-				bProductFound[2]	:= FALSE;
-				bProductFound[3]	:= FALSE;
-				bProductFound[4]	:= FALSE;
-				NotFound			:= FALSE;
-				bBarcodeChecked		:= FALSE;
-				bReject				:= FALSE;
-				Sequence			:= 0;
-			END_IF
+			DoneCheck	:= TRUE; // Set DoneCheck menjadi TRUE
+			IF NOT bTrigger THEN // Jika bTrigger tidak aktif
+				bProductFound[1]	:= FALSE;	// Set bProductFound[1] menjadi FALSE
+				bProductFound[2]	:= FALSE; // Set bProductFound[2] menjadi FALSE
+				bProductFound[3]	:= FALSE; // Set bProductFound[3] menjadi FALSE
+				bProductFound[4]	:= FALSE; // Set bProductFound[4] menjadi FALSE
+				NotFound			:= FALSE; // Set NotFound menjadi FALSE
+				bBarcodeChecked		:= FALSE; // Set bBarcodeChecked menjadi FALSE
+				bReject				:= FALSE; // Set bReject menjadi FALSE
+				Sequence			:= 0; // Ganti nilai Sequence menjadi 0
+			END_IF // Selesai kondisi IF
 			
-	END_CASE
-	
+	END_CASE // Selesai pemilihan kasus
 	
 ELSE
-	TimeOut(IN:=FALSE);
-	NotFound			:= FALSE;
-	bBarcodeChecked		:= FALSE;
-	bReject				:= FALSE;
-	Sequence			:= 0;
-	iPlacingLine		:= 0;
-	i					:= 0;
-END_IF]]></ST>
+	TimeOut(IN:=FALSE); // Nonaktifkan TimeOut
+	NotFound			:= FALSE; // Set NotFound menjadi FALSE
+	bBarcodeChecked		:= FALSE; // Set bBarcodeChecked menjadi FALSE
+	bReject				:= FALSE; // Set bReject menjadi FALSE
+	Sequence			:= 0; // Ganti nilai Sequence menjadi 0
+	iPlacingLine		:= 0; // Set iPlacingLine menjadi 0
+	i					:= 0; // Set i menjadi 0
+END_IF // Selesai kondisi IF
+]]></ST>
     </Implementation>
-    <LineIds Name="FB_BarcodeInspection">
-      <LineId Id="1126" Count="0" />
-      <LineId Id="1128" Count="1" />
-      <LineId Id="1127" Count="0" />
-      <LineId Id="9" Count="0" />
-      <LineId Id="132" Count="0" />
-      <LineId Id="127" Count="0" />
-      <LineId Id="17" Count="0" />
-      <LineId Id="35" Count="0" />
-      <LineId Id="37" Count="0" />
-      <LineId Id="1262" Count="0" />
-      <LineId Id="1761" Count="1" />
-      <LineId Id="1255" Count="0" />
-      <LineId Id="1673" Count="2" />
-      <LineId Id="1718" Count="1" />
-      <LineId Id="1717" Count="0" />
-      <LineId Id="38" Count="3" />
-      <LineId Id="1630" Count="0" />
-      <LineId Id="42" Count="0" />
-      <LineId Id="1400" Count="0" />
-      <LineId Id="46" Count="0" />
-      <LineId Id="1402" Count="1" />
-      <LineId Id="1401" Count="0" />
-      <LineId Id="1405" Count="1" />
-      <LineId Id="1404" Count="0" />
-      <LineId Id="1408" Count="1" />
-      <LineId Id="1407" Count="0" />
-      <LineId Id="1410" Count="0" />
-      <LineId Id="1632" Count="0" />
-      <LineId Id="1430" Count="1" />
-      <LineId Id="1411" Count="0" />
-      <LineId Id="44" Count="0" />
-      <LineId Id="1412" Count="2" />
-      <LineId Id="1421" Count="0" />
-      <LineId Id="1423" Count="0" />
-      <LineId Id="1452" Count="0" />
-      <LineId Id="556" Count="1" />
-      <LineId Id="941" Count="2" />
-      <LineId Id="951" Count="0" />
-      <LineId Id="944" Count="0" />
-      <LineId Id="1454" Count="0" />
-      <LineId Id="945" Count="5" />
-      <LineId Id="561" Count="0" />
-      <LineId Id="952" Count="0" />
-      <LineId Id="838" Count="2" />
-      <LineId Id="842" Count="7" />
-      <LineId Id="1432" Count="1" />
-      <LineId Id="850" Count="0" />
-      <LineId Id="837" Count="0" />
-      <LineId Id="1580" Count="1" />
-      <LineId Id="1583" Count="3" />
-      <LineId Id="1588" Count="1" />
-      <LineId Id="1582" Count="0" />
-      <LineId Id="1435" Count="1" />
-      <LineId Id="1438" Count="0" />
-      <LineId Id="1449" Count="0" />
-      <LineId Id="1439" Count="2" />
-      <LineId Id="1445" Count="1" />
-      <LineId Id="1448" Count="0" />
-      <LineId Id="1442" Count="2" />
-      <LineId Id="1447" Count="0" />
-      <LineId Id="1437" Count="0" />
-      <LineId Id="1424" Count="0" />
-      <LineId Id="1429" Count="0" />
-      <LineId Id="1631" Count="0" />
-      <LineId Id="1578" Count="0" />
-      <LineId Id="1426" Count="2" />
-      <LineId Id="1425" Count="0" />
-      <LineId Id="82" Count="0" />
-      <LineId Id="74" Count="0" />
-      <LineId Id="1261" Count="0" />
-      <LineId Id="75" Count="0" />
-      <LineId Id="621" Count="1" />
-      <LineId Id="1537" Count="1" />
-      <LineId Id="669" Count="0" />
-      <LineId Id="1450" Count="1" />
-      <LineId Id="1455" Count="0" />
-      <LineId Id="77" Count="0" />
-      <LineId Id="63" Count="0" />
-      <LineId Id="36" Count="0" />
-      <LineId Id="198" Count="0" />
-      <LineId Id="87" Count="0" />
-      <LineId Id="203" Count="0" />
-      <LineId Id="1495" Count="0" />
-      <LineId Id="1336" Count="0" />
-      <LineId Id="1496" Count="1" />
-      <LineId Id="204" Count="0" />
-      <LineId Id="207" Count="0" />
-      <LineId Id="213" Count="0" />
-      <LineId Id="205" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>

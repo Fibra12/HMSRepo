@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
   <POU Name="FB_CheckShuttlePos" Id="{5c28c69c-ee2d-4618-98fc-a764ee58274a}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_CheckShuttlePos
 VAR_INPUT
@@ -24,74 +24,46 @@ VAR
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[//Check Postion
-IF ABS(TEMP - ACT) > 5 THEN
-	DIFF_TEMP := (TEMP - ACT);
+      <ST><![CDATA[// Check Position
+IF ABS(TEMP - ACT) > 5 THEN // Jika perbedaan antara posisi sementara dan posisi aktual lebih besar dari 5
+	DIFF_TEMP := (TEMP - ACT); // Selisih antara posisi sementara dan posisi aktual
 ELSE
-	DIFF_TEMP := 0;
+	DIFF_TEMP := 0; // Atur selisih menjadi 0 jika perbedaannya tidak signifikan
 END_IF;
 
 (* ================== Check Shuttle Position ================== *)
-IF (DIFF_TEMP <> 0 AND ACT <> 0) OR NOT Init THEN
-	FOR Index := 0 TO 4 BY 1 DO
+IF (DIFF_TEMP <> 0 AND ACT <> 0) OR NOT Init THEN // Jika ada perbedaan posisi atau nilai aktual bukan 0 atau belum diinisialisasi
+	FOR Index := 0 TO 4 BY 1 DO // Loop untuk setiap shuttle
 		//Check Empty Pallet Position
-		IF ABS(Shuttle[Index].PositionEmpty - ACT) > OFFSET THEN
-			DIFF_EMPTY := (Shuttle[Index].PositionEmpty - ACT);
+		IF ABS(Shuttle[Index].PositionEmpty - ACT) > OFFSET THEN // Jika perbedaan antara posisi kosong dan posisi aktual lebih besar dari offset
+			DIFF_EMPTY := (Shuttle[Index].PositionEmpty - ACT); // Hitung selisih posisi kosong dan posisi aktual
 		ELSE
-			DIFF_EMPTY := 0;
+			DIFF_EMPTY := 0; // Atur selisih menjadi 0 jika perbedaannya tidak signifikan
 		END_IF;
 		
-		IF DIFF_EMPTY = 0 THEN
-			CheckShuttle[Index].AtEmpty := TRUE;
+		IF DIFF_EMPTY = 0 THEN // Jika tidak ada perbedaan posisi kosong dan posisi aktual
+			CheckShuttle[Index].AtEmpty := TRUE; // Set status "AtEmpty" menjadi benar
 		ELSE
-			CheckShuttle[Index].AtEmpty := FALSE;
+			CheckShuttle[Index].AtEmpty := FALSE; // Set status "AtEmpty" menjadi salah
 		END_IF 	
 		
 		//Check Load Pallet Position
-		IF ABS(Shuttle[Index].PositionLoaded - ACT) > OFFSET THEN
-			DIFF_LOAD := (Shuttle[Index].PositionLoaded - ACT);
+		IF ABS(Shuttle[Index].PositionLoaded - ACT) > OFFSET THEN // Jika perbedaan antara posisi terisi dan posisi aktual lebih besar dari offset
+			DIFF_LOAD := (Shuttle[Index].PositionLoaded - ACT); // Hitung selisih posisi terisi dan posisi aktual
 		ELSE
-			DIFF_LOAD := 0;
+			DIFF_LOAD := 0; // Atur selisih menjadi 0 jika perbedaannya tidak signifikan
 		END_IF;
 		
-		IF DIFF_LOAD = 0 THEN
-			CheckShuttle[Index].AtLoad := TRUE;
+		IF DIFF_LOAD = 0 THEN // Jika tidak ada perbedaan posisi terisi dan posisi aktual
+			CheckShuttle[Index].AtLoad := TRUE; // Set status "AtLoad" menjadi benar
 		ELSE
-			CheckShuttle[Index].AtLoad := FALSE;
+			CheckShuttle[Index].AtLoad := FALSE; // Set status "AtLoad" menjadi salah
 		END_IF 	
-	
 	END_FOR
 	//Update Position
-	TEMP	:= ACT;	
-	Init	:= TRUE;
-END_IF
-
-]]></ST>
+	TEMP	:= ACT;	 // Perbarui posisi sementara
+	Init	:= TRUE; // Set status inisialisasi menjadi benar
+END_IF]]></ST>
     </Implementation>
-    <LineIds Name="FB_CheckShuttlePos">
-      <LineId Id="462" Count="0" />
-      <LineId Id="457" Count="3" />
-      <LineId Id="455" Count="1" />
-      <LineId Id="453" Count="0" />
-      <LineId Id="380" Count="0" />
-      <LineId Id="417" Count="0" />
-      <LineId Id="434" Count="0" />
-      <LineId Id="423" Count="3" />
-      <LineId Id="420" Count="0" />
-      <LineId Id="427" Count="1" />
-      <LineId Id="431" Count="2" />
-      <LineId Id="430" Count="0" />
-      <LineId Id="437" Count="0" />
-      <LineId Id="439" Count="10" />
-      <LineId Id="438" Count="0" />
-      <LineId Id="422" Count="0" />
-      <LineId Id="421" Count="0" />
-      <LineId Id="452" Count="0" />
-      <LineId Id="450" Count="0" />
-      <LineId Id="484" Count="0" />
-      <LineId Id="418" Count="0" />
-      <LineId Id="379" Count="0" />
-      <LineId Id="375" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>

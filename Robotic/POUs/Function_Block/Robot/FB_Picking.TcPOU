@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
   <POU Name="FB_Picking" Id="{fdff446c-2967-4117-a65b-4b2f8ef905eb}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_Picking
 VAR_INPUT
@@ -43,61 +43,63 @@ VAR
 	Sequence			: INT;
 	DataTimer			: TON;
 	Timeout				: TON;
+	Box: INT;
 END_VAR
 
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[IF Enable THEN
-    CASE Sequence OF
+      <ST><![CDATA[
+IF Enable THEN // Jika Enable aktif
+    CASE Sequence OF // Memulai kasus berdasarkan nilai Sequence
         0:      (* Check Pneumatic Centering And GapMaker *)
 			CurrentJob	:='Check Pneumatic Centering And GapMaker';
 			Motor_ON	:= FALSE;
 			GapMaker_Rtc:= TRUE;
 			Centering	:= FALSE;
-			IF StsCentering_Rtc AND StsGapMaker_Rtc THEN
-				DataTimer(IN:= TRUE, PT:=T#100MS);
-				IF DataTimer.Q THEN
-					DataTimer(IN:= FALSE);
+			IF StsCentering_Rtc AND StsGapMaker_Rtc THEN // Jika kondisi pneumatik terpenuhi
+				DataTimer(IN:= TRUE, PT:=T#100MS); // Mulai timer
+				IF DataTimer.Q THEN // Jika timer selesai
+					DataTimer(IN:= FALSE); // Hentikan timer
 					GapMaker_Rtc:= FALSE;
-					Sequence	:= 5;
+					Sequence	:= 5; // Lanjut ke langkah berikutnya
 				END_IF
 			END_IF
 			
 		5:		(* Motor On *)
 			CurrentJob	:='Motor On';
 			Motor_ON	:= TRUE;
-			IF bSensor1 AND bSensor2 THEN
-				DataTimer(IN:= TRUE, PT:=Tmr_Check);
-				IF DataTimer.Q THEN
-					DataTimer(IN:= FALSE);
-					Sequence	:= 20;
+			IF bSensor1 AND bSensor2 THEN // Jika kedua sensor terdeteksi
+				DataTimer(IN:= TRUE, PT:=Tmr_Check); // Mulai timer
+				IF DataTimer.Q THEN // Jika timer selesai
+					DataTimer(IN:= FALSE); // Hentikan timer
+					Sequence	:= 20; // Lanjut ke langkah berikutnya
 				END_IF
-			ELSE
+			ELSE // Jika salah satu atau kedua sensor tidak terdeteksi
 				DataTimer(IN:= FALSE);
-				Sequence		:= 10;
+				Sequence	:= 10; // Kembali ke langkah sebelumnya
 			END_IF
 			
 		10:      (* Pneumatic GapMaker Advanced *)
 			CurrentJob	:='Pneumatic GapMaker Advanced';
 			GapMaker_Adv:= TRUE;
-			IF StsGapMaker_Adv THEN
-				DataTimer(IN:= TRUE, PT:=T#100MS);
-				IF DataTimer.Q THEN
-					DataTimer(IN:= FALSE);
+			IF StsGapMaker_Adv THEN // Jika kondisi pneumatik terpenuhi
+				DataTimer(IN:= TRUE, PT:=T#100MS); // Mulai timer
+				IF DataTimer.Q THEN // Jika timer selesai
+					DataTimer(IN:= FALSE); // Hentikan timer
 					GapMaker_Adv:= FALSE;
-					Sequence	:= 15;
+					Sequence	:= 15; // Lanjut ke langkah berikutnya
 				END_IF
 			END_IF
 			
 		15:		(* Check Sensor *)
 			CurrentJob	:='Check Sensor';
 			Sts_Busy	:= FALSE;
-			IF bSensor1 THEN
+			IF bSensor1 THEN // Jika sensor terdeteksi
 				Sts_Busy	:= TRUE;
-				DataTimer(IN:= TRUE, PT:=Tmr_Check);
-				IF DataTimer.Q THEN
-					DataTimer(IN:= FALSE);
-					Sequence	:= 20;
+				DataTimer(IN:= TRUE, PT:=Tmr_Check); // Mulai timer
+				IF DataTimer.Q THEN // Jika timer selesai
+					DataTimer(IN:= FALSE); // Hentikan timer
+					Sequence	:= 20; // Lanjut ke langkah berikutnya
 				END_IF
 			END_IF
 			
@@ -106,20 +108,20 @@ END_VAR
 			CurrentJob	:='Pneumatic GapMaker Retract';
 			GapMaker_Rtc:= TRUE;
 			Sts_Busy	:= TRUE;
-			IF bSensor2 AND StsGapMaker_Rtc THEN
-				DataTimer(IN:= TRUE, PT:=Tmr_Check);
-				IF DataTimer.Q THEN
-					DataTimer(IN:= FALSE);
+			IF bSensor2 AND StsGapMaker_Rtc THEN // Jika sensor terdeteksi dan kondisi pneumatik terpenuhi
+				DataTimer(IN:= TRUE, PT:=Tmr_Check); // Mulai timer
+				IF DataTimer.Q THEN // Jika timer selesai
+					DataTimer(IN:= FALSE); // Hentikan timer
 					Motor_ON	:= FALSE;
 					GapMaker_Rtc:= FALSE;
-					IF NOT Sts_Motor THEN
-						Sequence	:= 30;
+					IF NOT Sts_Motor THEN // Jika motor tidak aktif
+						Sequence	:= 30; // Lanjut ke langkah berikutnya
 					END_IF
 				END_IF
-			ELSIF NOT bSensor1 AND NOT bSensor2 THEN
-				Timeout(IN:=TRUE, PT:=T#3S);
-				IF Timeout.Q THEN
-					Timeout(IN:=FALSE);
+			ELSIF NOT bSensor1 AND NOT bSensor2 THEN // Jika sensor tidak terdeteksi
+				Timeout(IN:=TRUE, PT:=T#3S); // Mulai timer timeout
+				IF Timeout.Q THEN // Jika timer timeout selesai
+					Timeout(IN:=FALSE); // Hentikan timer timeout
 					BigBox		:= FALSE;
 					SmallBox	:= FALSE;
 					PickReady	:= FALSE;
@@ -134,51 +136,53 @@ END_VAR
 			
 		30:		(* Centering Box *)
 			CurrentJob	:='Centering Box';
-			DataTimer(IN:= TRUE, PT:=Tmr_Centering);
-			IF DataTimer.Q THEN
+			DataTimer(IN:= TRUE, PT:=Tmr_Centering); // Mulai timer
+			IF DataTimer.Q THEN // Jika timer selesai
 				Centering	:= FALSE;
 			ELSE
 				Centering	:= TRUE;
 			END_IF
-			IF StsCentering_Rtc AND DataTimer.Q THEN
-				DataTimer(IN:= FALSE);
-				Sequence	:= 40;
+			IF StsCentering_Rtc AND DataTimer.Q THEN // Jika kondisi pneumatik terpenuhi dan timer selesai
+				DataTimer(IN:= FALSE); // Hentikan timer
+				Sequence	:= 40; // Lanjut ke langkah berikutnya
 			END_IF
 			
 		40:		(* Trigger Barcode Reader *)
 			CurrentJob	:='Trigger Barcode Reader';
 			TrigBarcode	:= TRUE;
-			IF bSensor3 THEN
+			IF bSensor3 THEN // Jika sensor terdeteksi
 				BigBox	:= TRUE;
 			ELSE
 				BigBox	:= FALSE;
 			END_IF
-			IF NOT bSensor4 AND NOT bSensor3 THEN
+			IF NOT bSensor4 AND NOT bSensor3 THEN // Jika sensor tidak terdeteksi
 				SmallBox:= TRUE;
 			ELSE
 				SmallBox:= FALSE;
 			END_IF
 			
-			IF bSensor3 THEN
-				BoxType	:= 3; //Standard Case
-			ELSIF bSensor2 AND NOT bSensor3 THEN
-				BoxType	:= 2; //Small Case
+			IF bSensor3 THEN // Jika sensor terdeteksi
+				BoxType	:= 3; // Tipe kotak: Standard Case
+			ELSIF bSensor2 AND NOT bSensor3 THEN // Jika sensor terdeteksi dan sensor lain tidak terdeteksi
+				BoxType	:= 2; // Tipe kotak: Small Case
 			ELSE
-				BoxType	:= 1; //LU 18
+				BoxType	:= 1; // Tipe kotak: LU 18
 			END_IF
-			IF BarcodeChecked THEN
-				Sequence	:= 45;
-			ELSIF NOT bSensor1 AND NOT bSensor2 THEN
-				Timeout(IN:=TRUE, PT:=T#3S);
-				IF Timeout.Q THEN
-					Timeout(IN:=FALSE);
+			IF BarcodeChecked THEN // Jika barcode telah diperiksa
+				Sequence	:= 45; // Lanjut ke langkah berikutnya
+			ELSIF NOT bSensor1 AND NOT bSensor2 THEN // Jika sensor tidak terdeteksi
+				Timeout(IN:=TRUE, PT:=T#3S); // Mulai timer timeout
+				IF Timeout.Q THEN // Jika timer timeout selesai
+					Timeout(IN:=FALSE); // Hentikan timer timeout
 					BigBox		:= FALSE;
 					SmallBox	:= FALSE;
 					PickReady	:= FALSE;
 					TrigBarcode	:= FALSE;
 					oRotate		:= FALSE;
 					oRotateInt	:= 0;
-					BoxType		:= 0;
+					Box
+
+Type		:= 0;
 					PickLine	:= 0;
 					Sequence	:= 0;
 				END_IF
@@ -189,21 +193,21 @@ END_VAR
 			PickLine	:= BarcodePlace;
 			oRotate		:= iRotate;
 			oRotateInt	:= iRotateInt;
-			DataTimer(IN:=TRUE, PT:=T#10MS);
-			IF DataTimer.Q THEN
-				Sequence	:= 50;
+			DataTimer(IN:=TRUE, PT:=T#10MS); // Mulai timer
+			IF DataTimer.Q THEN // Jika timer selesai
+				Sequence	:= 50; // Lanjut ke langkah berikutnya
 			END_IF
 			
 			
 		50:		(* Pick Ready *)
 			CurrentJob	:='Pick Ready';
 			PickReady	:= TRUE;
-			IF bPickDone THEN
-				Sequence	:= 60;
-			ELSIF NOT bSensor1 AND NOT bSensor2 THEN
-				DataTimer(IN:=TRUE, PT:=T#3S);
-				IF DataTimer.Q THEN
-					DataTimer(IN:=FALSE);
+			IF bPickDone THEN // Jika pengambilan selesai
+				Sequence	:= 60; // Lanjut ke langkah berikutnya
+			ELSIF NOT bSensor1 AND NOT bSensor2 THEN // Jika sensor tidak terdeteksi
+				DataTimer(IN:=TRUE, PT:=T#3S); // Mulai timer
+				IF DataTimer.Q THEN // Jika timer selesai
+					DataTimer(IN:=FALSE); // Hentikan timer
 					BigBox		:= FALSE;
 					SmallBox	:= FALSE;
 					PickReady	:= FALSE;
@@ -217,7 +221,7 @@ END_VAR
 			END_IF
 			
 		60:
-			IF NOT bPickDone THEN
+			IF NOT bPickDone THEN // Jika pengambilan tidak selesai
 				BigBox		:= FALSE;
 				SmallBox	:= FALSE;
 				PickReady	:= FALSE;
@@ -227,10 +231,10 @@ END_VAR
 				BoxType		:= 0;
 				PickLine	:= 0;
 				Sequence	:= 0;
-			ELSIF NOT bSensor1 AND NOT bSensor2 THEN
-				DataTimer(IN:=TRUE, PT:=T#3S);
-				IF DataTimer.Q THEN
-					DataTimer(IN:=FALSE);
+			ELSIF NOT bSensor1 AND NOT bSensor2 THEN // Jika sensor tidak terdeteksi
+				DataTimer(IN:=TRUE, PT:=T#3S); // Mulai timer
+				IF DataTimer.Q THEN // Jika timer selesai
+					DataTimer(IN:=FALSE); // Hentikan timer
 					BigBox		:= FALSE;
 					SmallBox	:= FALSE;
 					PickReady	:= FALSE;
@@ -243,169 +247,27 @@ END_VAR
 				END_IF
 			END_IF
 			
-    END_CASE;
-ELSE
-   Sequence 	:= 0;
-   oRotateInt	:= 0;
-   BoxType		:= 0;
-   CurrentJob	:='Machine Stopped';
-   Sts_Busy		:= TRUE;
-   BigBox		:= FALSE;
-   SmallBox		:= FALSE;
-   PickReady 	:= FALSE;
-   Motor_ON 	:= FALSE;
-   Centering	:= FALSE;
-   GapMaker_Rtc	:= FALSE;
-   GapMaker_Adv	:= FALSE;
-   TrigBarcode	:= FALSE;
-   DataTimer(IN := FALSE);
-END_IF;
+    END_CASE; // Selesai pemilihan kasus
+ELSE // Jika Enable tidak aktif
+   Sequence 	:= 0; // Set Sequence ke nilai awal
+   oRotateInt	:= 0; // Set oRotateInt ke nilai awal
+   BoxType		:= 0; // Set BoxType ke nilai awal
+   CurrentJob	:='Machine Stopped'; // Set pesan status
+   Sts_Busy		:= TRUE; // Set status ke sibuk
+   BigBox		:= FALSE; // Set status kotak besar ke tidak aktif
+   SmallBox		:= FALSE; // Set status kotak kecil ke tidak aktif
+   PickReady 	:= FALSE; // Set status pick siap ke tidak aktif
+   Motor_ON 	:= FALSE; // Set status motor ke tidak aktif
+   Centering	:= FALSE; // Set status centering ke tidak aktif
+   GapMaker_Rtc	:= FALSE; // Set status GapMaker RTC ke tidak aktif
+   GapMaker_Adv	:= FALSE; // Set status GapMaker Adv ke tidak aktif
+   TrigBarcode	:= FALSE; // Set status triger barcode ke tidak aktif
+   DataTimer(IN := FALSE); // Hentikan timer
+END_IF; // Selesai kondisi IF
 
-SeqIndex	:= Sequence;]]></ST>
+SeqIndex	:= Sequence; // Set nilai Sequence ke SeqIndex
+
+]]></ST>
     </Implementation>
-    <LineIds Name="FB_Picking">
-      <LineId Id="10" Count="2" />
-      <LineId Id="354" Count="0" />
-      <LineId Id="197" Count="3" />
-      <LineId Id="207" Count="0" />
-      <LineId Id="209" Count="0" />
-      <LineId Id="235" Count="0" />
-      <LineId Id="224" Count="0" />
-      <LineId Id="210" Count="1" />
-      <LineId Id="208" Count="0" />
-      <LineId Id="316" Count="0" />
-      <LineId Id="318" Count="0" />
-      <LineId Id="355" Count="0" />
-      <LineId Id="320" Count="6" />
-      <LineId Id="328" Count="0" />
-      <LineId Id="331" Count="0" />
-      <LineId Id="330" Count="0" />
-      <LineId Id="317" Count="0" />
-      <LineId Id="213" Count="0" />
-      <LineId Id="215" Count="0" />
-      <LineId Id="356" Count="0" />
-      <LineId Id="217" Count="0" />
-      <LineId Id="219" Count="2" />
-      <LineId Id="236" Count="0" />
-      <LineId Id="253" Count="0" />
-      <LineId Id="222" Count="1" />
-      <LineId Id="214" Count="0" />
-      <LineId Id="332" Count="1" />
-      <LineId Id="357" Count="0" />
-      <LineId Id="334" Count="1" />
-      <LineId Id="532" Count="0" />
-      <LineId Id="338" Count="3" />
-      <LineId Id="336" Count="1" />
-      <LineId Id="225" Count="0" />
-      <LineId Id="231" Count="0" />
-      <LineId Id="242" Count="0" />
-      <LineId Id="358" Count="0" />
-      <LineId Id="243" Count="0" />
-      <LineId Id="255" Count="0" />
-      <LineId Id="244" Count="3" />
-      <LineId Id="281" Count="0" />
-      <LineId Id="254" Count="0" />
-      <LineId Id="282" Count="0" />
-      <LineId Id="248" Count="0" />
-      <LineId Id="283" Count="0" />
-      <LineId Id="249" Count="0" />
-      <LineId Id="534" Count="3" />
-      <LineId Id="823" Count="3" />
-      <LineId Id="874" Count="0" />
-      <LineId Id="974" Count="0" />
-      <LineId Id="990" Count="0" />
-      <LineId Id="827" Count="0" />
-      <LineId Id="541" Count="0" />
-      <LineId Id="533" Count="0" />
-      <LineId Id="241" Count="0" />
-      <LineId Id="250" Count="1" />
-      <LineId Id="359" Count="0" />
-      <LineId Id="258" Count="1" />
-      <LineId Id="263" Count="0" />
-      <LineId Id="733" Count="1" />
-      <LineId Id="261" Count="0" />
-      <LineId Id="343" Count="0" />
-      <LineId Id="346" Count="0" />
-      <LineId Id="344" Count="1" />
-      <LineId Id="265" Count="0" />
-      <LineId Id="347" Count="0" />
-      <LineId Id="360" Count="0" />
-      <LineId Id="267" Count="0" />
-      <LineId Id="438" Count="1" />
-      <LineId Id="443" Count="1" />
-      <LineId Id="440" Count="0" />
-      <LineId Id="646" Count="3" />
-      <LineId Id="645" Count="0" />
-      <LineId Id="984" Count="0" />
-      <LineId Id="977" Count="1" />
-      <LineId Id="980" Count="3" />
-      <LineId Id="979" Count="0" />
-      <LineId Id="268" Count="1" />
-      <LineId Id="580" Count="4" />
-      <LineId Id="692" Count="0" />
-      <LineId Id="585" Count="1" />
-      <LineId Id="873" Count="0" />
-      <LineId Id="973" Count="0" />
-      <LineId Id="985" Count="0" />
-      <LineId Id="777" Count="0" />
-      <LineId Id="587" Count="0" />
-      <LineId Id="579" Count="0" />
-      <LineId Id="270" Count="0" />
-      <LineId Id="916" Count="1" />
-      <LineId Id="919" Count="1" />
-      <LineId Id="918" Count="0" />
-      <LineId Id="975" Count="0" />
-      <LineId Id="922" Count="3" />
-      <LineId Id="921" Count="0" />
-      <LineId Id="272" Count="1" />
-      <LineId Id="361" Count="0" />
-      <LineId Id="274" Count="1" />
-      <LineId Id="278" Count="0" />
-      <LineId Id="484" Count="3" />
-      <LineId Id="489" Count="0" />
-      <LineId Id="650" Count="0" />
-      <LineId Id="490" Count="0" />
-      <LineId Id="493" Count="0" />
-      <LineId Id="872" Count="0" />
-      <LineId Id="972" Count="0" />
-      <LineId Id="986" Count="0" />
-      <LineId Id="774" Count="0" />
-      <LineId Id="491" Count="0" />
-      <LineId Id="488" Count="0" />
-      <LineId Id="277" Count="0" />
-      <LineId Id="625" Count="2" />
-      <LineId Id="630" Count="0" />
-      <LineId Id="651" Count="0" />
-      <LineId Id="631" Count="0" />
-      <LineId Id="628" Count="0" />
-      <LineId Id="870" Count="0" />
-      <LineId Id="971" Count="0" />
-      <LineId Id="987" Count="0" />
-      <LineId Id="776" Count="0" />
-      <LineId Id="632" Count="0" />
-      <LineId Id="634" Count="4" />
-      <LineId Id="652" Count="0" />
-      <LineId Id="639" Count="1" />
-      <LineId Id="871" Count="0" />
-      <LineId Id="970" Count="0" />
-      <LineId Id="988" Count="0" />
-      <LineId Id="775" Count="0" />
-      <LineId Id="641" Count="1" />
-      <LineId Id="629" Count="0" />
-      <LineId Id="59" Count="3" />
-      <LineId Id="817" Count="0" />
-      <LineId Id="989" Count="0" />
-      <LineId Id="63" Count="0" />
-      <LineId Id="348" Count="0" />
-      <LineId Id="446" Count="0" />
-      <LineId Id="991" Count="0" />
-      <LineId Id="64" Count="1" />
-      <LineId Id="194" Count="2" />
-      <LineId Id="494" Count="0" />
-      <LineId Id="66" Count="0" />
-      <LineId Id="9" Count="0" />
-      <LineId Id="353" Count="0" />
-      <LineId Id="352" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>

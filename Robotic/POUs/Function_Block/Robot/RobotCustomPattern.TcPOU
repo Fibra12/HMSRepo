@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
   <POU Name="RobotCustomPattern" Id="{fcd1fbe7-c892-4392-9af5-2d5eec7f4aa5}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK RobotCustomPattern
 VAR_INPUT
@@ -16,32 +16,21 @@ END_VAR
 
 VAR
 	
+	ENDIF: INT;
 END_VAR
 
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[IF ENI THEN
-	ENO:=TRUE;
+      <ST><![CDATA[IF ENI THEN // Jika masukan diaktifkan
+	ENO:=TRUE; // Keluaran diaktifkan
 	
-	
-	IF CycleAtLayer <> 0 THEN
-		Offset_X := INT_TO_UINT(dtRecipe.OffsetPattern.Offset_X[CycleAtLayer]);
-		Offset_Y := INT_TO_UINT(dtRecipe.OffsetPattern.Offset_Y[CycleAtLayer]);
-		Offset_Z := INT_TO_UINT(dtRecipe.OffsetPattern.Offset_Z[CycleAtLayer]);
+	IF CycleAtLayer <> 0 THEN // Jika siklus pada lapisan tidak sama dengan 0
+		Offset_X := INT_TO_UINT(dtRecipe.OffsetPattern.Offset_X[CycleAtLayer]); // Atur offset X
+		Offset_Y := INT_TO_UINT(dtRecipe.OffsetPattern.Offset_Y[CycleAtLayer]); // Atur offset Y
+		Offset_Z := INT_TO_UINT(dtRecipe.OffsetPattern.Offset_Z[CycleAtLayer]); // Atur offset Z
 	END_IF
-	
-	
-	
-END_IF;]]></ST>
+END_IF
+]]></ST>
     </Implementation>
-    <LineIds Name="RobotCustomPattern">
-      <LineId Id="626" Count="2" />
-      <LineId Id="633" Count="1" />
-      <LineId Id="670" Count="1" />
-      <LineId Id="668" Count="1" />
-      <LineId Id="648" Count="0" />
-      <LineId Id="640" Count="1" />
-      <LineId Id="352" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>

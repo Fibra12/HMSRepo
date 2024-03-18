@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
   <POU Name="DM_Connect" Id="{8f85973e-7b41-4891-9036-07607f02fbe1}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK DM_Connect
 VAR_INPUT
@@ -26,136 +26,115 @@ VAR
 	DataTimer	: TON;
 	BufferData	: ARRAY [0..MAX_STRING_LENGTH] OF BYTE;
 	i			: DINT;
+	plaintext: INT;
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[IF Enable THEN
-	Enable_Out	:= TRUE;
-	CASE SeqIndex OF
-		0:
-			IF Trigger THEN
-				GoodRead:=FALSE;
-				BadRead	:=FALSE;
-				Done	:=FALSE;
-				SeqIndex:=1;
-			END_IF;
-		1:
-			IF InputBarcode.ResultsAvailable THEN
-				AckResultBarcode:=TRUE;
-				SeqIndex:=2;
-			ELSE
-				SeqIndex:=10;
-			END_IF;
-		2:
-			IF NOT InputBarcode.ResultsAvailable THEN
-				AckResultBarcode:=FALSE;
-				SeqIndex:=10;
-			END_IF;
-		10:
-			TriggerBarcode:=TRUE;
-			IF InputBarcode.TriggerAck THEN
-				DataTimer(IN:=FALSE);
-				TriggerBarcode:=FALSE;
-				SeqIndex:=20;
-			ELSE
-				DataTimer(IN:=TRUE,PT:=T#20S);
-				IF DataTimer.Q THEN
-					DataTimer(IN:=FALSE);
-					SeqIndex:=1000;
-				END_IF;
-			END_IF;
-		20:
-			IF InputBarcode.ResultsAvailable THEN
-				DataTimer(IN:=FALSE);
-				SeqIndex:=30;
-			ELSE
-				DataTimer(IN:=TRUE,PT:=T#20S);
-				IF DataTimer.Q THEN
-					DataTimer(IN:=FALSE);
-					SeqIndex:=1000;
-				END_IF;
-			END_IF;
-		30:
-			IF InputBarcode.ResultCode = 1 THEN
-				SeqIndex:=100;
-			ELSE
-				SeqIndex:=110;
-			END_IF;
-		100:
-			GoodRead:=TRUE;
-			BadRead	:=FALSE;
-			FOR i:=0 TO InputBarcode.ResultDataLength BY 1 DO
-				BufferData[i]:=InputBarcode.ResultData[i];
-			END_FOR
-			Data:=BYTEARR_TO_MAXSTRING(BufferData);
-			SeqIndex:=200;
-		110:
-			GoodRead	:=FALSE;
-			BadRead		:=TRUE;
-			Data		:='Not Read';
-			DataTimer(IN:=FALSE);
-			SeqIndex:=200;
-		200:
-			Done:=TRUE;
-			IF NOT Trigger THEN
-				DataTimer(IN:=TRUE,PT:=T#10MS);
-				IF DataTimer.Q THEN
-					DataTimer(IN:=FALSE);
-					Done:=FALSE;
-					SeqIndex:=210;
-				END_IF
-	
-			END_IF;
-		210:
-			AckResultBarcode:=TRUE;
-			IF NOT InputBarcode.ResultsAvailable THEN
-				AckResultBarcode:=FALSE;
-				SeqIndex:=0;
-			END_IF;
-		1000:
-			Error:=TRUE;
-			IF NOT Trigger THEN
-				Error:=FALSE;
-				TriggerBarcode:=FALSE;
-				SeqIndex:=0;
-			END_IF;
-	END_CASE;
-ELSE
-	DataTimer(IN:=FALSE);
-	Enable_Out		:= FALSE;
-	AckResultBarcode:=FALSE;
-	Error			:=FALSE;
-	TriggerBarcode	:=FALSE;
-	GoodRead		:=FALSE;
-	BadRead			:=FALSE;
-	Done			:=FALSE;
-	SeqIndex		:=0;
-END_IF;]]></ST>
+      <ST><![CDATA[
+IF Enable THEN // Jika Enable aktif
+	Enable_Out	:= TRUE; // Aktifkan Enable_Out
+	CASE SeqIndex OF // Mulai pemilihan kasus berdasarkan nilai SeqIndex
+		0: // Kasus ketika SeqIndex = 0
+			IF Trigger THEN // Jika Trigger aktif
+				GoodRead:=FALSE; // Set GoodRead menjadi tidak aktif
+				BadRead	:=FALSE; // Set BadRead menjadi tidak aktif
+				Done	:=FALSE; // Set Done menjadi tidak aktif
+				SeqIndex:=1; // Ganti nilai SeqIndex menjadi 1
+			END_IF; // Selesai kondisi IF
+		1: // Kasus ketika SeqIndex = 1
+			IF InputBarcode.ResultsAvailable THEN // Jika hasil tersedia
+				AckResultBarcode:=TRUE; // Aktifkan AckResultBarcode
+				SeqIndex:=2; // Ganti nilai SeqIndex menjadi 2
+			ELSE // Jika hasil tidak tersedia
+				SeqIndex:=10; // Ganti nilai SeqIndex menjadi 10
+			END_IF; // Selesai kondisi IF
+		2: // Kasus ketika SeqIndex = 2
+			IF NOT InputBarcode.ResultsAvailable THEN // Jika hasil tidak tersedia
+				AckResultBarcode:=FALSE; // Nonaktifkan AckResultBarcode
+				SeqIndex:=10; // Ganti nilai SeqIndex menjadi 10
+			END_IF; // Selesai kondisi IF
+		10: // Kasus ketika SeqIndex = 10
+			TriggerBarcode:=TRUE; // Aktifkan TriggerBarcode
+			IF InputBarcode.TriggerAck THEN // Jika TriggerAck aktif
+				DataTimer(IN:=FALSE); // Nonaktifkan DataTimer
+				TriggerBarcode:=FALSE; // Nonaktifkan TriggerBarcode
+				SeqIndex:=20; // Ganti nilai SeqIndex menjadi 20
+			ELSE // Jika TriggerAck tidak aktif
+				DataTimer(IN:=TRUE,PT:=T#20S); // Aktifkan DataTimer dengan periode 20 detik
+				IF DataTimer.Q THEN // Jika DataTimer mencapai waktu yang ditentukan
+					DataTimer(IN:=FALSE); // Nonaktifkan DataTimer
+					SeqIndex:=1000; // Ganti nilai SeqIndex menjadi 1000
+				END_IF; // Selesai kondisi IF
+			END_IF; // Selesai kondisi IF
+		20: // Kasus ketika SeqIndex = 20
+			IF InputBarcode.ResultsAvailable THEN // Jika hasil tersedia
+				DataTimer(IN:=FALSE); // Nonaktifkan DataTimer
+				SeqIndex:=30; // Ganti nilai SeqIndex menjadi 30
+			ELSE // Jika hasil tidak tersedia
+				DataTimer(IN:=TRUE,PT:=T#20S); // Aktifkan DataTimer dengan periode 20 detik
+				IF DataTimer.Q THEN // Jika DataTimer mencapai waktu yang ditentukan
+					DataTimer(IN:=FALSE); // Nonaktifkan DataTimer
+					SeqIndex:=1000; // Ganti nilai SeqIndex menjadi 1000
+				END_IF; // Selesai kondisi IF
+			END_IF; // Selesai kondisi IF
+		30: // Kasus ketika SeqIndex = 30
+			IF InputBarcode.ResultCode = 1 THEN // Jika ResultCode adalah 1
+				SeqIndex:=100; // Ganti nilai SeqIndex menjadi 100
+			ELSE // Jika ResultCode bukan 1
+				SeqIndex:=110; // Ganti nilai SeqIndex menjadi 110
+			END_IF; // Selesai kondisi IF
+		100: // Kasus ketika SeqIndex = 100
+			GoodRead:=TRUE; // Aktifkan GoodRead
+			BadRead	:=FALSE; // Nonaktifkan BadRead
+			FOR i:=0 TO InputBarcode.ResultDataLength BY 1 DO // Loop untuk setiap byte dalam ResultData
+				BufferData[i]:=InputBarcode.ResultData[i]; // Salin data dari InputBarcode.ResultData ke BufferData
+			END_FOR // Selesai loop FOR
+			Data:=BYTEARR_TO_MAXSTRING(BufferData); // Konversi BufferData menjadi string
+			SeqIndex:=200; // Ganti nilai SeqIndex menjadi 200
+		110: // Kasus ketika SeqIndex = 110
+			GoodRead	:=FALSE; // Nonaktifkan GoodRead
+			BadRead		:=TRUE; // Aktifkan BadRead
+			Data		:='Not Read'; // Set Data menjadi 'Not Read'
+			DataTimer(IN:=FALSE); // Nonaktifkan DataTimer
+			SeqIndex:=200; // Ganti nilai SeqIndex menjadi 200
+		200: // Kasus ketika SeqIndex = 200
+			Done:=TRUE; // Aktifkan Done
+			IF NOT Trigger THEN // Jika Trigger tidak aktif
+				DataTimer(IN:=TRUE,PT:=T#10MS); // Aktifkan DataTimer dengan periode 10 milidetik
+				IF DataTimer.Q THEN // Jika DataTimer mencapai waktu yang ditentukan
+					DataTimer(IN:=FALSE); // Nonaktifkan DataTimer
+					Done:=FALSE; // Nonaktifkan Done
+					SeqIndex:=210; // Ganti nilai SeqIndex menjadi 210
+				END_IF // Selesai kondisi IF
+			END_IF; // Selesai kondisi IF
+		210: // Kasus ketika SeqIndex = 210
+			AckResultBarcode:=TRUE; // Aktifkan AckResultBarcode
+			IF NOT InputBarcode.ResultsAvailable THEN // Jika hasil tidak tersedia
+				AckResultBarcode:=FALSE; // Nonaktifkan AckResultBarcode
+				SeqIndex:=0; // Ganti nilai SeqIndex menjadi 0
+			END_IF; // Selesai kondisi IF
+		1000: // Kasus ketika SeqIndex = 1000
+			Error:=TRUE; // Aktifkan Error
+			IF NOT Trigger THEN // Jika Trigger tidak aktif
+				Error:=FALSE; // Nonaktifkan Error
+				TriggerBarcode:=FALSE; // Nonaktifkan TriggerBarcode
+				SeqIndex:=0; // Ganti nilai SeqIndex menjadi 0
+			END_IF; // Selesai kondisi IF
+	END_CASE; // Selesai blok pemilihan kasus
+ELSE // Jika Enable tidak aktif
+	DataTimer(IN:=FALSE); // Nonaktifkan DataTimer
+	Enable_Out		:= FALSE; // Nonaktifkan Enable_Out
+	AckResultBarcode:=FALSE; // Nonaktifkan AckResultBarcode
+	Error			:=FALSE; // Nonaktifkan Error
+	TriggerBarcode	:=FALSE; // Nonaktifkan TriggerBarcode
+	GoodRead		:=FALSE; // Nonaktifkan GoodRead
+	BadRead			:=FALSE; // Nonaktifkan BadRead
+
+
+	Done			:=FALSE; // Nonaktifkan Done
+	SeqIndex		:=0; // Set SeqIndex menjadi 0
+END_IF; // Selesai kondisi IF
+]]></ST>
     </Implementation>
-    <LineIds Name="DM_Connect">
-      <LineId Id="27" Count="0" />
-      <LineId Id="117" Count="0" />
-      <LineId Id="29" Count="4" />
-      <LineId Id="243" Count="0" />
-      <LineId Id="34" Count="46" />
-      <LineId Id="121" Count="2" />
-      <LineId Id="119" Count="0" />
-      <LineId Id="82" Count="4" />
-      <LineId Id="216" Count="0" />
-      <LineId Id="87" Count="3" />
-      <LineId Id="209" Count="2" />
-      <LineId Id="213" Count="1" />
-      <LineId Id="212" Count="0" />
-      <LineId Id="215" Count="0" />
-      <LineId Id="93" Count="15" />
-      <LineId Id="154" Count="0" />
-      <LineId Id="118" Count="0" />
-      <LineId Id="109" Count="0" />
-      <LineId Id="181" Count="1" />
-      <LineId Id="245" Count="1" />
-      <LineId Id="244" Count="0" />
-      <LineId Id="111" Count="0" />
-      <LineId Id="9" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
   <POU Name="FB_StartUpRobot" Id="{64cc200c-9645-4623-b1a6-aa2cd55f0af7}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_StartUpRobot
 VAR_INPUT
@@ -28,173 +28,174 @@ VAR
 	DataTimer					: TON;
 	Sts_RobotHasBeenRun			: BOOL;
 	Sts_RobotHasBeenHome		: BOOL;
+	plaintext: INT;
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[IF Inp_Enable AND NOT Inp_Stop THEN
+      <ST><![CDATA[
+IF Inp_Enable AND NOT Inp_Stop THEN // Jika masukan diaktifkan dan tidak berhenti
     
-    Sequence_Abort := 0;
-    Out_Robot_StopProgram := FALSE;
-    Out_Robot_TriggerMotorOff := FALSE;
+    Sequence_Abort := 0; // Atur urutan abort ke 0
+    Out_Robot_StopProgram := FALSE; // Atur stop program ke FALSE
+    Out_Robot_TriggerMotorOff := FALSE; // Atur pemicu motor off ke FALSE
     
-    CASE Sequence_Run OF
+    CASE Sequence_Run OF // Kasus untuk urutan jalankan
         0:
-            IF Inp_Robot_MotorOff AND NOT Inp_Robot_MotorON THEN
-                Sequence_Run := 10;
-            ELSIF NOT Inp_Robot_MotorOff AND Inp_Robot_MotorON THEN
-                Sequence_Run := 20;
+            IF Inp_Robot_MotorOff AND NOT Inp_Robot_MotorON THEN // Jika motor mati dan tidak motor on
+                Sequence_Run := 10; // Atur urutan ke 10
+            ELSIF NOT Inp_Robot_MotorOff AND Inp_Robot_MotorON THEN // Jika tidak motor mati dan motor on
+                Sequence_Run := 20; // Atur urutan ke 20
             END_IF;
         10:
-            Out_Robot_TriggerMotorOn := TRUE;
-            IF NOT Inp_Robot_MotorOff AND Inp_Robot_MotorON THEN
-                Out_Robot_TriggerMotorOn := FALSE;
-				DataTimer(IN := FALSE);
-                Sequence_Run := 30;
+            Out_Robot_TriggerMotorOn := TRUE; // Pemicu motor on aktif
+            IF NOT Inp_Robot_MotorOff AND Inp_Robot_MotorON THEN // Jika tidak motor mati dan motor on
+                Out_Robot_TriggerMotorOn := FALSE; // Matikan pemicu motor on
+				DataTimer(IN := FALSE); // Matikan timer data
+                Sequence_Run := 30; // Atur urutan ke 30
             ELSE
-                DataTimer(IN := TRUE,PT := T#100MS);
-                IF DataTimer.Q THEN
-                    DataTimer(IN := FALSE);
-                    Sequence_Run := 0;
+                DataTimer(IN := TRUE,PT := T#100MS); // Mulai timer data
+                IF DataTimer.Q THEN // Jika timer selesai
+                    DataTimer(IN := FALSE); // Matikan timer data
+                    Sequence_Run := 0; // Atur urutan ke 0
                 END_IF;
             END_IF;
         20:
-            Out_Robot_TriggerMotorOn := FALSE;
-            IF NOT Sts_RobotHasBeenRun THEN
-                Sequence_Run := 30;
+            Out_Robot_TriggerMotorOn := FALSE; // Matikan pemicu motor on
+            IF NOT Sts_RobotHasBeenRun THEN // Jika robot belum dijalankan
+                Sequence_Run := 30; // Atur urutan ke 30
             ELSE
-                Sequence_Run := 40;
+                Sequence_Run := 40; // Atur urutan ke 40
             END_IF;
         30:
-            Out_Robot_StartProgramAtMain := TRUE;
-            IF Inp_Robot_CycleOn THEN
-                Sts_RobotHasBeenRun := TRUE;
-                Out_Robot_StartProgramAtMain := FALSE;
-				DataTimer(IN := FALSE);
-                Sequence_Run := 50;
+            Out_Robot_StartProgramAtMain := TRUE; // Atur program utama untuk memulai
+            IF Inp_Robot_CycleOn THEN // Jika siklus robot aktif
+                Sts_RobotHasBeenRun := TRUE; // Atur robot telah dijalankan menjadi TRUE
+                Out_Robot_StartProgramAtMain := FALSE; // Matikan pemicu mulai program
+				DataTimer(IN := FALSE); // Matikan timer data
+                Sequence_Run := 50; // Atur urutan ke 50
             ELSE
-                DataTimer(IN := TRUE,PT := T#100MS);
-                IF DataTimer.Q THEN
-                    DataTimer(IN := FALSE);
-                    Sequence_Run := 20;
+                DataTimer(IN := TRUE,PT := T#100MS); // Mulai timer data
+                IF DataTimer.Q THEN // Jika timer selesai
+                    DataTimer(IN := FALSE); // Matikan timer data
+                    Sequence_Run := 20; // Atur urutan ke 20
                 END_IF;
             END_IF;
         40:
-            Out_Robot_StartProgram := TRUE;
-            IF Inp_Robot_CycleOn THEN
-                Out_Robot_StartProgram:= FALSE;
-				DataTimer(IN := FALSE);
-                Sequence_Run := 50;
+            Out_Robot_StartProgram := TRUE; // Atur pemicu mulai program ke TRUE
+            IF Inp_Robot_CycleOn THEN // Jika siklus robot aktif
+                Out_Robot_StartProgram:= FALSE; // Matikan pemicu mulai program
+				DataTimer(IN := FALSE); // Matikan timer data
+                Sequence_Run := 50; // Atur urutan ke 50
             ELSE
-                DataTimer(IN := TRUE,PT := T#100MS);
-                IF DataTimer.Q THEN
-                    DataTimer(IN := FALSE);
-                    Sequence_Run := 20;
+                DataTimer(IN := TRUE,PT := T#100MS); // Mulai timer data
+                IF DataTimer.Q THEN // Jika timer selesai
+                    DataTimer(IN := FALSE); // Matikan timer data
+                    Sequence_Run := 20; // Atur urutan ke 20
                 END_IF;
             END_IF;
         50:
-            IF NOT Sts_RobotHasBeenHome THEN
-                Sequence_Run := 60;
+            IF NOT Sts_RobotHasBeenHome THEN // Jika robot belum berada di home
+                Sequence_Run := 60; // Atur urutan ke 60
             ELSE
-                Sequence_Run := 80;
+                Sequence_Run := 80; // Atur urutan ke 80
             END_IF;
         60:
-            Out_Robot_TriggerHome := TRUE;
-            IF Inp_Robot_HomeDone THEN
-                Out_Robot_TriggerHome := FALSE;
-                Sequence_Run := 70;
+            Out_Robot_TriggerHome := TRUE; // Atur pemicu home ke TRUE
+            IF Inp_Robot_HomeDone THEN // Jika home robot selesai
+                Out_Robot_TriggerHome := FALSE; // Matikan pemicu home
+                Sequence_Run := 70; // Atur urutan ke 70
             END_IF;
         70:
-            IF NOT Inp_Robot_HomeDone THEN
-                Sts_RobotHasBeenHome:= TRUE;
-                Sequence_Run := 80;
+            IF NOT Inp_Robot_HomeDone THEN // Jika home robot belum selesai
+                Sts_RobotHasBeenHome:= TRUE; // Atur robot telah di-home
+                Sequence_Run := 80; // Atur urutan ke 80
             END_IF;
         80:
-            Out_RobotReady := TRUE;
-            IF Inp_Running THEN
-                Sequence_Run := 90;
+            Out_RobotReady := TRUE; // Atur robot siap ke TRUE
+            IF Inp_Running THEN // Jika berjalan
+                Sequence_Run := 90; // Atur urutan ke 90
             END_IF;
         90:
-            Out_Robot_TriggerRunning := TRUE;
+            Out_Robot_TriggerRunning := TRUE; // Atur pemicu berjalan ke TRUE
                 
     END_CASE;
     
 ELSE
     
-    CASE Sequence_Abort OF
+    CASE Sequence_Abort OF // Kasus untuk urutan abort
         0:
-            IF Inp_Robot_CycleOn THEN
-                Sequence_Abort := 10;
+            IF Inp_Robot_CycleOn THEN // Jika siklus robot aktif
+                Sequence_Abort := 10; // Atur urutan ke 10
             ELSE
-                Sequence_Abort := 20;
+                Sequence_Abort := 20; // Atur urutan ke 20
             END_IF;
         10:
-            Out_Robot_StopProgram := TRUE;
-            IF NOT Inp_Robot_CycleOn THEN
-                Out_Robot_StopProgram := FALSE;
-				DataTimer(IN := FALSE);
-                Sequence_Abort := 20;
+            Out_Robot_StopProgram := TRUE; // Atur stop program ke TRUE
+            IF NOT Inp_Robot_CycleOn THEN // Jika siklus robot tidak aktif
+                Out_Robot_StopProgram := FALSE; // Matikan stop program
+				DataTimer(IN := FALSE); // Matikan timer data
+                Sequence_Abort := 20; // Atur urutan ke 20
             ELSE
-                DataTimer(IN := TRUE,PT := T#100MS);
-                IF DataTimer.Q THEN
-                    DataTimer(IN := FALSE);
-                    Out_Robot_StopProgram := FALSE;
-                    Sequence_Abort := 0;
+                DataTimer(IN := TRUE,PT := T#100MS); // Mulai timer data
+                IF DataTimer.Q THEN // Jika timer selesai
+                    DataTimer(IN := FALSE); // Matikan timer data
+                    Out_Robot_StopProgram := FALSE; // Matikan stop program
+                    Sequence_Abort := 0; // Atur urutan ke 0
                 END_IF;
             END_IF;
         20:
-            IF Inp_Robot_MotorON AND NOT Inp_Robot_MotorOff THEN
-                Sequence_Abort := 25;
-            ELSIF NOT Inp_Robot_MotorON AND Inp_Robot_MotorOff THEN
-                Sequence_Abort := 40;
+            IF Inp_Robot_MotorON AND NOT Inp_Robot_MotorOff THEN // Jika motor on dan tidak motor off
+                Sequence_Abort := 25; // Atur urutan ke 25
+            ELSIF NOT Inp_Robot_MotorON AND Inp_Robot_MotorOff THEN // Jika tidak motor on dan motor off
+                Sequence_Abort := 40; // Atur urutan ke 40
             END_IF;
         25:
-            DataTimer(IN := TRUE,PT := T#100MS);
-                IF DataTimer.Q THEN
-                    DataTimer(IN := FALSE);
-                    Out_Robot_StopProgram := FALSE;
-                    Sequence_Abort := 30;
+            DataTimer(IN := TRUE,PT := T#100MS); // Mulai timer data
+                IF DataTimer.Q THEN // Jika timer selesai
+                    DataTimer(IN := FALSE); // Matikan timer data
+                    Out_Robot_StopProgram := FALSE; // Matikan stop program
+
+
+                    Sequence_Abort := 30; // Atur urutan ke 30
                 END_IF;
         30:
-            Out_Robot_TriggerMotorOff := TRUE;
-            IF Inp_Robot_MotorOff AND NOT Inp_Robot_MotorON THEN
-                Out_Robot_TriggerMotorOff := FALSE;
-                Sequence_Abort := 30;
+            Out_Robot_TriggerMotorOff := TRUE; // Atur pemicu motor off ke TRUE
+            IF Inp_Robot_MotorOff AND NOT Inp_Robot_MotorON THEN // Jika motor off dan tidak motor on
+                Out_Robot_TriggerMotorOff := FALSE; // Matikan pemicu motor off
+                Sequence_Abort := 30; // Atur urutan ke 30
             ELSE
-               DataTimer(IN := TRUE,PT := T#100MS);
-                IF DataTimer.Q THEN
-                    DataTimer(IN := FALSE);
-                    Out_Robot_StopProgram := FALSE;
-                    Sequence_Abort := 20;
+               DataTimer(IN := TRUE,PT := T#100MS); // Mulai timer data
+                IF DataTimer.Q THEN // Jika timer selesai
+                    DataTimer(IN := FALSE); // Matikan timer data
+                    Out_Robot_StopProgram := FALSE; // Matikan stop program
+                    Sequence_Abort := 20; // Atur urutan ke 20
                 END_IF;
             END_IF;
 			40:
-			        Out_Robot_TriggerMotorOff := FALSE;
+			        Out_Robot_TriggerMotorOff := FALSE; // Matikan pemicu motor off
 					
     END_CASE;
     
-    DataTimer(IN := FALSE);
-    Sequence_Run := 0;
-    Out_Robot_TriggerRunning := FALSE;
-    Out_Robot_TriggerMotorOn := FALSE;
-    Out_Robot_StartProgram := FALSE;
-    Out_Robot_StartProgramAtMain := FALSE;
-    Out_Robot_TriggerHome := FALSE;
+    DataTimer(IN := FALSE); // Matikan timer data
+    Sequence_Run := 0; // Atur urutan ke 0
+    Out_Robot_TriggerRunning := FALSE; // Matikan pemicu berjalan
+    Out_Robot_TriggerMotorOn := FALSE; // Matikan pemicu motor on
+    Out_Robot_StartProgram := FALSE; // Matikan pemicu mulai program
+    Out_Robot_StartProgramAtMain := FALSE; // Matikan pemicu mulai program di utama
+    Out_Robot_TriggerHome := FALSE; // Matikan pemicu home
     
-    IF Inp_GlobalReset THEN
-        Out_RobotReady := FALSE;
-        Sts_RobotHasBeenRun := FALSE;
-        Sts_RobotHasBeenHome := FALSE;
+    IF Inp_GlobalReset THEN // Jika reset global aktif
+        Out_RobotReady := FALSE; // Atur robot siap ke FALSE
+        Sts_RobotHasBeenRun := FALSE; // Atur robot telah dijalankan ke FALSE
+        Sts_RobotHasBeenHome := FALSE; // Atur robot telah di-home ke FALSE
     END_IF;
 	
-	IF Inp_Stop THEN
-		Out_Robot_StopProgram:=TRUE;
+	IF Inp_Stop THEN // Jika berhenti aktif
+		Out_Robot_StopProgram:=TRUE; // Atur stop program ke TRUE
 	END_IF;
     
-END_IF;]]></ST>
+END_IF;
+]]></ST>
     </Implementation>
-    <LineIds Name="FB_StartUpRobot">
-      <LineId Id="10" Count="158" />
-      <LineId Id="9" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>
