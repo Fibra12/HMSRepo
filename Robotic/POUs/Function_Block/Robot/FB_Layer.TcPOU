@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="FB_Layer" Id="{86b57d41-769b-4bec-91e4-e7adb564f4cb}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_Layer
 VAR_INPUT
@@ -14,10 +14,7 @@ VAR_OUTPUT
 	CycleAtLayer	: UINT;
 END_VAR
 
-VAR
-	
-	plaintext: INT;
-END_VAR
+
 
 ]]></Declaration>
     <Implementation>

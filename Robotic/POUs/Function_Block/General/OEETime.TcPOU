@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="OEETime" Id="{beadfc8e-62d0-4bfb-b41c-9c0fa8237088}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK OEETime
 VAR_INPUT
@@ -36,11 +36,9 @@ VAR PERSISTENT
 	Time2				: TOD;
 END_VAR
 
-VAR
-	plaintext: INT;
-END_VAR]]></Declaration>
+]]></Declaration>
     <Implementation>
-      <ST><![CDATA[```plaintext
+      <ST><![CDATA[
 // Mendapatkan waktu saat ini dan mengonversinya ke tanggal dan waktu
 dt_OEE.DateCurrent := DT_TO_DATE(CurrentTime); // Mengubah waktu saat ini menjadi tanggal
 dt_OEE.TimeCurrent := DT_TO_TOD(CurrentTime); // Mengubah waktu saat ini menjadi waktu hari ini
@@ -245,9 +243,5 @@ ELSIF dt_OEE.HMI_NumberPrev > 6 THEN
 END_IF;
 ]]></ST>
     </Implementation>
-    <LineIds Name="OEETime">
-      <LineId Id="346" Count="202" />
-      <LineId Id="94" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>

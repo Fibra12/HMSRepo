@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="DM_Connect" Id="{8f85973e-7b41-4891-9036-07607f02fbe1}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK DM_Connect
 VAR_INPUT
@@ -26,7 +26,7 @@ VAR
 	DataTimer	: TON;
 	BufferData	: ARRAY [0..MAX_STRING_LENGTH] OF BYTE;
 	i			: DINT;
-	plaintext: INT;
+	
 END_VAR
 ]]></Declaration>
     <Implementation>

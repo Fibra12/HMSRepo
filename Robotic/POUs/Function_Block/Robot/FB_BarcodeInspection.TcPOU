@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="FB_BarcodeInspection" Id="{30941f97-6106-4e76-9db7-8cb51e5c6809}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_BarcodeInspection
 VAR_INPUT
@@ -43,7 +43,7 @@ VAR
 	NotFound			: BOOL;
 	i					: INT;
 	Index				: INT;
-	plaintext: INT;
+	
 END_VAR
 ]]></Declaration>
     <Implementation>

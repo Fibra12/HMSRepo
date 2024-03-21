@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="FB_Placing" Id="{ca35c11c-5418-4c8a-a17d-42988f29283b}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_Placing
 VAR_INPUT
@@ -45,7 +45,7 @@ VAR
 	DataTimer				: TON;
 	TWatchDog				: TON;
 	Sequence				: INT;
-	plaintext: INT;
+	
 END_VAR
 
 VAR_IN_OUT
@@ -57,7 +57,7 @@ VAR_IN_OUT
 	Data_Count_Total		: UINT;
 END_VAR]]></Declaration>
     <Implementation>
-      <ST><![CDATA[```plaintext
+      <ST><![CDATA[
 IF Inp_Reset AND Out_PalletJammed THEN
 	Out_PalletJammed	:= FALSE; // Reset sinyal jammed jika ada reset masukan dan palet terjammed
 	Sequence 			:= 0; // Kembalikan urutan langkah ke awal

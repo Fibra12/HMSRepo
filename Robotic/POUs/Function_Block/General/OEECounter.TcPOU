@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="OEECounter" Id="{a699669c-e5f6-45a1-83ee-70edfbe271b4}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK OEECounter
 VAR_INPUT
@@ -28,7 +28,7 @@ END_VAR
 
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[```plaintext
+      <ST><![CDATA[
 // Mengambil tanggal dan waktu saat ini
 dt_OEE.DateCurrent := DT_TO_DATE(CurrentTime); // Mengubah waktu saat ini menjadi tanggal
 dt_OEE.TimeCurrent := DT_TO_TOD(CurrentTime); // Mengubah waktu saat ini menjadi waktu hari ini
@@ -122,7 +122,6 @@ ELSIF dt_OEE.HMI_NumberPrev > 6 THEN
 	dt_OEE.HMI_NumberPrev := 0;
 END_IF;
 
-```plaintext
 // Mengambil tanggal dan waktu saat ini
 dt_OEE.DateCurrent := DT_TO_DATE(CurrentTime); // Mengubah waktu saat ini menjadi tanggal
 dt_OEE.TimeCurrent := DT_TO_TOD(CurrentTime); // Mengubah waktu saat ini menjadi waktu hari ini
@@ -216,7 +215,7 @@ ELSIF dt_OEE.HMI_NumberPrev > 6 THEN
 	dt_OEE.HMI_NumberPrev := 0;
 END_IF;
 
-```plaintext
+
 // Mengambil tanggal dan waktu saat ini
 dt_OEE.DateCurrent := DT_TO_DATE(CurrentTime); // Mengubah waktu saat ini menjadi tanggal
 dt_OEE.TimeCurrent := DT_TO_TOD(CurrentTime); // Mengubah waktu saat ini menjadi waktu hari ini
@@ -311,10 +310,5 @@ ELSIF dt_OEE.HMI_NumberPrev > 6 THEN
 END_IF;
 ]]></ST>
     </Implementation>
-    <LineIds Name="OEECounter">
-      <LineId Id="739" Count="92" />
-      <LineId Id="836" Count="187" />
-      <LineId Id="94" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>
